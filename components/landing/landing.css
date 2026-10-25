@@ -6,7 +6,7 @@
 
 .sceneContainer {
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   min-height: 640px;
   max-width: 100%;
@@ -49,6 +49,11 @@
   pointer-events: none;
 }
 
+#ringed-planet-rot {
+  transform-origin: 48.93% 48.60%;
+  will-change: transform;
+}
+
 .ringedPlanetImg {
   width: 100%;
   height: auto;
@@ -66,6 +71,11 @@
   pointer-events: none;
 }
 
+#blue-planet-rot {
+  transform-origin: 50.69% 50.00%;
+  will-change: transform;
+}
+
 .bluePlanetLeftImg {
   width: 100%;
   height: auto;
@@ -81,6 +91,11 @@
   width: 62px;
   z-index: var(--z-celestial);
   pointer-events: none;
+}
+
+#blue-planet-small-rot {
+  transform-origin: 50.47% 50.00%;
+  will-change: transform;
 }
 
 /* Asteroids (Left & Right) */
@@ -102,15 +117,25 @@
   pointer-events: none;
 }
 
-/* Comet Accent Streak */
-.cometAccentWrap {
+/* Dynamic Falling Comet Artwork (Supplied Neon Comets) */
+.dynamicCometContainer {
   position: absolute;
-  top: 14%;
-  left: 23%;
-  width: 180px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
   z-index: var(--z-celestial);
+}
+
+.fallingCometImg {
+  position: absolute;
+  width: clamp(210px, 15vw, 260px);
+  height: auto;
   opacity: 0;
   pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 0 16px rgba(0, 229, 255, 0.65));
 }
 
 /* ==========================================================================
@@ -157,6 +182,62 @@
   right: 8.5%;
   width: 350px;
   z-index: var(--z-characters);
+}
+
+.characterInteractionTarget {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#colt-hover-wrapper,
+#leon-hover-wrapper {
+  transform-origin: 50% 92%;
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 320ms ease-out;
+  will-change: transform, filter;
+}
+
+.characterInteractionTarget:hover #colt-hover-wrapper,
+.characterInteractionTarget:hover #leon-hover-wrapper,
+#colt-hover-wrapper.isHovered,
+#leon-hover-wrapper.isHovered {
+  transform: translateY(-5px) scale(1.04);
+  filter: drop-shadow(0 14px 32px rgba(0, 0, 0, 0.9)) brightness(1.04);
+  transition: transform 210ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 210ms ease-out;
+}
+
+.telescopeInteractionTarget {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#telescope-hover-wrapper {
+  transform-origin: 50% 92%;
+  transition: transform 290ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 290ms ease-out;
+  will-change: transform, filter;
+}
+
+.telescopeInteractionTarget:hover #telescope-hover-wrapper,
+#telescope-hover-wrapper.isHovered {
+  transform: scale(1.045);
+  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.92)) brightness(1.04);
+  transition: transform 210ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 210ms ease-out;
+}
+
+#balloon-hover-wrapper {
+  transform-origin: 50% 90%;
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 320ms ease-out;
+  will-change: transform, filter;
+}
+
+#balloon-hover-wrapper:hover,
+#balloon-hover-wrapper.isHovered {
+  transform: translateY(-10px) scale(1.06) rotate(2.2deg);
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.88)) brightness(1.05);
+  transition: transform 260ms cubic-bezier(0.34, 1.45, 0.64, 1), filter 260ms ease-out;
 }
 
 /* ==========================================================================
@@ -240,18 +321,18 @@
          drop-shadow(0 0 28px rgba(0, 229, 255, 0.35));
 }
 
-/* Event Metadata Block: Edition Tag & Descriptor */
+/* Event Metadata Block: Edition Tag */
 .eventMetaWrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  margin-top: 2px;
   margin-bottom: 8px;
   pointer-events: auto;
 }
 
 .editionBadge {
-  font-family: var(--font-game);
+  font-family: var(--font-game, 'Lilita One', 'Impact', cursive, sans-serif);
   font-size: 13.5px;
   letter-spacing: 0.16em;
   color: #fff466;
@@ -263,16 +344,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
-.descriptorText {
-  font-family: var(--font-sans);
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
-  max-width: 420px;
-  line-height: 1.35;
-}
-
 /* Primary Register CTA Button */
 .ctaContainer {
   pointer-events: auto;
@@ -281,7 +352,31 @@
   margin-top: 2px;
 }
 
+.gameBtn {
+  background: transparent;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.gameBtnCta,
 .registerBtnWrap {
+  background: transparent;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
   width: 220px;
   height: auto;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.75))
@@ -302,19 +397,78 @@
          brightness(0.96);
 }
 
-/* Micro-animations */
-@keyframes muzzlePop {
+/* Part 2: Blaster Weapon Control & Micro-Animations */
+.coltBlasterButton {
+  position: absolute;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  z-index: 15;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms ease-out;
+}
+
+.coltBlasterButton:focus-visible {
+  outline: 2px solid #00F5FF;
+  outline-offset: 3px;
+  box-shadow: 0 0 16px rgba(0, 245, 255, 0.75), inset 0 0 10px rgba(0, 245, 255, 0.25);
+}
+
+@keyframes directionalMuzzleFlash {
   0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    transform: translate(-8px, -50%) rotate(3deg) scale(0.35);
   }
-  50% {
+  20% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15);
+    transform: translate(-8px, -50%) rotate(3deg) scale(1.15);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.3);
+    transform: translate(-8px, -50%) rotate(3deg) scale(1.3);
+  }
+}
+
+@keyframes projectileStreak {
+  0% {
+    opacity: 1;
+    transform: translate(0, -50%) rotate(3deg) scaleX(0.25);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(35px, -50%) rotate(3deg) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(95px, -50%) rotate(3deg) scaleX(0.6);
+  }
+}
+
+@keyframes localWeaponGlow {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coltBlasterMuzzleFlash,
+  .coltProjectileStreak,
+  .coltLocalGlow {
+    animation: none !important;
+    display: none !important;
   }
 }
 
@@ -327,10 +481,10 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: var(--z-header);
+  z-index: var(--z-header, 100);
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 16px 36px;
   pointer-events: none;
 }
@@ -342,6 +496,9 @@
   align-items: center;
   transition: transform 200ms ease;
   flex-shrink: 0;
+  position: absolute;
+  left: clamp(36px, calc(11% - 26px), 210px);
+  top: 16px;
 }
 
 .gdaiBadgeImg {
@@ -358,7 +515,10 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 16px;
 }
 
 .navBtnItem {
@@ -366,3 +526,442 @@
   height: auto;
   display: block;
 }
+
+/* ==========================================================================
+   ARENA STRUCTURAL SECTION DIVIDER
+   Compact structural bulkhead connecting Landing and About Genesis
+   ========================================================================== */
+
+.arenaSectionDivider {
+  position: relative;
+  width: 100%;
+  height: 96px;
+  background: linear-gradient(180deg, #050814 0%, #0A1128 48%, #050814 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 20;
+  border-top: 2px solid rgba(0, 229, 255, 0.28);
+  border-bottom: 2px solid rgba(139, 92, 246, 0.28);
+  box-shadow: inset 0 6px 16px rgba(0, 0, 0, 0.8),
+              inset 0 -6px 16px rgba(0, 0, 0, 0.8),
+              0 0 24px rgba(0, 229, 255, 0.12);
+}
+
+.dividerBulkheadTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    rgba(15, 23, 42, 0.9) 0%, 
+    rgba(0, 229, 255, 0.6) 30%, 
+    rgba(255, 215, 0, 0.8) 50%, 
+    rgba(139, 92, 246, 0.6) 70%, 
+    rgba(15, 23, 42, 0.9) 100%
+  );
+  box-shadow: 0 1px 6px rgba(0, 229, 255, 0.4);
+}
+
+.dividerBulkheadBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    rgba(15, 23, 42, 0.9) 0%, 
+    rgba(139, 92, 246, 0.6) 30%, 
+    rgba(255, 215, 0, 0.8) 50%, 
+    rgba(0, 229, 255, 0.6) 70%, 
+    rgba(15, 23, 42, 0.9) 100%
+  );
+  box-shadow: 0 -1px 6px rgba(139, 92, 246, 0.4);
+}
+
+/* Central Energy Seam Track */
+.dividerEnergyTrack {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform: translateY(-50%);
+  background: rgba(8, 14, 34, 0.95);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dividerEnergySeam {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(139, 92, 246, 0.5) 15%, 
+    rgba(0, 229, 255, 0.95) 45%, 
+    rgba(255, 215, 0, 0.95) 50%, 
+    rgba(0, 229, 255, 0.95) 55%, 
+    rgba(139, 92, 246, 0.5) 85%, 
+    transparent 100%
+  );
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.85), 0 0 28px rgba(139, 92, 246, 0.5);
+  transform-origin: center;
+}
+
+/* Central Decorative Star-Skull Emblem Bezel */
+.dividerCenterEmblemBezel {
+  position: relative;
+  z-index: 10;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #0F172A 0%, #060B1E 80%);
+  border: 3px solid rgba(255, 215, 0, 0.8);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.45),
+              0 4px 16px rgba(0, 0, 0, 0.9),
+              inset 0 0 10px rgba(0, 229, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dividerEmblemGlow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.dividerEmblemImg {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+}
+
+/* Geometric Polygonal Side Details */
+.dividerSideDetails {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.dividerSideDetails.leftSide {
+  left: 8%;
+}
+
+.dividerSideDetails.rightSide {
+  right: 8%;
+}
+
+.dividerNotch {
+  display: block;
+  height: 14px;
+  background: rgba(0, 229, 255, 0.35);
+  clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+  border-right: 1.5px solid rgba(255, 215, 0, 0.6);
+}
+
+.dividerNotch.notch1 {
+  width: 28px;
+  opacity: 0.85;
+}
+
+.dividerNotch.notch2 {
+  width: 20px;
+  opacity: 0.6;
+}
+
+.dividerNotch.notch3 {
+  width: 14px;
+  opacity: 0.4;
+}
+
+/* ==========================================================================
+   LANDING RESPONSIVE ADAPTATIONS
+   ========================================================================== */
+
+/* 1. Large Laptops & Desktops <= 1440px */
+@media (max-width: 1440px) {
+  .landingHeader {
+    padding: 14px 28px;
+  }
+
+  .navBtnItem {
+    width: 130px;
+  }
+}
+
+/* 2. Standard Laptops <= 1366px */
+@media (max-width: 1366px) {
+  .heroCenterCluster {
+    bottom: 27%;
+    width: 440px;
+  }
+
+  .genesisLogoWrap {
+    max-width: 390px;
+  }
+
+  .navBtnItem {
+    width: 124px;
+  }
+
+  .primaryNavControls {
+    gap: 12px;
+  }
+
+  .arenaSectionDivider {
+    height: 84px;
+  }
+}
+
+/* 3. Landscape Tablets <= 1024px */
+@media (max-width: 1024px) {
+  .landingHeader {
+    padding: 12px 20px;
+  }
+
+  .gdaiBadgeImg {
+    width: 44px;
+  }
+
+  .primaryNavControls {
+    gap: 8px;
+  }
+
+  .navBtnItem {
+    width: 110px;
+  }
+
+  .heroCenterCluster {
+    bottom: 28%;
+    width: 400px;
+  }
+
+  .genesisLogoWrap {
+    max-width: 350px;
+  }
+
+  .coltWrap {
+    left: 4%;
+    bottom: 12%;
+    width: 400px;
+  }
+
+  .ninjaWrap {
+    right: 4%;
+    bottom: 12%;
+    width: 380px;
+  }
+
+  .dividerSideDetails.leftSide {
+    left: 4%;
+  }
+
+  .dividerSideDetails.rightSide {
+    right: 4%;
+  }
+
+  .arenaSectionDivider {
+    height: 76px;
+  }
+}
+
+/* 4. Portrait Tablets <= 768px */
+@media (max-width: 768px) {
+  .landingHeader {
+    padding: 12px 16px;
+  }
+
+  .gdaiBadgeImg {
+    width: 38px;
+  }
+
+  .primaryNavControls {
+    gap: 8px;
+  }
+
+  .navBtnItem {
+    width: 100px;
+  }
+
+  .heroCenterCluster {
+    bottom: 30%;
+    width: 340px;
+  }
+
+  .genesisLogoWrap {
+    max-width: 300px;
+  }
+
+  .editionBadge {
+    font-size: 11.5px;
+    padding: 2px 10px;
+  }
+
+  .descriptorText {
+    font-size: 11.5px;
+    max-width: 300px;
+  }
+
+  .registerBtnWrap {
+    width: 180px;
+  }
+
+  .coltWrap {
+    left: -2%;
+    bottom: 10%;
+    width: 320px;
+  }
+
+  .ninjaWrap {
+    right: -2%;
+    bottom: 10%;
+    width: 310px;
+  }
+
+  .cannonTurretWrap {
+    left: 1%;
+    bottom: 2%;
+    width: 140px;
+  }
+
+  .balloonWrap {
+    right: 1%;
+    bottom: 2%;
+  }
+
+  .arenaSectionDivider {
+    height: 68px;
+  }
+
+  .dividerCenterEmblemBezel {
+    width: 52px;
+    height: 52px;
+  }
+
+  .dividerEmblemImg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .dividerSideDetails {
+    display: none;
+  }
+}
+
+/* 5. Mobile Devices <= 640px / 390px / 360px */
+@media (max-width: 640px) {
+  /* Intentional header reflow without hamburger menu:
+     Row 1: GDAI Badge (left) & Utility Controls (right)
+     Row 2: Primary Nav Controls (Brochure, Prize, Sponsors) centered */
+  .landingHeader {
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    row-gap: 8px;
+    align-items: center;
+  }
+
+  .gdaiBadgeWrap {
+    order: 1;
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+  }
+
+  #utility-controls {
+    order: 2;
+  }
+
+  .primaryNavControls {
+    order: 3;
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    margin: 2px 0 0 0;
+  }
+
+  .navBtnItem {
+    width: 88px;
+  }
+
+  .gdaiBadgeImg {
+    width: 34px;
+  }
+
+  .heroCenterCluster {
+    bottom: 33%;
+    width: 280px;
+  }
+
+  .genesisLogoWrap {
+    max-width: 250px;
+  }
+
+  .editionBadge {
+    font-size: 10.5px;
+    padding: 1.5px 8px;
+  }
+
+  .registerBtnWrap {
+    width: 155px;
+  }
+
+  .coltWrap {
+    left: -8%;
+    bottom: 6%;
+    width: 240px;
+  }
+
+  .ninjaWrap {
+    right: -8%;
+    bottom: 6%;
+    width: 230px;
+  }
+
+  .cannonTurretWrap {
+    left: -3%;
+    bottom: -1%;
+    width: 105px;
+  }
+
+  .balloonWrap {
+    right: 0;
+    bottom: 0;
+  }
+
+  .squeakDialogWrap {
+    display: none !important;
+  }
+
+  .arenaSectionDivider {
+    height: 58px;
+  }
+
+  .dividerCenterEmblemBezel {
+    width: 46px;
+    height: 46px;
+  }
+
+  .dividerEmblemImg {
+    width: 26px;
+    height: 26px;
+  }
+}
+

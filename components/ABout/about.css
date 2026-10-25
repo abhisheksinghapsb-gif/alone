@@ -1,0 +1,702 @@
+/* ==========================================================================
+   about.css — Genesis 6 Arena Briefing Section
+   Scoped stylesheet for #about-genesis
+   Calibrated for laptop review (1536 x 730) and multi-viewport responsiveness
+   ========================================================================== */
+
+#about-genesis {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: clip;
+  background-color: var(--color-bg-space);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 56px 6vw 48px 6vw;
+}
+
+/* ==========================================================================
+   1. BACKGROUND & SEAM LAYERS
+   ========================================================================== */
+
+/* Top Seam Transition: dark bulkhead band bridging landing floor into mecha city */
+.aboutTopSeam {
+  position: absolute;
+  top: -45px;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(5, 8, 20, 0.7) 30%,
+    #050814 50%,
+    rgba(5, 8, 20, 0.7) 70%,
+    transparent 100%
+  );
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* Base Battle Background Scene (Nighttime Mecha City Battle) */
+.aboutBgLayer {
+  position: absolute;
+  top: -15px;
+  left: -20px;
+  right: -20px;
+  bottom: -15px;
+  z-index: 1;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.aboutBgImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 86% center;
+  display: block;
+  user-select: none;
+}
+
+/* Directional Dark Gradient Overlay: Restricts darkening primarily to left reading area */
+.aboutGradientOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 58%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(4, 4, 18, 0.95) 0%,
+    rgba(4, 4, 18, 0.90) 42%,
+    rgba(4, 4, 18, 0.65) 68%,
+    rgba(4, 4, 18, 0.20) 86%,
+    transparent 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Faint Decorative Technical Pattern (Group 808): restrained behind decorative areas */
+.aboutDecorativePattern {
+  position: absolute;
+  top: 2%;
+  left: 0;
+  width: 420px;
+  height: 420px;
+  opacity: 0.07;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.aboutPatternImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ==========================================================================
+   2. TWO-REGION CONTENT LAYOUT
+   ========================================================================== */
+
+.aboutContentLayout {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: minmax(480px, 47%) 1fr;
+  column-gap: 4vw;
+  align-items: center;
+}
+
+/* Left Region: Coherent Identity Stack & Briefing Board (44-49% width) */
+.aboutLeftRegion {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 650px;
+}
+
+/* Right Region: Preserves Illustrated Action Area (Mecha combatants & neon skyline) */
+.aboutRightRegion {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   3. COHERENT LEFT-SIDE IDENTITY STACK (ABOUT PLAQUE + EMBLEM + WORDMARK)
+   Deliberate vertical alignment sharing left edge with Briefing Panel
+   ========================================================================== */
+
+.aboutIdentityGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+  will-change: transform;
+}
+
+/* Interactive Skull Star Emblem */
+.aboutEmblemButton {
+  position: absolute;
+  top: -6px;
+  left: -4px;
+  width: clamp(88px, 7.5vw, 110px);
+  height: clamp(88px, 7.5vw, 110px);
+  z-index: 12;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.22s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.aboutEmblemButton:hover {
+  transform: translateY(-3px) rotate(5deg) scale(1.05);
+}
+
+.aboutEmblemButton:focus-visible {
+  outline: 3px solid var(--color-gold-primary);
+  outline-offset: 4px;
+  border-radius: 50%;
+  transform: translateY(-3px) rotate(5deg) scale(1.05);
+}
+
+.aboutEmblemIcon {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.7));
+  will-change: transform, filter;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.35s ease;
+}
+
+@keyframes emblemSpinContinuous {
+  0% {
+    transform: rotate(0deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.1);
+  }
+}
+
+/* Continuous rotation when hovering on yellow ABOUT text / plaque, emblem, wordmark, or text box (briefing panel) */
+.aboutLeftRegion:has(.briefingBoardContainer:hover) .aboutEmblemIcon,
+.aboutLeftRegion:has(#briefing-panel-board:hover) .aboutEmblemIcon,
+.aboutLeftRegion:has(.aboutWordmarkWrapper:hover) .aboutEmblemIcon,
+.aboutIdentityGroup:has(.aboutPlaqueWrapper:hover) .aboutEmblemIcon,
+.aboutPlaqueWrapper:hover ~ .aboutEmblemButton .aboutEmblemIcon,
+.aboutEmblemButton:hover .aboutEmblemIcon,
+.aboutEmblemIcon.isRotating {
+  animation: emblemSpinContinuous 1.6s linear infinite !important;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.95))
+         drop-shadow(0 0 35px rgba(255, 180, 0, 0.6))
+         drop-shadow(0 8px 18px rgba(0, 0, 0, 0.85)) !important;
+}
+
+/* Pulsing Golden Accent Ring Behind Emblem on Activation */
+.aboutEmblemRipple {
+  position: absolute;
+  inset: -8px;
+  border: 3.5px solid var(--color-gold-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.9);
+  box-shadow: 0 0 18px var(--color-gold-primary);
+}
+
+/* Yellow About Title Plaque */
+.aboutPlaqueWrapper {
+  position: relative;
+  width: clamp(240px, 20vw, 290px);
+  height: auto;
+  margin-left: 56px; /* Deliberate overlap with skull emblem */
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.55));
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.aboutPlaqueWrapper:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 8px 20px rgba(255, 215, 0, 0.45)) drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+}
+
+.aboutPlaqueImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Genesis Wordmark (Coherent spacing: tucks in cleanly above panel top tab) */
+.aboutWordmarkWrapper {
+  position: relative;
+  width: clamp(290px, 24vw, 360px);
+  height: auto;
+  margin-top: 2px;
+  margin-bottom: 8px; /* Tightly cohesive gap before panel top tab */
+  margin-left: 2px;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.65));
+}
+
+.aboutWordmarkImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ==========================================================================
+   4. CYAN BRIEFING PANEL (VECTOR 38 GEOMETRY)
+   Selectable HTML body copy, glowing boundary, cursor reading spotlight
+   ========================================================================== */
+
+.briefingBoardContainer {
+  position: relative;
+  width: 100%;
+  height: clamp(340px, 42vh, 400px);
+  min-height: 330px;
+  max-height: 410px;
+  display: flex;
+  flex-direction: column;
+  filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.75))
+         drop-shadow(0 0 38px rgba(0, 180, 255, 0.42))
+         drop-shadow(0 12px 28px rgba(0, 0, 0, 0.85));
+  transition: filter 0.3s ease;
+  overflow: visible;
+}
+
+.briefingBoardContainer:hover {
+  filter: drop-shadow(0 0 26px rgba(0, 245, 255, 0.95))
+         drop-shadow(0 0 50px rgba(0, 200, 255, 0.55))
+         drop-shadow(0 14px 32px rgba(0, 0, 0, 0.9));
+}
+
+/* Scalable Frame SVG */
+.briefingBoardSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+/* Breathing Neon Boundary Stroke Glow */
+.briefingGlowBorderPath {
+  animation: boundaryGlowBreathing 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes boundaryGlowBreathing {
+  0% {
+    opacity: 0.7;
+    stroke-width: 9px;
+  }
+  100% {
+    opacity: 1;
+    stroke-width: 13px;
+  }
+}
+
+/* Interactive Cursor Reading Spotlight on the Cyan Plate */
+.briefingReadingPlateGlow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.25s ease-out;
+}
+
+/* Subtle Cursor Reading Halo: Placed strictly behind text (z-index: 2) to preserve crisp readability */
+.briefingCursorReadingHalo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(224, 235, 255, 0.42) 30%,
+    rgba(147, 130, 245, 0.2) 62%,
+    transparent 100%
+  );
+  border: 1.5px solid rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.5);
+  transition: opacity 0.22s ease-out;
+  will-change: transform;
+}
+
+/* Dedicated Bounded Reading Scrollport: Clips scrolling content strictly within panel borders */
+.briefingReadingScrollport {
+  position: absolute;
+  top: 48px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 5;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+/* Scrollable Viewport with Smooth Scrolling and Fade Masks */
+.briefingScrollContainer {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  padding: 16px 26px 64px 22px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 160, 210, 0.45) rgba(5, 8, 20, 0.05);
+  transition: mask-image 0.25s ease, -webkit-mask-image 0.25s ease;
+}
+
+.briefingScrollContainer::-webkit-scrollbar {
+  width: 4px;
+}
+
+.briefingScrollContainer::-webkit-scrollbar-track {
+  background: rgba(5, 8, 20, 0.05);
+  border-radius: 9999px;
+  margin: 6px 0;
+}
+
+.briefingScrollContainer::-webkit-scrollbar-thumb {
+  background: rgba(0, 160, 210, 0.45);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+.briefingScrollContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 190, 240, 0.8);
+}
+
+/* Gradient fade masks for smooth text reveal */
+.briefingScrollContainer.hasMaskBottom:not(.hasMaskTop) {
+  mask-image: linear-gradient(to bottom, black calc(100% - 44px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 44px), transparent 100%);
+}
+
+.briefingScrollContainer.hasMaskTop.hasMaskBottom {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 22px, black calc(100% - 44px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 22px, black calc(100% - 44px), transparent 100%);
+}
+
+.briefingScrollContainer.hasMaskTop:not(.hasMaskBottom) {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 22px, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 22px, black 100%);
+}
+
+/* Normal-Flow HTML Briefing Content */
+.briefingContent {
+  position: relative;
+  z-index: 5;
+  color: #000000;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Typography faithfully matching original Image 2 (heavy, black, tight gaming lead) */
+.briefingParagraph {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(20px, 1.45vw, 23.5px);
+  line-height: 1.35;
+  font-weight: 800;
+  color: #000000;
+  margin-bottom: 22px;
+  letter-spacing: -0.015em;
+  user-select: text;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.briefingParagraphFinal {
+  margin-bottom: 0;
+}
+
+/* Interactive Animated Floating Scroll Chevron Cue (Compact, balanced icon button) */
+.briefingScrollPromptWrapper {
+  position: absolute;
+  bottom: 14px;
+  right: 18px;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.briefingScrollBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: rgba(5, 8, 20, 0.94);
+  border: 1.5px solid #00E5FF;
+  border-radius: 50%;
+  color: #00E5FF;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), 0 0 12px rgba(0, 229, 255, 0.5);
+  transition: all 0.22s cubic-bezier(0.2, 0, 0.2, 1);
+  user-select: none;
+  animation: scrollBtnPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes scrollBtnPulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), 0 0 12px rgba(0, 229, 255, 0.5);
+    border-color: #00E5FF;
+  }
+  50% {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 0 20px rgba(0, 229, 255, 0.85);
+    border-color: #38BDF8;
+  }
+}
+
+.briefingScrollBtn:hover {
+  transform: translateY(-2px) scale(1.08);
+  background: #0c112b;
+  border-color: #38BDF8;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55), 0 0 20px rgba(0, 229, 255, 0.85);
+  color: #38BDF8;
+}
+
+.briefingScrollBtn:focus-visible {
+  outline: 2px solid #00E5FF;
+  outline-offset: 3px;
+}
+
+.scrollBtnIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #00E5FF;
+  animation: scrollPromptBounce 1.35s ease-in-out infinite;
+}
+
+.briefingScrollBtn.isAtBottom .scrollBtnIcon {
+  animation: scrollPromptUpBounce 1.35s ease-in-out infinite;
+}
+
+@keyframes scrollPromptBounce {
+  0%, 100% {
+    transform: translateY(-1px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes scrollPromptUpBounce {
+  0%, 100% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* ==========================================================================
+   5. RESPONSIVE BREAKPOINTS (MULTI-VIEWPORT SUPPORT)
+   ========================================================================== */
+
+/* 1. Large Laptops & Desktops <= 1440px */
+@media (max-width: 1440px) {
+  #about-genesis {
+    padding: 50px 5vw 44px 5vw;
+  }
+}
+
+/* 2. Standard Laptops <= 1366px */
+@media (max-width: 1366px) {
+  .aboutContentLayout {
+    grid-template-columns: minmax(460px, 48%) 1fr;
+    column-gap: 3vw;
+  }
+
+  .briefingBoardContainer {
+    height: clamp(330px, 40vh, 385px);
+  }
+
+  .briefingScrollContainer {
+    padding: 16px 26px 46px 26px;
+  }
+
+  .briefingParagraph {
+    font-size: 17px;
+    line-height: 1.36;
+    margin-bottom: 16px;
+  }
+}
+
+/* 3. Landscape Tablets <= 1024px */
+@media (max-width: 1024px) {
+  #about-genesis {
+    padding: 44px 4vw 40px 4vw;
+  }
+
+  .aboutContentLayout {
+    grid-template-columns: 1fr;
+    row-gap: 24px;
+  }
+
+  .aboutLeftRegion {
+    max-width: 100%;
+  }
+
+  .briefingBoardContainer {
+    height: clamp(320px, 38vh, 370px);
+  }
+
+  .aboutRightRegion {
+    min-height: 280px;
+    height: 320px;
+  }
+
+  .aboutGradientOverlay {
+    width: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(4, 4, 18, 0.94) 0%,
+      rgba(4, 4, 18, 0.88) 55%,
+      rgba(4, 4, 18, 0.45) 85%,
+      transparent 100%
+    );
+  }
+}
+
+/* 4. Portrait Tablets <= 768px */
+@media (max-width: 768px) {
+  #about-genesis {
+    padding: 36px 20px 36px 20px;
+  }
+
+  .aboutPlaqueWrapper {
+    width: 240px;
+    margin-left: 48px;
+  }
+
+  .aboutEmblemButton {
+    width: 82px;
+    height: 82px;
+  }
+
+  .aboutWordmarkWrapper {
+    width: 290px;
+  }
+
+  .briefingBoardContainer {
+    height: 330px;
+  }
+
+  .briefingScrollContainer {
+    padding: 14px 22px 42px 22px;
+  }
+
+  .briefingParagraph {
+    font-size: 16px;
+    line-height: 1.36;
+    margin-bottom: 14px;
+  }
+
+  .aboutRightRegion {
+    min-height: 200px;
+    height: 240px;
+  }
+}
+
+/* 5. Mobile Devices <= 480px / 390px / 360px */
+@media (max-width: 480px) {
+  #about-genesis {
+    padding: 28px 14px 28px 14px;
+  }
+
+  .aboutPlaqueWrapper {
+    width: 200px;
+    margin-left: 40px;
+  }
+
+  .aboutEmblemButton {
+    width: 72px;
+    height: 72px;
+  }
+
+  .aboutWordmarkWrapper {
+    width: 250px;
+  }
+
+  .briefingBoardContainer {
+    height: 310px;
+  }
+
+  .briefingScrollContainer {
+    padding: 12px 18px 40px 18px;
+  }
+
+  .briefingParagraph {
+    font-size: 14.5px;
+    line-height: 1.34;
+    margin-bottom: 12px;
+  }
+
+  .briefingScrollPromptWrapper {
+    bottom: 10px;
+    right: 14px;
+  }
+
+  .briefingScrollBtn {
+    padding: 5px 10px;
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  .aboutRightRegion {
+    min-height: 160px;
+    height: 190px;
+  }
+}
+
+
+/* ==========================================================================
+   6. REDUCED MOTION SAFETY
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .aboutBgLayer,
+  .aboutDecorativePattern,
+  .aboutIdentityGroup,
+  .aboutEmblemButton,
+  .aboutEmblemIcon {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .briefingScrollContainer {
+    scroll-behavior: auto !important;
+  }
+
+  .scrollBtnIcon {
+    animation: none !important;
+  }
+}
+

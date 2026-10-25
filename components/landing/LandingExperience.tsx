@@ -3,6 +3,11 @@
 import React, { useState, useRef } from 'react';
 import { LandingHeader } from './LandingHeader';
 import { ArenaScene } from './ArenaScene';
+import { SectionDivider } from './SectionDivider';
+import { AboutGenesisSection } from '../ABout/AboutGenesisSection';
+import { SponsorsDivider } from '../sponsors/SponsorsDivider';
+import { SponsorsSection } from '../sponsors/SponsorsSection';
+import { SponsorsToPrizeDivider, PrizePoolSection } from '../prize-pool';
 import { uiAudio } from '../../lib/uiAudio';
 
 export const LandingExperience: React.FC = () => {
@@ -27,7 +32,7 @@ export const LandingExperience: React.FC = () => {
         position: 'relative',
         width: '100%',
         minHeight: '100vh',
-        overflow: 'hidden',
+        overflowX: 'hidden',
         backgroundColor: 'var(--color-bg-space)',
       }}
     >
@@ -41,6 +46,34 @@ export const LandingExperience: React.FC = () => {
 
       {/* Primary Layered Arena Scene */}
       <ArenaScene motionPaused={motionPaused} pageRef={pageRef} />
+
+      {/* Compact Arena Structural Divider */}
+      <SectionDivider motionPaused={motionPaused} />
+
+      {/* About Genesis Section (Arena Briefing Board) */}
+      <AboutGenesisSection
+        motionPaused={motionPaused}
+        soundEnabled={soundEnabled}
+      />
+
+      {/* About-to-Sponsors Structural Divider */}
+      <SponsorsDivider motionPaused={motionPaused} />
+
+      {/* Sponsors Section (Interactive Sponsor Shop) */}
+      <SponsorsSection
+        motionPaused={motionPaused}
+        soundEnabled={soundEnabled}
+      />
+
+      {/* Sponsors-to-Prize Structural Divider */}
+      <SponsorsToPrizeDivider motionPaused={motionPaused} />
+
+      {/* Prize Pool Section (Two Illustrated Trophy Stages) */}
+      <PrizePoolSection
+        motionPaused={motionPaused}
+        soundEnabled={soundEnabled}
+      />
     </div>
   );
 };
+

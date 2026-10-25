@@ -34,16 +34,16 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'prize',
     label: 'PRIZE',
-    type: 'button',
-    actionId: 'prize-info',
+    type: 'link',
+    href: '#prize-pool',
     image: '/assets/genesis/static/nav-prize.webp',
     alt: 'Genesis 6 Prize Pool Details',
   },
   {
     id: 'sponsors',
     label: 'SPONSORS',
-    type: 'button',
-    actionId: 'sponsors-info',
+    type: 'link',
+    href: '#sponsors',
     image: '/assets/genesis/static/nav-sponsors.webp',
     alt: 'Genesis 6 Event Sponsors',
   },
@@ -178,6 +178,24 @@ export const SCENE_ASSETS = {
     width: 1012,
     height: 508,
     alt: 'Comet streak trail',
+  },
+  cometVariant1: {
+    src: '/assets/genesis/static/comet-variant-1.webp',
+    width: 1012,
+    height: 508,
+    alt: 'Neon comet shooting star variant 1',
+  },
+  cometVariant2: {
+    src: '/assets/genesis/static/comet-variant-2.webp',
+    width: 364,
+    height: 180,
+    alt: 'Neon comet shooting star variant 2',
+  },
+  cometVariant3: {
+    src: '/assets/genesis/static/comet-variant-3.webp',
+    width: 336,
+    height: 168,
+    alt: 'Neon comet shooting star variant 3',
   },
   // Central hero identity
   genesisHero: {

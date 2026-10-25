@@ -374,6 +374,51 @@ class UIAudioEngine {
       this.activeVoices = Math.max(0, this.activeVoices - 1);
     }
   }
+
+  /**
+   * Star-Skull Emblem activation: crisp, golden tactile resonant chime pop
+   */
+  public playEmblemAccent(): void {
+    if (!this.isEnabled) return;
+    const now = performance.now();
+    if (now - this.lastActionTime < this.actionThrottleMs) return;
+    this.lastActionTime = now;
+
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      this.activeVoices++;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      const startTime = ctx.currentTime;
+      const duration = 0.16;
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(587.33, startTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880.0, startTime + 0.05); // A5
+      osc.frequency.exponentialRampToValueAtTime(440.0, startTime + duration); // A4
+
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(0.12, startTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+
+      osc.onended = () => {
+        osc.disconnect();
+        gain.disconnect();
+        this.activeVoices = Math.max(0, this.activeVoices - 1);
+      };
+    } catch {
+      this.activeVoices = Math.max(0, this.activeVoices - 1);
+    }
+  }
 }
 
 export const uiAudio = new UIAudioEngine();

@@ -172,4 +172,15 @@ The scene is built around a single explicit coordinate system calibrated for the
 
 ## 7. Unresolved Limitations
 
-- **None**. All 8 defects reviewed have been comprehensively resolved, verified on the measured laptop viewport ($1536 \times 730\text{ CSS px}$), and confirmed in the live browser.
+- **None**. All defects reviewed have been comprehensively resolved, verified on the measured laptop viewport ($1536 \times 730\text{ CSS px}$), and confirmed in the live browser.
+
+---
+
+## 8. Part 1 Refinement Verification (Telescope, Planets, Comets, Characters, Balloon)
+
+- **Stationary Telescope**: Grounded at $x=12\text{ px}, y=562\text{ px}$. Excluded from pointer parallax. Local hover scale $1.045$ anchored at tripod base (`50% 92%`).
+- **Planetary Axial Rotations**: Large blue planet rotated continuously on visible center ($50.69\% 50.00\%$, $55\text{ s}$); small blue planet rotated continuously ($50.47\% 50.00\%$, $75\text{ s}$); purple ringed planet rotated continuously on center ($48.93\% 48.60\%$, $110\text{ s}$) with complete illustration integrity.
+- **Supplied Neon Comets**: Alternates 3 variants of the supplied artwork descending diagonally downward-right across open sky lanes ($1.85\text{ s} .. 2.05\text{ s}$ passes, $3.5\text{ s} .. 5.5\text{ s}$ intervals).
+- **Character Hover Depth**: Colt and Leon lift $-5\text{ px}$ and enlarge $1.04\times$ from lower-body anchors (`50% 92%`), preserving inward orientation and safe containment behind the barrier rail.
+- **Decorative Responsive Balloon**: Removed all click handlers and button roles. Added asymmetrical buoyant idle loop ($-8\text{ px}$ vertical, $+2.2\text{ px} \leftrightarrow -1.2\text{ px}$ horizontal, $4.5\text{ s}$ cycle) and hover lift ($-10\text{ px}$, $1.06\times$, $2.2^\circ$ tilt) with independent, undeformed dialogue speech bubble.
+

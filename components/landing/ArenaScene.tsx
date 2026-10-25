@@ -47,14 +47,16 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
         className="ringedPlanetWrap parallax-celestial"
       >
         <div id="ringed-planet-idle">
-          <img
-            src={SCENE_ASSETS.ringedPlanet.src}
-            alt={SCENE_ASSETS.ringedPlanet.alt}
-            width={SCENE_ASSETS.ringedPlanet.width}
-            height={SCENE_ASSETS.ringedPlanet.height}
-            className="ringedPlanetImg"
-            draggable={false}
-          />
+          <div id="ringed-planet-rot">
+            <img
+              src={SCENE_ASSETS.ringedPlanet.src}
+              alt={SCENE_ASSETS.ringedPlanet.alt}
+              width={SCENE_ASSETS.ringedPlanet.width}
+              height={SCENE_ASSETS.ringedPlanet.height}
+              className="ringedPlanetImg"
+              draggable={false}
+            />
+          </div>
         </div>
       </div>
 
@@ -111,14 +113,13 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
         />
       </div>
 
-      {/* Occasional Comet Streak Accent */}
-      <div id="comet-accent" className="cometAccentWrap">
+      {/* Dynamic Falling Comet Artwork (Supplied Neon Comet variants) */}
+      <div id="dynamic-comet-container" className="dynamicCometContainer" aria-hidden="true">
         <img
-          src={SCENE_ASSETS.cometLarge.src}
+          id="falling-comet-img"
+          src={SCENE_ASSETS.cometVariant1.src}
           alt=""
-          width={SCENE_ASSETS.cometLarge.width}
-          height={SCENE_ASSETS.cometLarge.height}
-          style={{ width: '100%', height: 'auto', display: 'block' }}
+          className="fallingCometImg"
           draggable={false}
         />
       </div>
@@ -172,9 +173,9 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
         />
       </div>
 
-      {/* 6. Foreground Grounded Arena Objects (Foreground Parallax) */}
-      {/* Left Foreground Cannon Turret (Firmly grounded on the arena floor) */}
-      <div id="cannon-layer" className="cannonWrap parallax-fore">
+      {/* 6. Foreground Grounded Arena Objects */}
+      {/* Left Foreground Telescope (Firmly grounded on arena floor, stationary during pointer movement) */}
+      <div id="cannon-layer" className="cannonWrap">
         <AnimatedCharacter
           type="cannon"
           motionPaused={motionPaused}
@@ -203,10 +204,9 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
           />
         </div>
 
-        {/* Edition Label & Event Descriptor Block */}
+        {/* Edition Label Block */}
         <div className="eventMetaWrap">
           <span className="editionBadge">{EVENT_COPY.edition}</span>
-          <p className="descriptorText">{EVENT_COPY.descriptor}</p>
         </div>
 
         {/* Primary REGISTER CTA Button */}

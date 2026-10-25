@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@import "../components/landing/landing.css";
+@import "../components/ABout/about.css";
+@import "../components/sponsors/sponsors.css";
+@import "../components/prize-pool/prize-pool.css";
 
 :root {
   /* Color Palette */
@@ -42,7 +46,7 @@
 html,
 body {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   background-color: var(--color-bg-space);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
@@ -73,12 +77,41 @@ body {
   border-radius: 8px;
 }
 
+/* Custom Dark Scrollbar to prevent light native scrollbar gutter */
+html {
+  scrollbar-color: rgba(255, 255, 255, 0.22) var(--color-bg-space);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-space);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 5px;
+  border: 2px solid var(--color-bg-space);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.38);
+}
+
 button,
 a {
   font-family: inherit;
   color: inherit;
-  background: none;
+  background: transparent;
+  background-color: transparent;
   border: none;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;

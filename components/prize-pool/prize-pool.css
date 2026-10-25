@@ -1,0 +1,943 @@
+/* ==========================================================================
+   GENESIS 6 — PRIZE POOL SECTION STYLES
+   Isolated design system for Stage 2 & Stage 3: Two Illustrated Trophy Stages
+   ========================================================================== */
+
+/* Accessibility helper for screen-reader headings */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+#prize-pool {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #050a1a;
+  background-image: url('/assets/genesis/sponsors/bg-cosmic-pattern.webp');
+  background-repeat: repeat;
+  background-position: center top;
+  background-size: 1440px auto;
+  color: #ffffff;
+  overflow: hidden;
+  scroll-margin-top: 80px;
+  padding: 60px 20px 100px 20px;
+  box-sizing: border-box;
+}
+
+/* Subtle ambient dark gradient overlay */
+.prizePoolVignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 20%, rgba(16, 93, 229, 0.12) 0%, rgba(5, 10, 26, 0.85) 85%);
+  z-index: 1;
+}
+
+.prizePoolContainer {
+  position: relative;
+  z-index: 2;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   1. Title Banner
+   -------------------------------------------------------------------------- */
+.prizePoolBannerWrapper {
+  margin-bottom: 40px;
+  text-align: center;
+  position: relative;
+}
+
+.prizePoolBannerImg {
+  display: block;
+  max-width: 520px;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.65));
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   2. Trophy Stage Structure
+   -------------------------------------------------------------------------- */
+.prizeStage {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  background: #09347f;
+  border: 2px solid #24c5f6;
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(36, 197, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
+/* Cyan Header Strip */
+.stageHeaderStrip {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  background: #24c5f6;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  border-bottom: 3px solid #055cb3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-sizing: border-box;
+  box-shadow: inset 0 -3px 0 rgba(5, 92, 179, 0.8);
+  z-index: 3;
+}
+
+.stageHeadingImg {
+  height: 44px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+  user-select: none;
+}
+
+.stageHeaderRightAccent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stageHeaderDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+  opacity: 0.6;
+}
+
+/* Stage Surface Body */
+.stageSurfaceBody {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+  overflow: visible;
+  padding: 24px 28px 36px 28px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+/* Specific gradients */
+.stageMainBody {
+  background: linear-gradient(90deg, #105de5 0%, #0c48b2 65%, #09347f 100%);
+  border-bottom: 6px solid #062356;
+}
+
+.stageVrBody {
+  background: linear-gradient(90deg, #09347f 0%, #0c48b2 35%, #105de5 100%);
+  border-bottom: 6px solid #062356;
+}
+
+/* Floor line for depth */
+.stageFloorLine {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(36, 197, 246, 0.4) 0%, rgba(255, 222, 50, 0.3) 50%, rgba(36, 197, 246, 0.4) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* --------------------------------------------------------------------------
+   3. Character Presentation
+   -------------------------------------------------------------------------- */
+.stageCharacterWrapper {
+  position: relative;
+  z-index: 5;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: auto;
+}
+
+.stageCharacterWrapper.leftCharacter {
+  width: 320px;
+  margin-top: -60px; /* Overlaps cyan header strip */
+  margin-bottom: -10px;
+}
+
+.stageCharacterWrapper.rightCharacter {
+  width: 350px;
+  margin-top: -55px; /* Overlaps cyan header strip */
+  margin-bottom: -10px;
+}
+
+/* Character Hover Pop: scale ~1.04, lift ~4px, origin lower-center, 200ms enter / 280ms return */
+.characterHoverFrame {
+  position: relative;
+  width: 100%;
+  display: block;
+  transform-origin: bottom center;
+  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.stageCharacterWrapper:hover .characterHoverFrame,
+.stageCharacterWrapper:focus-within .characterHoverFrame {
+  transform: translateY(-4px) scale(1.04);
+  transition-duration: 0.2s;
+}
+
+/* Dedicated Idle Frame for GSAP subtle breathing (does not conflict with hover or recoil) */
+.characterIdleFrame {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+/* Character Recoil Frame: kick opposite the -66deg barrel angle (-3px, +4px) and smooth recovery */
+.characterRecoilFrame {
+  position: relative;
+  width: 100%;
+  display: block;
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+.characterRecoilFrame.is-recoiling {
+  animation: cowboyRecoil 0.36s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes cowboyRecoil {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(-2.5px, 3.5px) rotate(-1.2deg);
+  }
+  50% {
+    transform: translate(-1.2px, 1.8px) rotate(-0.6deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+/* Composite Art Frame holding base illustration + blinking layers + gunfire rig */
+.characterArtFrame {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+.characterIllustration {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.75));
+  user-select: none;
+}
+
+/* Blinking Expression Overlay Layers (pixel-matched frames) */
+.characterBlinkLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 25ms linear;
+}
+
+.characterBlinkLayer.is-visible {
+  opacity: 1;
+}
+
+.characterShadowBase {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   3b. Cowboy Gunfire Rig (Rank-Coloured Muzzle Flash & Projectile)
+   Anchored directly to the viewer's right gun muzzle center: left 93.4%, top 22.3%
+   -------------------------------------------------------------------------- */
+.cowboyGunfireRig {
+  position: absolute;
+  left: 93.4%;
+  top: 22.3%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+}
+
+/* Local gun flare: brief 100ms radial glow behind muzzle */
+.gunBarrelFlare {
+  position: absolute;
+  left: -24px;
+  top: -24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--shot-flare, rgba(255, 215, 0, 0.5)) 0%, transparent 75%);
+  animation: flareFlash 0.12s ease-out forwards;
+}
+
+/* Compact rank-coloured muzzle flash: 80ms star burst */
+.gunMuzzleFlash {
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: 36px;
+  height: 36px;
+  animation: muzzleBurst 0.085s ease-out forwards;
+}
+
+.gunMuzzleFlash::before,
+.gunMuzzleFlash::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.gunMuzzleFlash::before {
+  width: 22px;
+  height: 22px;
+  background: radial-gradient(circle, #ffffff 0%, var(--shot-core, #fffde0) 40%, var(--shot-glow, #ffd700) 80%, transparent 100%);
+  filter: drop-shadow(0 0 8px var(--shot-glow, #ffd700));
+}
+
+.gunMuzzleFlash::after {
+  width: 38px;
+  height: 6px;
+  background: linear-gradient(90deg, transparent, var(--shot-core, #fffde0), #ffffff, var(--shot-core, #fffde0), transparent);
+  border-radius: 3px;
+  transform: translate(-50%, -50%) rotate(-66deg);
+}
+
+/* Small stylised projectile with fading trail along -66deg barrel trajectory */
+.gunProjectileBeam {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 6px;
+  border-radius: 3px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, transparent 0%, var(--shot-beam, #ffb700) 30%, var(--shot-glow, #ffd700) 70%, #ffffff 95%, #ffffff 100%);
+  box-shadow: 0 0 10px var(--shot-glow, #ffd700), 0 0 4px #ffffff;
+  animation: projectileFly 0.19s cubic-bezier(0.15, 0.8, 0.35, 1) forwards;
+}
+
+@keyframes flareFlash {
+  0% { transform: scale(0.3); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.85; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+@keyframes muzzleBurst {
+  0% { transform: scale(0.2) rotate(-66deg); opacity: 1; }
+  45% { transform: scale(1.25) rotate(-66deg); opacity: 1; }
+  100% { transform: scale(0.6) rotate(-66deg); opacity: 0; }
+}
+
+@keyframes projectileFly {
+  0% {
+    transform: rotate(-66deg) translateX(0px) scaleX(0.35);
+    opacity: 1;
+  }
+  30% {
+    transform: rotate(-66deg) translateX(45px) scaleX(1.2);
+    opacity: 1;
+  }
+  75% {
+    transform: rotate(-66deg) translateX(120px) scaleX(1.0);
+    opacity: 0.85;
+  }
+  100% {
+    transform: rotate(-66deg) translateX(165px) scaleX(0.7);
+    opacity: 0;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Medals Cluster
+   -------------------------------------------------------------------------- */
+.stageMedalsCluster {
+  position: relative;
+  z-index: 4;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.stageMedalsCluster.mainMedalsCluster {
+  max-width: 860px;
+}
+
+.stageMedalsCluster.vrMedalsCluster {
+  max-width: 680px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Individual Interactive Medal Component
+   -------------------------------------------------------------------------- */
+.prizeMedalItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* 1st prize prominence */
+.prizeMedalItem.rank-1st {
+  transform-origin: bottom center;
+  scale: 1.06;
+}
+
+/* Semantic Button */
+.prizeMedalBtn {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 8px;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  outline: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Accessible focus ring */
+.prizeMedalBtn:focus-visible {
+  outline: 3px solid #ffde32;
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+/* Local Spotlight Effect */
+.medalSpotlight {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 280px;
+  background: radial-gradient(ellipse at 50% 20%, var(--spotlight-color, rgba(255, 222, 50, 0.4)) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  z-index: 1;
+}
+
+.prizeMedalBtn:hover .medalSpotlight,
+.prizeMedalBtn:focus-visible .medalSpotlight,
+.prizeMedalItem.is-active .medalSpotlight {
+  opacity: 1;
+  transform: translateX(-50%) scale(1.1);
+}
+
+/* Contact Floor Shadow */
+.medalContactShadow {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 18px;
+  background: radial-gradient(ellipse at center, rgba(1, 0, 2, 0.85) 0%, transparent 75%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.prizeMedalBtn:hover .medalContactShadow,
+.prizeMedalBtn:focus-visible .medalContactShadow {
+  transform: translateX(-50%) scale(0.92);
+  opacity: 0.65;
+}
+
+/* Medal Graphic Layer */
+.medalSvgWrapper {
+  position: relative;
+  z-index: 2;
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: transform;
+}
+
+.medalSvg {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  user-select: none;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+}
+
+/* Plaque & Badge internal micro-transitions */
+.prize-medal-plaque-group {
+  transition: transform 0.3s ease;
+}
+
+.prize-medal-badge-group {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hover & Focus State */
+.prizeMedalBtn:hover .medalSvgWrapper,
+.prizeMedalBtn:focus-visible .medalSvgWrapper {
+  transform: translateY(-8px) scale(1.035);
+}
+
+.prizeMedalBtn:hover .prize-medal-badge-group,
+.prizeMedalBtn:focus-visible .prize-medal-badge-group {
+  transform: translateY(-4px);
+}
+
+/* Activation Flourish animation classes */
+.prizeMedalItem.is-flourishing .medalSvgWrapper {
+  animation: medalFlourishPulse 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.prizeMedalItem.is-flourishing .prize-medal-badge-group {
+  animation: badgeFlourishTip 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes medalFlourishPulse {
+  0% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-12px) scale(1.05); }
+  60% { transform: translateY(-7px) scale(1.03); }
+  100% { transform: translateY(-8px) scale(1.035); }
+}
+
+@keyframes badgeFlourishTip {
+  0% { transform: translateY(0) rotate(0deg); }
+  30% { transform: translateY(-8px) rotate(-3.5deg); }
+  65% { transform: translateY(-5px) rotate(2deg); }
+  100% { transform: translateY(-4px) rotate(0deg); }
+}
+
+/* Gleam highlight stripe across plaque */
+.medalGleamStripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 12px;
+  z-index: 3;
+  opacity: 0;
+}
+
+.prizeMedalItem.is-flourishing .medalGleamStripe {
+  opacity: 1;
+}
+
+.medalGleamStripe::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  transform: rotate(25deg);
+  opacity: 0;
+}
+
+.prizeMedalItem.is-flourishing .medalGleamStripe::after {
+  animation: gleamSweep 0.7s ease-out forwards;
+}
+
+@keyframes gleamSweep {
+  0% { left: -60%; opacity: 0; }
+  30% { opacity: 1; }
+  100% { left: 140%; opacity: 0; }
+}
+
+/* Local particle burst elements */
+.medalBurstContainer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.burstParticle {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+}
+
+.prizeMedalItem.is-flourishing .burstParticle {
+  animation: burstParticleFly 0.75s ease-out forwards;
+}
+
+@keyframes burstParticleFly {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) scale(0.3) rotate(0deg);
+  }
+  60% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(1.1) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(calc(var(--dx) * 1.3), calc(var(--dy) * 1.3)) scale(0.4) rotate(360deg);
+  }
+}
+
+/* Static Accessible Labels */
+.accessibleMedalText {
+  display: block;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.accessibleAmount {
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #ffde32;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Intermediate Gem Accent (Between Stages)
+   -------------------------------------------------------------------------- */
+.prizeStageGap {
+  position: relative;
+  width: 100%;
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 14px 0;
+}
+
+.gemAccentWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.gemAccentImg {
+  display: block;
+  width: 130px;
+  height: auto;
+  filter: drop-shadow(0 8px 20px rgba(133, 56, 206, 0.65));
+  animation: gemDrift 4s ease-in-out infinite alternate;
+}
+
+@keyframes gemDrift {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(1.5deg); }
+  100% { transform: translateY(3px) rotate(-1.5deg); }
+}
+
+.gemAccentGlow {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(154, 69, 255, 0.5) 0%, transparent 70%);
+  filter: blur(12px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* --------------------------------------------------------------------------
+   7. Sponsors-to-Prize Divider Component
+   -------------------------------------------------------------------------- */
+.sponsorsToPrizeDivider {
+  position: relative;
+  width: 100%;
+  height: 88px;
+  background: #060b1c;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Top seam connecting to Sponsors */
+.dividerTopBand {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #105de5 0%, #8538ce 50%, #24c5f6 100%);
+  opacity: 0.8;
+}
+
+/* Center bulk bevel */
+.dividerNavyBody {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #0a142d 0%, #060b1c 100%);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.08), inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* Gold seam track */
+.dividerGoldSeamTrack {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: translateY(-50%);
+  background: rgba(255, 222, 50, 0.2);
+}
+
+.dividerGoldSeamHighlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, #ffde32 45%, #ffffff 50%, #ffde32 55%, transparent 100%);
+  transform-origin: center;
+  opacity: 0.8;
+}
+
+/* Central Gem Bezel */
+.dividerCenterGem {
+  position: relative;
+  z-index: 3;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2a0845 0%, #060b1c 80%);
+  border: 2px solid #ffde32;
+  box-shadow: 0 0 16px rgba(255, 222, 50, 0.5), inset 0 0 8px rgba(133, 56, 206, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dividerGemIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+}
+
+/* --------------------------------------------------------------------------
+   8. Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 1120px) {
+  .stageSurfaceBody {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 28px 16px;
+    gap: 20px;
+  }
+
+  .stageCharacterWrapper.leftCharacter,
+  .stageCharacterWrapper.rightCharacter {
+    width: 240px;
+    margin-top: -30px;
+    margin-bottom: 0;
+    order: -1; /* Place character above medals on tablet */
+  }
+
+  .characterIllustration {
+    max-height: 260px;
+  }
+
+  .stageMedalsCluster {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  #prize-pool {
+    padding: 40px 12px 60px 12px;
+  }
+
+  .stageHeaderStrip {
+    height: 50px;
+    padding: 0 16px;
+  }
+
+  .stageHeadingImg {
+    height: 34px;
+  }
+
+  .prizeStage {
+    margin-bottom: 24px;
+  }
+
+  .stageCharacterWrapper.leftCharacter,
+  .stageCharacterWrapper.rightCharacter {
+    width: 180px;
+    margin-top: -20px;
+  }
+
+  .characterIllustration {
+    max-height: 200px;
+  }
+
+  .stageMedalsCluster {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+  }
+
+  .stageMedalsCluster.mainMedalsCluster .prizeMedalItem:nth-child(3) {
+    grid-column: 1 / -1; /* Centered 3rd medal on mobile */
+    justify-self: center;
+    max-width: 240px;
+  }
+
+  .medalSvg {
+    max-width: 200px;
+  }
+
+  .prizeMedalItem.rank-1st {
+    scale: 1.02;
+  }
+
+  .sponsorsToPrizeDivider {
+    height: 56px;
+  }
+
+  .dividerCenterGem {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dividerGemIcon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stageMedalsCluster {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .medalSvg {
+    max-width: 220px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. Reduced Motion Preferences
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .gemAccentImg {
+    animation: none !important;
+  }
+
+  .medalSvgWrapper,
+  .prize-medal-badge-group,
+  .prize-medal-plaque-group,
+  .medalSpotlight,
+  .medalContactShadow {
+    transition: none !important;
+  }
+
+  .prizeMedalBtn:hover .medalSvgWrapper,
+  .prizeMedalBtn:focus-visible .medalSvgWrapper {
+    transform: none !important;
+  }
+
+  .prizeMedalBtn:hover .prize-medal-badge-group,
+  .prizeMedalBtn:focus-visible .prize-medal-badge-group {
+    transform: none !important;
+  }
+
+  .prizeMedalItem.is-flourishing .medalSvgWrapper,
+  .prizeMedalItem.is-flourishing .prize-medal-badge-group,
+  .prizeMedalItem.is-flourishing .burstParticle,
+  .prizeMedalItem.is-flourishing .medalGleamStripe::after {
+    animation: none !important;
+  }
+
+  .dividerGoldSeamHighlight {
+    opacity: 0.6;
+    transform: none !important;
+  }
+
+  .characterHoverFrame,
+  .stageCharacterWrapper:hover .characterHoverFrame,
+  .stageCharacterWrapper:focus-within .characterHoverFrame {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .characterRecoilFrame,
+  .characterRecoilFrame.is-recoiling {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .cowboyGunfireRig {
+    display: none !important;
+  }
+}
