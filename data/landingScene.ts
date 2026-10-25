@@ -57,6 +57,27 @@ export const SCENE_ASSETS = {
     height: 1024,
     alt: 'Space stadium arena with cosmic sky and stadium floodlights',
   },
+  // Clean starless sky plate (baked stars & comets removed for dynamic falling star system)
+  bgArenaStarless: {
+    src: '/assets/genesis/static/bg-arena-starless.webp',
+    width: 1440,
+    height: 1024,
+    alt: 'Space stadium arena with cosmic sky and stadium floodlights',
+  },
+  // Pure cosmic space sky with atmospheric center glow (no wall, preventing dual-wall conflicts)
+  bgSpaceSky: {
+    src: '/assets/genesis/static/bg-space-sky.webp',
+    width: 1440,
+    height: 1024,
+    alt: 'Deep space arena sky with atmospheric cosmic glow',
+  },
+  // Tightly bounded foreground barrier and stage floor (y=656..1024)
+  arenaRailTight: {
+    src: '/assets/genesis/static/arena-rail-tight.webp',
+    width: 1440,
+    height: 368,
+    alt: 'Arena foreground barrier rail and stage floor',
+  },
   // Foreground barrier extracted along the stadium wall curve (y=656..1024)
   // Conceals lower torso cut edges of characters and base of the moon naturally
   foregroundBarrier: {
@@ -94,7 +115,21 @@ export const SCENE_ASSETS = {
     height: 1372,
     alt: 'Grounded star-emblem mechanical cannon turret',
   },
-  // Right foreground Squeak balloon accent with tether and speech bubble
+  // Separated Squeak Balloon character body & tether
+  squeakBalloon: {
+    src: '/assets/genesis/static/squeak-balloon.webp',
+    width: 677,
+    height: 1089,
+    alt: 'Squeak Balloon character with coiled tether',
+  },
+  // Separated dialogue speech bubble: "Fine, you have my full attention."
+  squeakDialog: {
+    src: '/assets/genesis/static/squeak-dialog.webp',
+    width: 1173,
+    height: 551,
+    alt: 'Dialogue bubble: "Fine, you have my full attention."',
+  },
+  // Combined legacy reference for backward compatibility
   balloon: {
     src: '/assets/genesis/static/balloon-dialog.webp',
     width: 1832,
@@ -107,6 +142,24 @@ export const SCENE_ASSETS = {
     width: 1444,
     height: 752,
     alt: 'Majestic purple celestial ringed planet',
+  },
+  ringedPlanetBack: {
+    src: '/assets/genesis/static/ringed-planet-back.webp',
+    width: 1444,
+    height: 752,
+    alt: 'Outer planetary ring back layer',
+  },
+  ringedPlanetSphere: {
+    src: '/assets/genesis/static/ringed-planet-sphere.webp',
+    width: 732,
+    height: 732,
+    alt: 'Purple planet core rotating on its axis',
+  },
+  ringedPlanetFront: {
+    src: '/assets/genesis/static/ringed-planet-front.webp',
+    width: 1444,
+    height: 752,
+    alt: 'Outer planetary ring front layer',
   },
   bluePlanetLarge: {
     src: '/assets/genesis/static/blue-planet-large.webp',
@@ -143,6 +196,12 @@ export const SCENE_ASSETS = {
     width: 1012,
     height: 508,
     alt: 'Comet streak trail',
+  },
+  cometStreak: {
+    src: '/assets/genesis/static/comet-streak.webp',
+    width: 364,
+    height: 180,
+    alt: 'Fast shooting star light streak',
   },
   // Central hero identity
   genesisHero: {

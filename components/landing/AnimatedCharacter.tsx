@@ -7,44 +7,29 @@ import { uiAudio } from '../../lib/uiAudio';
 export interface AnimatedCharacterProps {
   type: 'gunslinger' | 'ninja' | 'cannon' | 'balloon';
   motionPaused: boolean;
-  pointerPosRef: React.RefObject<{ x: number; y: number }>;
   className?: string;
 }
 
 export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
   type,
   motionPaused,
-  pointerPosRef,
   className = '',
 }) => {
   const [isReacting, setIsReacting] = useState<boolean>(false);
   const [showMuzzleFlare, setShowMuzzleFlare] = useState<boolean>(false);
-  const [blinkState, setBlinkState] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isBalloonHovered, setIsBalloonHovered] = useState<boolean>(false);
   const cooldownRef = useRef<boolean>(false);
-  const blinkTimerRef = useRef<number | null>(null);
+  const timerRef = useRef<number | null>(null);
 
-  // Natural Blink Cycle for humanoid characters
+  // Cleanup timers on unmount
   useEffect(() => {
-    if (type !== 'gunslinger' && type !== 'ninja') return;
-    if (motionPaused) return;
-
-    const scheduleNextBlink = () => {
-      const delay = 3200 + Math.random() * 3000;
-      blinkTimerRef.current = window.setTimeout(() => {
-        setBlinkState(true);
-        window.setTimeout(() => {
-          setBlinkState(false);
-          scheduleNextBlink();
-        }, 130);
-      }, delay);
-    };
-
-    scheduleNextBlink();
-
     return () => {
-      if (blinkTimerRef.current) clearTimeout(blinkTimerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
-  }, [type, motionPaused]);
+  }, []);
 
   // Click / Tap Reaction Handler with Cooldown
   const handleInteraction = (e: React.MouseEvent | React.KeyboardEvent) => {
@@ -57,30 +42,30 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
       uiAudio.playColtBlaster();
       setShowMuzzleFlare(true);
       window.setTimeout(() => setShowMuzzleFlare(false), 110);
-      window.setTimeout(() => {
+      timerRef.current = window.setTimeout(() => {
         setIsReacting(false);
         cooldownRef.current = false;
-      }, 550);
+      }, 450);
     } else if (type === 'ninja') {
       uiAudio.playNinjaSwoosh();
-      window.setTimeout(() => {
+      timerRef.current = window.setTimeout(() => {
         setIsReacting(false);
         cooldownRef.current = false;
-      }, 600);
+      }, 500);
     } else if (type === 'cannon') {
       uiAudio.playCannonBlast();
       setShowMuzzleFlare(true);
       window.setTimeout(() => setShowMuzzleFlare(false), 120);
-      window.setTimeout(() => {
+      timerRef.current = window.setTimeout(() => {
         setIsReacting(false);
         cooldownRef.current = false;
-      }, 600);
+      }, 550);
     } else if (type === 'balloon') {
       uiAudio.playBalloonSqueak();
-      window.setTimeout(() => {
+      timerRef.current = window.setTimeout(() => {
         setIsReacting(false);
         cooldownRef.current = false;
-      }, 650);
+      }, 480);
     }
   };
 
@@ -91,278 +76,346 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
     }
   };
 
-  // 1. GUNSLINGER (COLT)
+  // 1. GUNSLINGER (COLT) — Large Hero on Left (Pops up on hover)
   if (type === 'gunslinger') {
     return (
       <div
-        id="gunslinger-wrapper"
+        id="colt-character-wrap"
         className={`characterInteractionTarget ${className}`}
         role="button"
         tabIndex={0}
-        aria-label="Colt the Neon Gunslinger. Click for blaster readiness recoil."
+        aria-label="Colt the Neon Gunslinger. Hover to pop up, click for blaster readiness recoil."
         onClick={handleInteraction}
         onKeyDown={handleKeyDown}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => {
+          setIsHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onBlur={() => setIsHovered(false)}
         style={{
           position: 'relative',
           cursor: 'pointer',
           outline: 'none',
+          display: 'block',
         }}
       >
         <div
-          id="gunslinger-idle"
+          id="colt-hover-popup"
           style={{
-            transform: isReacting
-              ? 'translateY(-3px) scale(0.98)'
-              : 'translateY(0px)',
-            transition: isReacting
-              ? 'transform 90ms ease-out'
-              : 'transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+            transform: isHovered
+              ? 'translateY(-14px) scale(1.05)'
+              : 'translateY(0px) scale(1)',
+            filter: isHovered
+              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
+              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
+            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            willChange: 'transform',
           }}
         >
-          <img
-            src={SCENE_ASSETS.gunslinger.src}
-            alt={SCENE_ASSETS.gunslinger.alt}
-            width={SCENE_ASSETS.gunslinger.width}
-            height={SCENE_ASSETS.gunslinger.height}
+          <div
+            id="colt-click-recoil"
             style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
-              userSelect: 'none',
-              pointerEvents: 'none',
+              transform: isReacting
+                ? 'translateY(-4px) scale(0.97)'
+                : 'translateY(0px) scale(1)',
+              transition: isReacting
+                ? 'transform 80ms ease-out'
+                : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+              willChange: 'transform',
             }}
-            draggable={false}
-          />
-
-          {/* Eyelid Blink Overlay (Positioned precisely over Colt's eyes) */}
-          {blinkState && (
-            <div
-              aria-hidden="true"
+          >
+            <img
+              src={SCENE_ASSETS.gunslinger.src}
+              alt={SCENE_ASSETS.gunslinger.alt}
+              width={SCENE_ASSETS.gunslinger.width}
+              height={SCENE_ASSETS.gunslinger.height}
               style={{
-                position: 'absolute',
-                top: '40.6%',
-                left: '44.8%',
-                width: '4.8%',
-                height: '2.5%',
-                backgroundColor: '#F3B497',
-                borderRadius: '50%',
-                borderBottom: '1.5px solid #6E3B27',
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                userSelect: 'none',
                 pointerEvents: 'none',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.4)',
               }}
+              draggable={false}
             />
-          )}
-
-          {/* Muzzle Light Flare on Click */}
-          {showMuzzleFlare && (
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                top: '52%',
-                left: '32%',
-                width: '70px',
-                height: '70px',
-                pointerEvents: 'none',
-                transform: 'translate(-50%, -50%)',
-                animation: 'muzzlePop 110ms ease-out forwards',
-              }}
-            >
-              <img
-                src={SCENE_ASSETS.muzzleFlare.src}
-                alt=""
-                style={{ width: '100%', height: '100%', display: 'block' }}
-              />
-            </div>
-          )}
+          </div>
         </div>
       </div>
     );
   }
 
-  // 2. NINJA (LEON) - Inward-facing orientation (NO horizontal flip)
+  // 2. NINJA (LEON) — Large Inward-Facing Hero on Right (Pops up on hover)
   if (type === 'ninja') {
     return (
       <div
-        id="ninja-wrapper"
+        id="leon-character-wrap"
         className={`characterInteractionTarget ${className}`}
         role="button"
         tabIndex={0}
-        aria-label="Leon the Chameleon Hood Ninja. Click for shuriken readiness gesture."
+        aria-label="Leon the Hooded Ninja Brawler. Hover to pop up, click for shuriken readiness gesture."
         onClick={handleInteraction}
         onKeyDown={handleKeyDown}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => {
+          setIsHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onBlur={() => setIsHovered(false)}
         style={{
           position: 'relative',
           cursor: 'pointer',
           outline: 'none',
+          display: 'block',
         }}
       >
         <div
-          id="ninja-idle"
+          id="leon-hover-popup"
           style={{
-            transform: isReacting
-              ? 'translateY(-4px) rotate(-2.5deg) scale(1.02)'
+            transform: isHovered
+              ? 'translateY(-14px) rotate(-1deg) scale(1.05)'
               : 'translateY(0px) rotate(0deg) scale(1)',
-            transition: isReacting
-              ? 'transform 100ms cubic-bezier(0.1, 0.9, 0.2, 1)'
-              : 'transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+            filter: isHovered
+              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
+              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
+            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            willChange: 'transform',
           }}
         >
-          {/* Note: NO scaleX(-1). He faces inward to the left toward the center arena */}
-          <img
-            src={SCENE_ASSETS.ninja.src}
-            alt={SCENE_ASSETS.ninja.alt}
-            width={SCENE_ASSETS.ninja.width}
-            height={SCENE_ASSETS.ninja.height}
+          <div
+            id="leon-click-recoil"
             style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
-              userSelect: 'none',
-              pointerEvents: 'none',
+              transform: isReacting
+                ? 'translateY(-4px) rotate(-1.5deg) scale(0.97)'
+                : 'translateY(0px) rotate(0deg) scale(1)',
+              transition: isReacting
+                ? 'transform 80ms ease-out'
+                : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+              willChange: 'transform',
             }}
-            draggable={false}
-          />
-
-          {/* Eyelid Blink Overlay (Positioned over Leon's eyes inside the hood) */}
-          {blinkState && (
-            <div
-              aria-hidden="true"
+          >
+            <img
+              src={SCENE_ASSETS.ninja.src}
+              alt={SCENE_ASSETS.ninja.alt}
+              width={SCENE_ASSETS.ninja.width}
+              height={SCENE_ASSETS.ninja.height}
               style={{
-                position: 'absolute',
-                top: '38.2%',
-                left: '46.5%',
-                width: '6.2%',
-                height: '2.4%',
-                backgroundColor: '#F9BE9B',
-                borderRadius: '50%',
-                borderBottom: '1.5px solid #4A3228',
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                userSelect: 'none',
                 pointerEvents: 'none',
               }}
+              draggable={false}
             />
-          )}
+          </div>
         </div>
       </div>
     );
   }
 
-  // 3. CANNON TURRET (Firmly grounded in left foreground)
+  // 3. CANNON TURRET (TELESCOPE) — Grounded Left Foreground (Pops up on hover, stationary)
   if (type === 'cannon') {
     return (
       <div
-        id="cannon-wrapper"
+        id="cannon-turret-wrap"
         className={`characterInteractionTarget ${className}`}
         role="button"
         tabIndex={0}
-        aria-label="Star-Emblem Cannon Turret. Click for heavy barrel recoil."
+        aria-label="Star-Emblem Telescope Cannon. Hover to pop up, click for heavy blast recoil."
         onClick={handleInteraction}
         onKeyDown={handleKeyDown}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => {
+          setIsHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onBlur={() => setIsHovered(false)}
         style={{
           position: 'relative',
           cursor: 'pointer',
           outline: 'none',
+          display: 'block',
         }}
       >
         <div
-          id="cannon-barrel-idle"
+          id="cannon-hover-popup"
           style={{
-            transform: isReacting
-              ? 'translate(-8px, 6px) scale(0.97)'
-              : 'translate(0px, 0px) scale(1)',
-            transition: isReacting
-              ? 'transform 80ms ease-out'
-              : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+            transform: isHovered
+              ? 'translateY(-12px) scale(1.06)'
+              : 'translateY(0px) scale(1)',
+            filter: isHovered
+              ? 'drop-shadow(0 18px 36px rgba(0, 0, 0, 0.95)) brightness(1.08)'
+              : 'drop-shadow(0 12px 30px rgba(0, 0, 0, 0.85))',
+            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            willChange: 'transform',
           }}
         >
-          <img
-            src={SCENE_ASSETS.cannon.src}
-            alt={SCENE_ASSETS.cannon.alt}
-            width={SCENE_ASSETS.cannon.width}
-            height={SCENE_ASSETS.cannon.height}
+          <div
+            id="cannon-barrel-recoil"
             style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              filter: 'drop-shadow(0 12px 30px rgba(0, 0, 0, 0.85))',
-              userSelect: 'none',
-              pointerEvents: 'none',
+              transform: isReacting
+                ? 'translate(-8px, 6px) scale(0.96)'
+                : 'translate(0px, 0px) scale(1)',
+              transition: isReacting
+                ? 'transform 75ms ease-out'
+                : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+              willChange: 'transform',
             }}
-            draggable={false}
-          />
-
-          {/* Muzzle Light Spark on Click */}
-          {showMuzzleFlare && (
-            <div
-              aria-hidden="true"
+          >
+            <img
+              src={SCENE_ASSETS.cannon.src}
+              alt={SCENE_ASSETS.cannon.alt}
+              width={SCENE_ASSETS.cannon.width}
+              height={SCENE_ASSETS.cannon.height}
               style={{
-                position: 'absolute',
-                top: '38%',
-                right: '18%',
-                width: '85px',
-                height: '85px',
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                userSelect: 'none',
                 pointerEvents: 'none',
-                transform: 'translate(50%, -50%)',
-                animation: 'muzzlePop 120ms ease-out forwards',
               }}
-            >
-              <img
-                src={SCENE_ASSETS.muzzleFlare.src}
-                alt=""
-                style={{ width: '100%', height: '100%', display: 'block' }}
-              />
-            </div>
-          )}
+              draggable={false}
+            />
+
+            {/* Muzzle Light Spark on Click */}
+            {showMuzzleFlare && (
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  top: '38%',
+                  right: '18%',
+                  width: '85px',
+                  height: '85px',
+                  pointerEvents: 'none',
+                  transform: 'translate(50%, -50%)',
+                  animation: 'muzzlePop 120ms ease-out forwards',
+                }}
+              >
+                <img
+                  src={SCENE_ASSETS.muzzleFlare.src}
+                  alt=""
+                  style={{ width: '100%', height: '100%', display: 'block' }}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
   }
 
-  // 4. SQUEAK BALLOON (Lower-Right Foreground with speech bubble)
+  // 4. SQUEAK BALLOON — Lower-Right Foreground with Separated Dialogue Bubble
   if (type === 'balloon') {
     return (
       <div
-        id="balloon-wrapper"
-        className={`characterInteractionTarget ${className}`}
-        role="button"
-        tabIndex={0}
-        aria-label="Squeak Balloon character. Click for soft squash and buoyant bounce."
-        onClick={handleInteraction}
-        onKeyDown={handleKeyDown}
+        id="balloon-character-group"
+        className={`balloonCompositeContainer ${className}`}
         style={{
           position: 'relative',
-          cursor: 'pointer',
-          outline: 'none',
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: '12px',
         }}
       >
+        {/* Dialogue speech bubble: fixed in layout, 100% stable, no squash */}
         <div
-          id="balloon-idle"
+          id="squeak-dialog-wrapper"
+          className="squeakDialogWrap"
           style={{
-            transform: isReacting
-              ? 'scale(1.14, 0.86) translateY(6px)'
-              : 'scale(1, 1) translateY(0px)',
-            transformOrigin: '50% 90%',
-            transition: isReacting
-              ? 'transform 90ms cubic-bezier(0.1, 0.9, 0.2, 1)'
-              : 'transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+            width: 'clamp(180px, 17vw, 250px)',
+            height: 'auto',
+            marginBottom: '16px',
+            filter: 'drop-shadow(0 6px 16px rgba(0, 0, 0, 0.65))',
+            pointerEvents: 'none',
+            userSelect: 'none',
           }}
         >
           <img
-            src={SCENE_ASSETS.balloon.src}
-            alt={SCENE_ASSETS.balloon.alt}
-            width={SCENE_ASSETS.balloon.width}
-            height={SCENE_ASSETS.balloon.height}
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              filter: 'drop-shadow(0 10px 26px rgba(0, 0, 0, 0.8))',
-              userSelect: 'none',
-              pointerEvents: 'none',
-            }}
+            src={SCENE_ASSETS.squeakDialog.src}
+            alt="Fine, you have my full attention."
+            width={SCENE_ASSETS.squeakDialog.width}
+            height={SCENE_ASSETS.squeakDialog.height}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
             draggable={false}
           />
+        </div>
+
+        {/* Balloon character body: nested wrappers for idle, hover tilt, and click squash */}
+        <div id="balloon-ambient-wrapper" className="balloonAmbientWrapper">
+          <div
+            id="balloon-hover-wrapper"
+            style={{
+              transform: isBalloonHovered
+                ? 'translateY(-6px) rotate(3deg)'
+                : 'translateY(0px) rotate(0deg)',
+              transition: 'transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+              willChange: 'transform',
+            }}
+          >
+            <button
+              id="squeak-balloon-btn"
+              type="button"
+              tabIndex={0}
+              aria-label="Squeak Balloon character. Click for soft squash and bounce."
+              onClick={handleInteraction}
+              onKeyDown={handleKeyDown}
+              onPointerEnter={() => setIsBalloonHovered(true)}
+              onPointerLeave={() => setIsBalloonHovered(false)}
+              style={{
+                width: 'clamp(95px, 8.5vw, 130px)',
+                cursor: 'pointer',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                outline: 'none',
+                display: 'block',
+              }}
+            >
+              <div
+                id="balloon-click-squash"
+                style={{
+                  transformOrigin: '50% 90%',
+                  transform: isReacting
+                    ? 'scale(1.18, 0.82) translateY(6px)'
+                    : 'scale(1, 1) translateY(0px)',
+                  transition: isReacting
+                    ? 'transform 85ms cubic-bezier(0.1, 0.9, 0.2, 1)'
+                    : 'transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  willChange: 'transform',
+                }}
+              >
+                <img
+                  src={SCENE_ASSETS.squeakBalloon.src}
+                  alt={SCENE_ASSETS.squeakBalloon.alt}
+                  width={SCENE_ASSETS.squeakBalloon.width}
+                  height={SCENE_ASSETS.squeakBalloon.height}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
+                    filter: 'drop-shadow(0 10px 24px rgba(0, 0, 0, 0.8))',
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                  }}
+                  draggable={false}
+                />
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     );

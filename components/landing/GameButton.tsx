@@ -8,6 +8,7 @@ export interface GameButtonProps {
   label: string;
   image?: string;
   href?: string;
+  target?: string;
   isCta?: boolean;
   actionId?: string;
   onClick?: (actionId?: string) => void;
@@ -21,6 +22,7 @@ export const GameButton: React.FC<GameButtonProps> = ({
   label,
   image,
   href,
+  target = '_blank',
   isCta = false,
   actionId,
   onClick,
@@ -67,8 +69,8 @@ export const GameButton: React.FC<GameButtonProps> = ({
       <a
         id={id}
         href={href}
-        target="_self"
-        rel="noopener"
+        target={target}
+        rel="noopener noreferrer"
         aria-label={label}
         style={baseStyle}
         className={`gameBtn ${isCta ? 'gameBtnCta' : 'gameBtnNav'} ${className}`}
