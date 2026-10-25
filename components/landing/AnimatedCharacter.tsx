@@ -17,7 +17,6 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
 }) => {
   const [isReacting, setIsReacting] = useState<boolean>(false);
   const [showMuzzleFlare, setShowMuzzleFlare] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isBalloonHovered, setIsBalloonHovered] = useState<boolean>(false);
   const cooldownRef = useRef<boolean>(false);
   const timerRef = useRef<number | null>(null);
@@ -76,7 +75,7 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
     }
   };
 
-  // 1. GUNSLINGER (COLT) — Large Hero on Left (Pops up on hover)
+  // 1. GUNSLINGER (COLT) — Large Hero on Left
   if (type === 'gunslinger') {
     return (
       <div
@@ -84,19 +83,9 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         className={`characterInteractionTarget ${className}`}
         role="button"
         tabIndex={0}
-        aria-label="Colt the Neon Gunslinger. Hover to pop up, click for blaster readiness recoil."
+        aria-label="Colt the Neon Gunslinger. Click for blaster readiness recoil."
         onClick={handleInteraction}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          uiAudio.playHoverTick();
-        }}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={() => {
-          setIsHovered(true);
-          uiAudio.playHoverTick();
-        }}
-        onBlur={() => setIsHovered(false)}
         style={{
           position: 'relative',
           cursor: 'pointer',
@@ -105,51 +94,38 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         }}
       >
         <div
-          id="colt-hover-popup"
+          id="colt-click-recoil"
           style={{
-            transform: isHovered
-              ? 'translateY(-14px) scale(1.05)'
+            transform: isReacting
+              ? 'translateY(-4px) scale(0.97)'
               : 'translateY(0px) scale(1)',
-            filter: isHovered
-              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
-              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
-            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            transition: isReacting
+              ? 'transform 80ms ease-out'
+              : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
             willChange: 'transform',
           }}
         >
-          <div
-            id="colt-click-recoil"
+          <img
+            src={SCENE_ASSETS.gunslinger.src}
+            alt={SCENE_ASSETS.gunslinger.alt}
+            width={SCENE_ASSETS.gunslinger.width}
+            height={SCENE_ASSETS.gunslinger.height}
             style={{
-              transform: isReacting
-                ? 'translateY(-4px) scale(0.97)'
-                : 'translateY(0px) scale(1)',
-              transition: isReacting
-                ? 'transform 80ms ease-out'
-                : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
-              willChange: 'transform',
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
+              userSelect: 'none',
+              pointerEvents: 'none',
             }}
-          >
-            <img
-              src={SCENE_ASSETS.gunslinger.src}
-              alt={SCENE_ASSETS.gunslinger.alt}
-              width={SCENE_ASSETS.gunslinger.width}
-              height={SCENE_ASSETS.gunslinger.height}
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'block',
-                userSelect: 'none',
-                pointerEvents: 'none',
-              }}
-              draggable={false}
-            />
-          </div>
+            draggable={false}
+          />
         </div>
       </div>
     );
   }
 
-  // 2. NINJA (LEON) — Large Inward-Facing Hero on Right (Pops up on hover)
+  // 2. NINJA (LEON) — Large Inward-Facing Hero on Right
   if (type === 'ninja') {
     return (
       <div
@@ -157,19 +133,9 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         className={`characterInteractionTarget ${className}`}
         role="button"
         tabIndex={0}
-        aria-label="Leon the Hooded Ninja Brawler. Hover to pop up, click for shuriken readiness gesture."
+        aria-label="Leon the Hooded Ninja Brawler. Click for shuriken readiness gesture."
         onClick={handleInteraction}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          uiAudio.playHoverTick();
-        }}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={() => {
-          setIsHovered(true);
-          uiAudio.playHoverTick();
-        }}
-        onBlur={() => setIsHovered(false)}
         style={{
           position: 'relative',
           cursor: 'pointer',
@@ -178,51 +144,38 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         }}
       >
         <div
-          id="leon-hover-popup"
+          id="leon-click-recoil"
           style={{
-            transform: isHovered
-              ? 'translateY(-14px) rotate(-1deg) scale(1.05)'
+            transform: isReacting
+              ? 'translateY(-4px) rotate(-1.5deg) scale(0.97)'
               : 'translateY(0px) rotate(0deg) scale(1)',
-            filter: isHovered
-              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
-              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
-            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            transition: isReacting
+              ? 'transform 80ms ease-out'
+              : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
             willChange: 'transform',
           }}
         >
-          <div
-            id="leon-click-recoil"
+          <img
+            src={SCENE_ASSETS.ninja.src}
+            alt={SCENE_ASSETS.ninja.alt}
+            width={SCENE_ASSETS.ninja.width}
+            height={SCENE_ASSETS.ninja.height}
             style={{
-              transform: isReacting
-                ? 'translateY(-4px) rotate(-1.5deg) scale(0.97)'
-                : 'translateY(0px) rotate(0deg) scale(1)',
-              transition: isReacting
-                ? 'transform 80ms ease-out'
-                : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
-              willChange: 'transform',
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
+              userSelect: 'none',
+              pointerEvents: 'none',
             }}
-          >
-            <img
-              src={SCENE_ASSETS.ninja.src}
-              alt={SCENE_ASSETS.ninja.alt}
-              width={SCENE_ASSETS.ninja.width}
-              height={SCENE_ASSETS.ninja.height}
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'block',
-                userSelect: 'none',
-                pointerEvents: 'none',
-              }}
-              draggable={false}
-            />
-          </div>
+            draggable={false}
+          />
         </div>
       </div>
     );
   }
 
-  // 3. CANNON TURRET (TELESCOPE) — Grounded Left Foreground (Pops up on hover, stationary)
+  // 3. CANNON TURRET — Grounded Left Foreground
   if (type === 'cannon') {
     return (
       <div
@@ -230,19 +183,9 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         className={`characterInteractionTarget ${className}`}
         role="button"
         tabIndex={0}
-        aria-label="Star-Emblem Telescope Cannon. Hover to pop up, click for heavy blast recoil."
+        aria-label="Star-Emblem Cannon Turret. Click for heavy barrel recoil."
         onClick={handleInteraction}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          uiAudio.playHoverTick();
-        }}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={() => {
-          setIsHovered(true);
-          uiAudio.playHoverTick();
-        }}
-        onBlur={() => setIsHovered(false)}
         style={{
           position: 'relative',
           cursor: 'pointer',
@@ -251,68 +194,55 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         }}
       >
         <div
-          id="cannon-hover-popup"
+          id="cannon-barrel-recoil"
           style={{
-            transform: isHovered
-              ? 'translateY(-12px) scale(1.06)'
-              : 'translateY(0px) scale(1)',
-            filter: isHovered
-              ? 'drop-shadow(0 18px 36px rgba(0, 0, 0, 0.95)) brightness(1.08)'
-              : 'drop-shadow(0 12px 30px rgba(0, 0, 0, 0.85))',
-            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            transform: isReacting
+              ? 'translate(-8px, 6px) scale(0.96)'
+              : 'translate(0px, 0px) scale(1)',
+            transition: isReacting
+              ? 'transform 75ms ease-out'
+              : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
             willChange: 'transform',
           }}
         >
-          <div
-            id="cannon-barrel-recoil"
+          <img
+            src={SCENE_ASSETS.cannon.src}
+            alt={SCENE_ASSETS.cannon.alt}
+            width={SCENE_ASSETS.cannon.width}
+            height={SCENE_ASSETS.cannon.height}
             style={{
-              transform: isReacting
-                ? 'translate(-8px, 6px) scale(0.96)'
-                : 'translate(0px, 0px) scale(1)',
-              transition: isReacting
-                ? 'transform 75ms ease-out'
-                : 'transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1)',
-              willChange: 'transform',
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              filter: 'drop-shadow(0 12px 30px rgba(0, 0, 0, 0.85))',
+              userSelect: 'none',
+              pointerEvents: 'none',
             }}
-          >
-            <img
-              src={SCENE_ASSETS.cannon.src}
-              alt={SCENE_ASSETS.cannon.alt}
-              width={SCENE_ASSETS.cannon.width}
-              height={SCENE_ASSETS.cannon.height}
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'block',
-                userSelect: 'none',
-                pointerEvents: 'none',
-              }}
-              draggable={false}
-            />
+            draggable={false}
+          />
 
-            {/* Muzzle Light Spark on Click */}
-            {showMuzzleFlare && (
-              <div
-                aria-hidden="true"
-                style={{
-                  position: 'absolute',
-                  top: '38%',
-                  right: '18%',
-                  width: '85px',
-                  height: '85px',
-                  pointerEvents: 'none',
-                  transform: 'translate(50%, -50%)',
-                  animation: 'muzzlePop 120ms ease-out forwards',
-                }}
-              >
-                <img
-                  src={SCENE_ASSETS.muzzleFlare.src}
-                  alt=""
-                  style={{ width: '100%', height: '100%', display: 'block' }}
-                />
-              </div>
-            )}
-          </div>
+          {/* Muzzle Light Spark on Click */}
+          {showMuzzleFlare && (
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: '38%',
+                right: '18%',
+                width: '85px',
+                height: '85px',
+                pointerEvents: 'none',
+                transform: 'translate(50%, -50%)',
+                animation: 'muzzlePop 120ms ease-out forwards',
+              }}
+            >
+              <img
+                src={SCENE_ASSETS.muzzleFlare.src}
+                alt=""
+                style={{ width: '100%', height: '100%', display: 'block' }}
+              />
+            </div>
+          )}
         </div>
       </div>
     );

@@ -107,73 +107,35 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       // 3. Ambient Idle Loops (Dedicated wrappers prevent transform clashes)
       const idleTweens: gsap.core.Tween[] = [];
 
-      // Large Blue Planet: continuous 2D rotation on its axis (75s)
+      // Large Blue Planet: slow continuous 2D rotation (85s per revolution)
       const bluePlanetRot = gsap.to('#blue-planet-rot', {
         rotation: 360,
-        duration: 75,
+        duration: 85,
         ease: 'none',
         repeat: -1,
       });
       idleTweens.push(bluePlanetRot);
 
-      // Small Blue Planet (Image 2): continuous 2D rotation on its axis (55s)
+      // Small Blue Planet: slow reverse continuous 2D rotation (115s per revolution)
       const bluePlanetSmallRot = gsap.to('#blue-planet-small-rot', {
         rotation: -360,
-        duration: 55,
+        duration: 115,
         ease: 'none',
         repeat: -1,
       });
       idleTweens.push(bluePlanetSmallRot);
 
-      // Ringed Planet Core (Image 2): continuous rotation on its axis around/inside the ring (48s)
-      const ringedPlanetCoreRot = gsap.to('#ringed-planet-sphere-rot', {
-        rotation: 360,
-        duration: 48,
-        ease: 'none',
-        repeat: -1,
-      });
-      idleTweens.push(ringedPlanetCoreRot);
-
-      // Ringed planet overall celestial rocking & drift
+      // Ringed planet subtle celestial rocking & drift
       const planetIdle = gsap.to('#ringed-planet-idle', {
         y: -5,
         x: 2.5,
-        rotation: 1.5,
+        rotation: 2.0,
         duration: 7.2,
         ease: 'sine.inOut',
         yoyo: true,
         repeat: -1,
       });
       idleTweens.push(planetIdle);
-
-      // Asteroid rocks rotating on their axis (Image 2)
-      const asteroidLeftRot = gsap.to('#asteroid-left-rot', {
-        rotation: 360,
-        duration: 38,
-        ease: 'none',
-        repeat: -1,
-      });
-      idleTweens.push(asteroidLeftRot);
-
-      const asteroidRightRot = gsap.to('#asteroid-right-rot', {
-        rotation: -360,
-        duration: 46,
-        ease: 'none',
-        repeat: -1,
-      });
-      idleTweens.push(asteroidRightRot);
-
-      // Asteroid rocks ambient float drift
-      const asteroidIdle = gsap.to('.asteroid-idle', {
-        y: -3,
-        x: 2,
-        duration: 6.5,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        stagger: 0.4,
-      });
-      idleTweens.push(asteroidIdle);
 
       // Gunslinger gentle breathing hover (restrained to keep safe bounds)
       const gunIdle = gsap.to('#gunslinger-motion-idle', {
@@ -208,6 +170,19 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       });
       idleTweens.push(balloonIdle);
 
+      // Asteroid rocks slow drift
+      const asteroidIdle = gsap.to('.asteroid-idle', {
+        y: -3,
+        x: 2,
+        rotation: 12,
+        duration: 6.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.4,
+      });
+      idleTweens.push(asteroidIdle);
+
       // Moon subtle breathing glow
       const moonIdle = gsap.to('#moon-glow-idle', {
         opacity: 0.95,
@@ -221,94 +196,33 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
 
       idleTweensRef.current = idleTweens;
 
-      // 4. Big Falling Shooting Stars Animations (Active recurring cycle every 3–5.5s)
-      let starCycle = 0;
-      const triggerShootingStar = () => {
+      // 4. Occasional Comet Passing Accent (Every ~10–14s)
+      const triggerComet = () => {
         if (motionPaused) return;
+        const cometEl = document.getElementById('comet-accent');
+        if (!cometEl) return;
 
-        const star1 = document.getElementById('big-shooting-star-1');
-        const star2 = document.getElementById('big-shooting-star-2');
-        const streak = document.getElementById('big-shooting-star-streak');
+        gsap.set(cometEl, { opacity: 0, x: -60, y: -40, scale: 0.85 });
+        gsap.to(cometEl, {
+          opacity: 1,
+          duration: 0.32,
+          ease: 'power1.in',
+          onComplete: () => {
+            gsap.to(cometEl, {
+              x: 210,
+              y: 135,
+              opacity: 0,
+              duration: 0.7,
+              ease: 'power2.out',
+            });
+          },
+        });
 
-        if (starCycle === 0 && star1) {
-          // Major shooting star from upper right across to lower left
-          gsap.killTweensOf(star1);
-          gsap.set(star1, {
-            opacity: 0,
-            x: 1050 + Math.random() * 150,
-            y: -120 + Math.random() * 40,
-            scale: 0.75,
-          });
-          const tlStar = gsap.timeline();
-          tlStar
-            .to(star1, { opacity: 1, scale: 1.15, duration: 0.32, ease: 'power1.in' })
-            .to(
-              star1,
-              {
-                x: 120 + Math.random() * 120,
-                y: 440 + Math.random() * 80,
-                scale: 0.85,
-                opacity: 0,
-                duration: 0.85,
-                ease: 'power2.out',
-              },
-              '-=0.04'
-            );
-        } else if (starCycle === 1 && star2) {
-          // Flipped major shooting star crossing from upper left to lower right
-          gsap.killTweensOf(star2);
-          gsap.set(star2, {
-            opacity: 0,
-            x: 60 + Math.random() * 120,
-            y: -100 + Math.random() * 50,
-            scale: 0.7,
-          });
-          const tlStar = gsap.timeline();
-          tlStar
-            .to(star2, { opacity: 1, scale: 1.1, duration: 0.35, ease: 'power1.in' })
-            .to(
-              star2,
-              {
-                x: 980 + Math.random() * 160,
-                y: 410 + Math.random() * 70,
-                scale: 0.85,
-                opacity: 0,
-                duration: 0.9,
-                ease: 'power2.out',
-              },
-              '-=0.04'
-            );
-        } else if (starCycle === 2 && streak) {
-          // High-altitude swift streak passing through space
-          gsap.killTweensOf(streak);
-          gsap.set(streak, {
-            opacity: 0,
-            x: 850 + Math.random() * 120,
-            y: -40 + Math.random() * 40,
-            scale: 0.85,
-          });
-          const tlStar = gsap.timeline();
-          tlStar
-            .to(streak, { opacity: 0.95, duration: 0.22, ease: 'power1.in' })
-            .to(
-              streak,
-              {
-                x: 340 + Math.random() * 100,
-                y: 240 + Math.random() * 60,
-                opacity: 0,
-                duration: 0.62,
-                ease: 'power2.out',
-              },
-              '-=0.04'
-            );
-        }
-
-        starCycle = (starCycle + 1) % 3;
-        const nextDelay = 3000 + Math.random() * 2500;
-        cometTimerRef.current = window.setTimeout(triggerShootingStar, nextDelay);
+        const nextInterval = 10000 + Math.random() * 4000;
+        cometTimerRef.current = window.setTimeout(triggerComet, nextInterval);
       };
 
-      cometTimerRef.current = window.setTimeout(triggerShootingStar, 1400);
+      cometTimerRef.current = window.setTimeout(triggerComet, 4500);
 
       // 5. Desktop Pointer Parallax (Single unified loop, fine pointer only)
       if (window.matchMedia('(pointer: fine)').matches) {

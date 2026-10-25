@@ -42,63 +42,18 @@
 /* Ringed Planet (Upper Right Space) */
 .ringedPlanetWrap {
   position: absolute;
-  top: 8.5%;
+  top: 9%;
   right: 4.5%;
   width: 290px;
-  height: calc(290px * 752 / 1444);
   z-index: var(--z-celestial);
   pointer-events: none;
 }
 
-.ringedPlanetIdleContainer {
-  position: relative;
+.ringedPlanetImg {
   width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
   filter: drop-shadow(0 0 24px rgba(147, 51, 234, 0.45));
-}
-
-.ringedPlanetBackImg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.ringedPlanetSphereWrap {
-  position: absolute;
-  left: 23.615%;
-  top: 0;
-  width: 50.69%;
-  height: 97.34%;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  will-change: transform;
-}
-
-.ringedPlanetSphereImg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.ringedPlanetFrontImg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  z-index: 3;
-  pointer-events: none;
 }
 
 /* Large Blue Cratered Planet (Upper Left Space) */
@@ -147,42 +102,15 @@
   pointer-events: none;
 }
 
-#asteroid-left-rot,
-#asteroid-right-rot {
-  display: block;
-  width: 100%;
-  height: 100%;
-  will-change: transform;
-}
-
-/* Big Falling Shooting Stars Layer */
-.shootingStarLayer {
+/* Comet Accent Streak */
+.cometAccentWrap {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 12;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.bigShootingStarItem {
-  position: absolute;
-  width: 380px;
+  top: 14%;
+  left: 23%;
+  width: 180px;
+  z-index: var(--z-celestial);
   opacity: 0;
   pointer-events: none;
-  will-change: transform, opacity;
-}
-
-.bigShootingStarItem img {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 0 24px rgba(120, 210, 255, 0.95));
-}
-
-.bigShootingStarItem.flipped {
-  transform: scaleX(-1);
 }
 
 /* ==========================================================================

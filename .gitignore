@@ -29,6 +29,6 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Scratch & temporary workspace folders
+# Temporary & backup folders
 scratch/
 .backup_vite/

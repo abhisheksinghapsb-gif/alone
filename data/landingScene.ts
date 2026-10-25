@@ -143,24 +143,6 @@ export const SCENE_ASSETS = {
     height: 752,
     alt: 'Majestic purple celestial ringed planet',
   },
-  ringedPlanetBack: {
-    src: '/assets/genesis/static/ringed-planet-back.webp',
-    width: 1444,
-    height: 752,
-    alt: 'Outer planetary ring back layer',
-  },
-  ringedPlanetSphere: {
-    src: '/assets/genesis/static/ringed-planet-sphere.webp',
-    width: 732,
-    height: 732,
-    alt: 'Purple planet core rotating on its axis',
-  },
-  ringedPlanetFront: {
-    src: '/assets/genesis/static/ringed-planet-front.webp',
-    width: 1444,
-    height: 752,
-    alt: 'Outer planetary ring front layer',
-  },
   bluePlanetLarge: {
     src: '/assets/genesis/static/blue-planet-large.webp',
     width: 656,
@@ -196,12 +178,6 @@ export const SCENE_ASSETS = {
     width: 1012,
     height: 508,
     alt: 'Comet streak trail',
-  },
-  cometStreak: {
-    src: '/assets/genesis/static/comet-streak.webp',
-    width: 364,
-    height: 180,
-    alt: 'Fast shooting star light streak',
   },
   // Central hero identity
   genesisHero: {

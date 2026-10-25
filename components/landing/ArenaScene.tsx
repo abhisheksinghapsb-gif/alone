@@ -41,39 +41,18 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
       <SpaceEffects motionPaused={motionPaused} />
 
       {/* 2. Celestial Depth Layer (Parallax Celestial) */}
-      {/* Ringed Planet with Rotating Planet Core inside the Planetary Ring */}
+      {/* Ringed Planet (Upper Right Space) */}
       <div
         id="ringed-planet-layer"
         className="ringedPlanetWrap parallax-celestial"
       >
-        <div id="ringed-planet-idle" className="ringedPlanetIdleContainer">
-          {/* Back Ring: behind the planet core */}
+        <div id="ringed-planet-idle">
           <img
-            src={SCENE_ASSETS.ringedPlanetBack.src}
-            alt=""
-            width={SCENE_ASSETS.ringedPlanetBack.width}
-            height={SCENE_ASSETS.ringedPlanetBack.height}
-            className="ringedPlanetBackImg"
-            draggable={false}
-          />
-          {/* Planet Core Sphere: rotating on its axis inside the ring */}
-          <div id="ringed-planet-sphere-rot" className="ringedPlanetSphereWrap">
-            <img
-              src={SCENE_ASSETS.ringedPlanetSphere.src}
-              alt={SCENE_ASSETS.ringedPlanet.alt}
-              width={SCENE_ASSETS.ringedPlanetSphere.width}
-              height={SCENE_ASSETS.ringedPlanetSphere.height}
-              className="ringedPlanetSphereImg"
-              draggable={false}
-            />
-          </div>
-          {/* Front Ring: in front of the planet core */}
-          <img
-            src={SCENE_ASSETS.ringedPlanetFront.src}
-            alt=""
-            width={SCENE_ASSETS.ringedPlanetFront.width}
-            height={SCENE_ASSETS.ringedPlanetFront.height}
-            className="ringedPlanetFrontImg"
+            src={SCENE_ASSETS.ringedPlanet.src}
+            alt={SCENE_ASSETS.ringedPlanet.alt}
+            width={SCENE_ASSETS.ringedPlanet.width}
+            height={SCENE_ASSETS.ringedPlanet.height}
+            className="ringedPlanetImg"
             draggable={false}
           />
         </div>
@@ -110,61 +89,38 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
         </div>
       </div>
 
-      {/* Asteroids (Left & Right Rotating on Their Axis) */}
+      {/* Asteroids (Left & Right) */}
       <div className="asteroidLeftWrap parallax-celestial asteroid-idle">
-        <div id="asteroid-left-rot">
-          <img
-            src={SCENE_ASSETS.asteroidSmall.src}
-            alt={SCENE_ASSETS.asteroidSmall.alt}
-            width={SCENE_ASSETS.asteroidSmall.width}
-            height={SCENE_ASSETS.asteroidSmall.height}
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-            draggable={false}
-          />
-        </div>
+        <img
+          src={SCENE_ASSETS.asteroidSmall.src}
+          alt={SCENE_ASSETS.asteroidSmall.alt}
+          width={SCENE_ASSETS.asteroidSmall.width}
+          height={SCENE_ASSETS.asteroidSmall.height}
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+          draggable={false}
+        />
       </div>
       <div className="asteroidRightWrap parallax-celestial asteroid-idle">
-        <div id="asteroid-right-rot">
-          <img
-            src={SCENE_ASSETS.asteroidLarge.src}
-            alt={SCENE_ASSETS.asteroidLarge.alt}
-            width={SCENE_ASSETS.asteroidLarge.width}
-            height={SCENE_ASSETS.asteroidLarge.height}
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-            draggable={false}
-          />
-        </div>
+        <img
+          src={SCENE_ASSETS.asteroidLarge.src}
+          alt={SCENE_ASSETS.asteroidLarge.alt}
+          width={SCENE_ASSETS.asteroidLarge.width}
+          height={SCENE_ASSETS.asteroidLarge.height}
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+          draggable={false}
+        />
       </div>
 
-      {/* Big Falling Shooting Stars Across the Sky */}
-      <div id="shooting-star-layer" aria-hidden="true" className="shootingStarLayer">
-        <div id="big-shooting-star-1" className="bigShootingStarItem">
-          <img
-            src={SCENE_ASSETS.cometLarge.src}
-            alt=""
-            width={SCENE_ASSETS.cometLarge.width}
-            height={SCENE_ASSETS.cometLarge.height}
-            draggable={false}
-          />
-        </div>
-        <div id="big-shooting-star-2" className="bigShootingStarItem flipped">
-          <img
-            src={SCENE_ASSETS.cometLarge.src}
-            alt=""
-            width={SCENE_ASSETS.cometLarge.width}
-            height={SCENE_ASSETS.cometLarge.height}
-            draggable={false}
-          />
-        </div>
-        <div id="big-shooting-star-streak" className="bigShootingStarItem">
-          <img
-            src={SCENE_ASSETS.cometStreak.src}
-            alt=""
-            width={SCENE_ASSETS.cometStreak.width}
-            height={SCENE_ASSETS.cometStreak.height}
-            draggable={false}
-          />
-        </div>
+      {/* Occasional Comet Streak Accent */}
+      <div id="comet-accent" className="cometAccentWrap">
+        <img
+          src={SCENE_ASSETS.cometLarge.src}
+          alt=""
+          width={SCENE_ASSETS.cometLarge.width}
+          height={SCENE_ASSETS.cometLarge.height}
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+          draggable={false}
+        />
       </div>
 
       {/* 3. Glowing Blue Moon Dome (Midground) */}
