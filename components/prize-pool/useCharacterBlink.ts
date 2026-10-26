@@ -47,8 +47,21 @@ export function useCharacterBlink({
     let intervalId: NodeJS.Timeout | null = null;
     let initialTimeoutId: NodeJS.Timeout | null = null;
 
+    const stopBlinkLoop = () => {
+      if (initialTimeoutId) {
+        clearTimeout(initialTimeoutId);
+        initialTimeoutId = null;
+      }
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+      clearTimers();
+      setBlinkState('open');
+    };
+
     const triggerBlinkSequence = () => {
-      if (!isVisibleRef.current || !isDocumentVisibleRef.current) {
+      if (!isVisibleRef.current || !isDocumentVisibleRef.current || motionPaused || prefersReducedMotion) {
         setBlinkState('open');
         return;
       }
@@ -82,11 +95,19 @@ export function useCharacterBlink({
       intervalId = setInterval(triggerBlinkSequence, intervalMs);
     };
 
-    if (initialDelayMs > 0) {
-      initialTimeoutId = setTimeout(startLoop, initialDelayMs);
-    } else {
-      startLoop();
-    }
+    const startBlinkLoop = (withInitialDelay: boolean) => {
+      stopBlinkLoop();
+      if (!isVisibleRef.current || !isDocumentVisibleRef.current || motionPaused || prefersReducedMotion) {
+        return;
+      }
+      if (withInitialDelay && initialDelayMs > 0) {
+        initialTimeoutId = setTimeout(startLoop, initialDelayMs);
+      } else {
+        startLoop();
+      }
+    };
+
+    startBlinkLoop(true);
 
     // IntersectionObserver to pause blinking when offscreen
     let observer: IntersectionObserver | null = null;
@@ -94,10 +115,12 @@ export function useCharacterBlink({
       observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
+            const wasVisible = isVisibleRef.current;
             isVisibleRef.current = entry.isIntersecting;
             if (!entry.isIntersecting) {
-              clearTimers();
-              setBlinkState('open');
+              stopBlinkLoop();
+            } else if (!wasVisible) {
+              startBlinkLoop(true);
             }
           });
         },
@@ -110,17 +133,15 @@ export function useCharacterBlink({
     const handleVisibilityChange = () => {
       isDocumentVisibleRef.current = !document.hidden;
       if (document.hidden) {
-        clearTimers();
-        setBlinkState('open');
+        stopBlinkLoop();
+      } else if (isVisibleRef.current) {
+        startBlinkLoop(false);
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      if (initialTimeoutId) clearTimeout(initialTimeoutId);
-      if (intervalId) clearInterval(intervalId);
-      clearTimers();
-      setBlinkState('open');
+      stopBlinkLoop();
       if (observer) observer.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };

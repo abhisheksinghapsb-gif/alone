@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import './about.css';
 import { ABOUT_ASSETS, ABOUT_COPY } from '../../data/aboutGenesis';
 import { BriefingPanel } from './BriefingPanel';
 import { useAboutMotion } from '../../hooks/useAboutMotion';

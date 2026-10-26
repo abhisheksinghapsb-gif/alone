@@ -28,7 +28,7 @@ export const useSponsorsMotion = ({
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (prefersReducedMotion || motionPaused) {
+    if (prefersReducedMotion) {
       gsap.set(
         [
           '#sponsors-heading-group',
@@ -129,15 +129,18 @@ export const useSponsorsMotion = ({
     }, section);
 
     return () => ctx.revert();
-  }, [sectionRef, motionPaused]);
+  }, [sectionRef]);
 
   // 2. Restrained Ambient Movements (gentle 2-3px idle drift)
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section || motionPaused) {
-      if (ambientTweenRef.current) {
-        ambientTweenRef.current.kill();
-        ambientTweenRef.current = null;
+    if (!section) return;
+
+    if (ambientTweenRef.current) {
+      if (motionPaused) {
+        ambientTweenRef.current.pause();
+      } else {
+        ambientTweenRef.current.resume();
       }
       return;
     }
@@ -171,9 +174,16 @@ export const useSponsorsMotion = ({
         ease: 'sine.inOut',
       }, 0);
 
+      if (motionPaused) {
+        ambientTl.pause();
+      }
       ambientTweenRef.current = ambientTl;
     }, section);
 
-    return () => ctx.revert();
+    return () => {
+      ambientTweenRef.current?.kill();
+      ambientTweenRef.current = null;
+      ctx.revert();
+    };
   }, [sectionRef, motionPaused]);
 };

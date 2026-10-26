@@ -184,29 +184,29 @@ export const usePrizeMotion = ({
       const cowboyIdle = section.querySelector('.characterIdleFrame.cowboyIdle');
       const buzzIdle = section.querySelector('.characterIdleFrame.buzzIdle');
 
-      if (!motionPaused) {
-        if (cowboyIdle) {
-          const t1 = gsap.to(cowboyIdle, {
-            y: -3,
-            duration: 2.2,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-          });
-          idleTweensRef.current.push(t1);
-        }
+      if (cowboyIdle) {
+        const t1 = gsap.to(cowboyIdle, {
+          y: -3,
+          duration: 2.2,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+        });
+        if (motionPaused) t1.pause();
+        idleTweensRef.current.push(t1);
+      }
 
-        if (buzzIdle) {
-          const t2 = gsap.to(buzzIdle, {
-            y: -2.5,
-            duration: 2.6,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: 0.5,
-          });
-          idleTweensRef.current.push(t2);
-        }
+      if (buzzIdle) {
+        const t2 = gsap.to(buzzIdle, {
+          y: -2.5,
+          duration: 2.6,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: 0.5,
+        });
+        if (motionPaused) t2.pause();
+        idleTweensRef.current.push(t2);
       }
     }, section);
 
@@ -215,7 +215,7 @@ export const usePrizeMotion = ({
       idleTweensRef.current = [];
       ctx.revert();
     };
-  }, [sectionRef, motionPaused]);
+  }, [sectionRef]);
 
   // Handle runtime pause toggle
   useEffect(() => {

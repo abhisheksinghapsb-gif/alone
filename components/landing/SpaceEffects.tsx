@@ -183,14 +183,7 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
       }
     };
 
-    // Start or stop based on motionPaused
-    isRunningRef.current = !motionPaused && !prefersReducedMotion;
-    lastTimeRef.current = 0;
-
-    if (isRunningRef.current) {
-      rafIdRef.current = requestAnimationFrame(animate);
-    } else {
-      // Draw static frame for reduced motion / paused state
+    const drawStationaryFrame = () => {
       ctx.clearRect(0, 0, width, height);
       const stars = starsRef.current;
       for (let i = 0; i < stars.length; i++) {
@@ -202,26 +195,68 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
         ctx.fill();
       }
       ctx.globalAlpha = 1.0;
+    };
+
+    let isVisible = true;
+
+    const stopLoop = () => {
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      isRunningRef.current = false;
+    };
+
+    const startLoop = () => {
+      if (isRunningRef.current || !isVisible || motionPaused || prefersReducedMotion || document.hidden) return;
+      lastTimeRef.current = 0; // Reset last time to prevent delta jump
+      isRunningRef.current = true;
+      if (rafIdRef.current === null) {
+        rafIdRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    // Start or stop based on motionPaused & visibility
+    if (!motionPaused && !prefersReducedMotion) {
+      startLoop();
+    } else {
+      stopLoop();
+      drawStationaryFrame();
     }
 
     // Visibility change handler (tab suspension)
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        if (rafIdRef.current) {
-          cancelAnimationFrame(rafIdRef.current);
-          rafIdRef.current = null;
-        }
-        isRunningRef.current = false;
-      } else if (!motionPaused && !prefersReducedMotion) {
-        lastTimeRef.current = 0; // Reset last time to prevent delta jump
-        isRunningRef.current = true;
-        rafIdRef.current = requestAnimationFrame(animate);
+        stopLoop();
+      } else if (isVisible && !motionPaused && !prefersReducedMotion) {
+        startLoop();
       }
     };
 
     const handleResize = () => {
       resize();
+      if (!isRunningRef.current) {
+        drawStationaryFrame();
+      }
     };
+
+    // IntersectionObserver to stop loop when hero/canvas is offscreen
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          isVisible = entry ? entry.isIntersecting : false;
+          if (isVisible && !document.hidden && !motionPaused && !prefersReducedMotion) {
+            startLoop();
+          } else {
+            stopLoop();
+          }
+        },
+        { threshold: 0.05 }
+      );
+      observer.observe(canvas);
+    }
 
     window.addEventListener('resize', handleResize, { passive: true });
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -229,11 +264,8 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      if (rafIdRef.current) {
-        cancelAnimationFrame(rafIdRef.current);
-        rafIdRef.current = null;
-      }
-      isRunningRef.current = false;
+      if (observer) observer.disconnect();
+      stopLoop();
     };
   }, [motionPaused]);
 

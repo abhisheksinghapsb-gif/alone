@@ -4,7 +4,6 @@ import React, { useRef } from 'react';
 import { PRIZE_TRACKS } from './prizePoolData';
 import { PrizeStage } from './PrizeStage';
 import { usePrizeMotion } from './usePrizeMotion';
-import './prize-pool.css';
 
 export interface PrizePoolSectionProps {
   motionPaused?: boolean;

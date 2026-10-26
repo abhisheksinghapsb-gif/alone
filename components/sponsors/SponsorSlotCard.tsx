@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { SponsorSlotData } from '../../data/sponsorsData';
 
 export interface SponsorSlotCardProps {
@@ -18,12 +18,18 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
 }) => {
   const cardRef = useRef<HTMLButtonElement | null>(null);
   const visualRef = useRef<HTMLDivElement | null>(null);
+  const tiltRafRef = useRef<number | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const [tiltStyle, setTiltStyle] = useState<React.CSSProperties>({});
   const [pulseKey, setPulseKey] = useState<number>(0);
 
-  // Pointer move tilt calculation (restrained to <= 1.5 degrees)
+  const applyVisualTransform = useCallback((transform: string) => {
+    if (visualRef.current) {
+      visualRef.current.style.transform = transform;
+    }
+  }, []);
+
+  // Pointer move tilt calculation (restrained to <= 1.5 degrees, coalesced into 1 pending RAF)
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLButtonElement>) => {
       if (motionPaused || e.pointerType === 'touch') return;
@@ -32,11 +38,18 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to +0.5
       const rotateX = Math.max(-1.5, Math.min(1.5, -y * 3.0)); // capped at 1.5deg
       const rotateY = Math.max(-1.5, Math.min(1.5, x * 3.0));
-      setTiltStyle({
-        transform: `perspective(600px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px) scale(1.02)`,
+
+      if (tiltRafRef.current !== null) {
+        cancelAnimationFrame(tiltRafRef.current);
+      }
+      tiltRafRef.current = requestAnimationFrame(() => {
+        tiltRafRef.current = null;
+        applyVisualTransform(
+          `perspective(600px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px) scale(1.02)`
+        );
       });
     },
-    [motionPaused]
+    [motionPaused, applyVisualTransform]
   );
 
   const handlePointerEnter = () => {
@@ -45,22 +58,24 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
 
   const handlePointerLeave = () => {
     setIsHovered(false);
+    if (tiltRafRef.current !== null) {
+      cancelAnimationFrame(tiltRafRef.current);
+      tiltRafRef.current = null;
+    }
     if (!isFocused) {
-      setTiltStyle({});
+      applyVisualTransform('');
     }
   };
 
   const handleFocus = () => {
     setIsFocused(true);
-    setTiltStyle({
-      transform: 'perspective(600px) translateY(-4px) scale(1.02)',
-    });
+    applyVisualTransform('perspective(600px) translateY(-4px) scale(1.02)');
   };
 
   const handleBlur = () => {
     setIsFocused(false);
     if (!isHovered) {
-      setTiltStyle({});
+      applyVisualTransform('');
     }
   };
 
@@ -69,12 +84,15 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
     onSelect(slot.id);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleClick();
-    }
-  };
+  // Cancel pending animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (tiltRafRef.current !== null) {
+        cancelAnimationFrame(tiltRafRef.current);
+        tiltRafRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <button
@@ -86,7 +104,6 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       aria-label={slot.ariaLabel}
       className={`sponsorSlotHitTarget ${isSelected ? 'isSelected' : ''} ${isHovered ? 'isHovered' : ''} ${isFocused ? 'isFocused' : ''}`}
       onClick={handleClick}
-      onKeyDown={handleKeyDown}
       onFocus={handleFocus}
       onBlur={handleBlur}
       onPointerEnter={handlePointerEnter}
@@ -105,7 +122,6 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
         ref={visualRef}
         className="slotVisualWrapper"
         style={{
-          ...tiltStyle,
           '--slot-accent': slot.accentColor,
         } as React.CSSProperties}
       >

@@ -10,6 +10,11 @@ interface RingedPlanetProps {
 export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const motionPausedRef = useRef<boolean>(motionPaused);
+  motionPausedRef.current = motionPaused;
+
+  const startLoopRef = useRef<(() => void) | null>(null);
+  const stopLoopRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -48,14 +53,73 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
     let destOffsets: Int32Array;
     let texVRows: Int32Array;
     let colBases: Float32Array;
-    let lightingR: Uint8Array;
-    let lightingG: Uint8Array;
-    let lightingB: Uint8Array;
+    let lightingData: Uint8Array; // Consolidated single lighting array
     let alphaData: Uint8Array;
     let imageData: ImageData;
     let texData: Uint8ClampedArray;
     let mapW = 512;
     let mapH = 256;
+
+    let rotationPhase = 0; // Preserved rotation phase (0.0 to 1.0)
+    let lastActiveTime = performance.now();
+    let lastDrawTime = 0;
+
+    const renderFrame = (progress: number) => {
+      if (!imageData || numPixels === 0) return;
+
+      const destData = imageData.data;
+      const shift = (progress * mapW) % mapW;
+
+      for (let k = 0; k < numPixels; k++) {
+        const col = Math.floor(colBases[k] + shift) % mapW;
+        const validCol = col < 0 ? col + mapW : col;
+        const texIdx = (texVRows[k] + validCol) * 4;
+        const dest = destOffsets[k];
+        const light = lightingData[k];
+
+        // Integer fixed-point lighting modulation
+        destData[dest] = (texData[texIdx] * light) >> 7;
+        destData[dest + 1] = (texData[texIdx + 1] * light) >> 7;
+        destData[dest + 2] = (texData[texIdx + 2] * light) >> 7;
+        destData[dest + 3] = alphaData[k];
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    };
+
+    const periodMs = 42000; // 42 seconds per revolution
+
+    const loop = (time: number) => {
+      if (isDestroyed || !isVisible || motionPausedRef.current || document.hidden) return;
+
+      const dt = Math.max(0, time - lastActiveTime);
+      lastActiveTime = time;
+      rotationPhase = (rotationPhase + dt / periodMs) % 1.0;
+
+      // Limit surface painting to ~30 frames per second (~33.3ms)
+      if (time - lastDrawTime >= 33.3) {
+        lastDrawTime = time;
+        renderFrame(rotationPhase);
+      }
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    const startLoop = () => {
+      if (animId !== null || isDestroyed || !isVisible || motionPausedRef.current || document.hidden) return;
+      lastActiveTime = performance.now();
+      animId = requestAnimationFrame(loop);
+    };
+
+    const stopLoop = () => {
+      if (animId !== null) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    };
+
+    startLoopRef.current = startLoop;
+    stopLoopRef.current = stopLoop;
 
     const tryInitLUT = () => {
       if (!mapLoaded || !sphereLoaded || isDestroyed) return;
@@ -87,9 +151,7 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
       const tempDestOffsets = new Int32Array(maxPixels);
       const tempTexVRows = new Int32Array(maxPixels);
       const tempColBases = new Float32Array(maxPixels);
-      const tempLightR = new Uint8Array(maxPixels);
-      const tempLightG = new Uint8Array(maxPixels);
-      const tempLightB = new Uint8Array(maxPixels);
+      const tempLight = new Uint8Array(maxPixels); // Consolidated single lighting buffer
       const tempAlpha = new Uint8Array(maxPixels);
 
       let count = 0;
@@ -105,7 +167,6 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
             const nz = Math.sqrt(Math.max(0, 1.0 - r2));
 
             // Rotate coordinates by -theta to align ring plane with equatorial plane
-            // u runs along equator; v runs along polar rotation axis
             const u = nx * cosT + ny * sinT;
             const v = -nx * sinT + ny * cosT;
             const w = nz;
@@ -125,7 +186,7 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
             const sb = sphereData[pixelIdx + 2];
             const lum = (0.299 * sr + 0.587 * sg + 0.114 * sb) / 255.0;
 
-            // Scaled fixed-point lighting multiplier (0 - 255 range -> 0.0 - 2.0x)
+            // Scaled fixed-point lighting multiplier
             const ambient = 0.24;
             const diffuse = lum * 1.6;
             const totalLight = Math.min(2.0, ambient + diffuse);
@@ -134,9 +195,7 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
             tempDestOffsets[count] = pixelIdx;
             tempTexVRows[count] = texV * mapW;
             tempColBases[count] = baseColRatio;
-            tempLightR[count] = lightByte;
-            tempLightG[count] = lightByte;
-            tempLightB[count] = lightByte;
+            tempLight[count] = lightByte;
             tempAlpha[count] = sphereAlpha;
             count++;
           }
@@ -147,62 +206,15 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
       destOffsets = tempDestOffsets.slice(0, numPixels);
       texVRows = tempTexVRows.slice(0, numPixels);
       colBases = tempColBases.slice(0, numPixels);
-      lightingR = tempLightR.slice(0, numPixels);
-      lightingG = tempLightG.slice(0, numPixels);
-      lightingB = tempLightB.slice(0, numPixels);
+      lightingData = tempLight.slice(0, numPixels);
       alphaData = tempAlpha.slice(0, numPixels);
 
       // Render initial frame
-      renderFrame(0);
+      renderFrame(rotationPhase);
 
       // Start continuous rotation if motion is not paused
-      if (!motionPaused) {
+      if (!motionPausedRef.current) {
         startLoop();
-      }
-    };
-
-    const renderFrame = (progress: number) => {
-      if (!imageData || numPixels === 0) return;
-
-      const destData = imageData.data;
-      const shift = (progress * mapW) % mapW;
-
-      for (let k = 0; k < numPixels; k++) {
-        const col = Math.floor(colBases[k] + shift) % mapW;
-        const validCol = col < 0 ? col + mapW : col;
-        const texIdx = (texVRows[k] + validCol) * 4;
-        const dest = destOffsets[k];
-
-        // Integer fixed-point lighting modulation
-        destData[dest] = (texData[texIdx] * lightingR[k]) >> 7;
-        destData[dest + 1] = (texData[texIdx + 1] * lightingG[k]) >> 7;
-        destData[dest + 2] = (texData[texIdx + 2] * lightingB[k]) >> 7;
-        destData[dest + 3] = alphaData[k];
-      }
-
-      ctx.putImageData(imageData, 0, 0);
-    };
-
-    const periodMs = 42000; // 42 seconds per revolution (within 35–50s requirement)
-    let startTime = performance.now();
-
-    const loop = (time: number) => {
-      if (isDestroyed || !isVisible) return;
-      const elapsed = time - startTime;
-      const progress = (elapsed % periodMs) / periodMs;
-      renderFrame(progress);
-      animId = requestAnimationFrame(loop);
-    };
-
-    const startLoop = () => {
-      if (animId !== null) return;
-      animId = requestAnimationFrame(loop);
-    };
-
-    const stopLoop = () => {
-      if (animId !== null) {
-        cancelAnimationFrame(animId);
-        animId = null;
       }
     };
 
@@ -211,7 +223,7 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
       (entries) => {
         const entry = entries[0];
         isVisible = entry ? entry.isIntersecting : false;
-        if (isVisible && !motionPaused && !document.hidden) {
+        if (isVisible && !motionPausedRef.current && !document.hidden) {
           startLoop();
         } else {
           stopLoop();
@@ -228,7 +240,7 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
     const onVisibilityChange = () => {
       if (document.hidden) {
         stopLoop();
-      } else if (isVisible && !motionPaused) {
+      } else if (isVisible && !motionPausedRef.current) {
         startLoop();
       }
     };
@@ -251,7 +263,17 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
       stopLoop();
       observer.disconnect();
       document.removeEventListener('visibilitychange', onVisibilityChange);
+      startLoopRef.current = null;
+      stopLoopRef.current = null;
     };
+  }, []);
+
+  useEffect(() => {
+    if (motionPaused) {
+      stopLoopRef.current?.();
+    } else {
+      startLoopRef.current?.();
+    }
   }, [motionPaused]);
 
   return (

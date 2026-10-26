@@ -16,6 +16,10 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
   const activeCometTlRef = useRef<gsap.core.Timeline | null>(null);
   const parallaxRafRef = useRef<number | null>(null);
   const isParallaxRunningRef = useRef<boolean>(false);
+  const isHeroVisibleRef = useRef<boolean>(true);
+  const cleanupPointerListenersRef = useRef<(() => void) | null>(null);
+  const pauseHeroWorkRef = useRef<(() => void) | null>(null);
+  const resumeHeroWorkRef = useRef<(() => void) | null>(null);
   const motionPausedRef = useRef<boolean>(motionPaused);
   motionPausedRef.current = motionPaused;
 
@@ -25,6 +29,8 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
 
     // Check media query for prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let triggerFallingComet: () => void = () => {};
 
     const ctx = gsap.context(() => {
       // 1. Reduced Motion handling: immediate appearance, no movement loops
@@ -227,7 +233,7 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
 
       let cometIndex = 0;
 
-      const triggerFallingComet = () => {
+      triggerFallingComet = () => {
         if (motionPausedRef.current || document.hidden) return;
 
         const cometImg = document.getElementById('falling-comet-img') as HTMLImageElement | null;
@@ -286,99 +292,167 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       // 5. Desktop Pointer Parallax (Single unified loop, fine pointer only)
       // Note: Telescope (#cannon-layer) is deliberately excluded from parallax and remains stationary.
       if (window.matchMedia('(pointer: fine)').matches) {
+        const celestialEls = scene.querySelectorAll<HTMLElement>('.parallax-celestial');
+        const midEls = scene.querySelectorAll<HTMLElement>('.parallax-mid');
+        const foreEls = scene.querySelectorAll<HTMLElement>('.parallax-fore');
+
+        const setCelestialX = gsap.quickSetter(celestialEls, 'x', 'px');
+        const setCelestialY = gsap.quickSetter(celestialEls, 'y', 'px');
+        const setMidX = gsap.quickSetter(midEls, 'x', 'px');
+        const setMidY = gsap.quickSetter(midEls, 'y', 'px');
+        const setForeX = gsap.quickSetter(foreEls, 'x', 'px');
+        const setForeY = gsap.quickSetter(foreEls, 'y', 'px');
+
         let mouseX = 0;
         let mouseY = 0;
         let targetX = 0;
         let targetY = 0;
 
+        const updateParallax = () => {
+          if (!isParallaxRunningRef.current || !isHeroVisibleRef.current) {
+            parallaxRafRef.current = null;
+            return;
+          }
+
+          const dx = targetX - mouseX;
+          const dy = targetY - mouseY;
+
+          if (Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001) {
+            mouseX = targetX;
+            mouseY = targetY;
+            setCelestialX(mouseX * 2.8);
+            setCelestialY(mouseY * 2.2);
+            setMidX(mouseX * 5.5);
+            setMidY(mouseY * 4.5);
+            setForeX(mouseX * 9.5);
+            setForeY(mouseY * 7.0);
+            parallaxRafRef.current = null;
+            return;
+          }
+
+          mouseX += dx * 0.08;
+          mouseY += dy * 0.08;
+
+          setCelestialX(mouseX * 2.8);
+          setCelestialY(mouseY * 2.2);
+          setMidX(mouseX * 5.5);
+          setMidY(mouseY * 4.5);
+          setForeX(mouseX * 9.5);
+          setForeY(mouseY * 7.0);
+
+          parallaxRafRef.current = requestAnimationFrame(updateParallax);
+        };
+
+        const requestParallaxFrame = () => {
+          if (!isParallaxRunningRef.current || !isHeroVisibleRef.current) return;
+          if (parallaxRafRef.current === null) {
+            parallaxRafRef.current = requestAnimationFrame(updateParallax);
+          }
+        };
+
         const handlePointerMove = (e: MouseEvent) => {
           const rect = scene.getBoundingClientRect();
           if (rect.width === 0 || rect.height === 0) return;
-          targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-          targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+          const rawX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+          const rawY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+          targetX = Math.max(-1, Math.min(1, rawX));
+          targetY = Math.max(-1, Math.min(1, rawY));
+          requestParallaxFrame();
         };
 
         const handlePointerLeave = () => {
           targetX = 0;
           targetY = 0;
-        };
-
-        const updateParallax = () => {
-          if (!isParallaxRunningRef.current) return;
-
-          mouseX += (targetX - mouseX) * 0.08;
-          mouseY += (targetY - mouseY) * 0.08;
-
-          // Distant celestial: ~2-3px
-          gsap.set('.parallax-celestial', {
-            x: mouseX * 2.8,
-            y: mouseY * 2.2,
-            overwrite: 'auto',
-          });
-          // Midground moon & characters: ~5-6px
-          gsap.set('.parallax-mid', {
-            x: mouseX * 5.5,
-            y: mouseY * 4.5,
-            overwrite: 'auto',
-          });
-          // Foreground balloon: ~8-10px (cannon is stationary)
-          gsap.set('.parallax-fore', {
-            x: mouseX * 9.5,
-            y: mouseY * 7.0,
-            overwrite: 'auto',
-          });
-
-          parallaxRafRef.current = requestAnimationFrame(updateParallax);
+          requestParallaxFrame();
         };
 
         isParallaxRunningRef.current = !motionPaused && !prefersReducedMotion;
         if (isParallaxRunningRef.current) {
-          parallaxRafRef.current = requestAnimationFrame(updateParallax);
+          requestParallaxFrame();
         }
 
         scene.addEventListener('mousemove', handlePointerMove, { passive: true });
         scene.addEventListener('mouseleave', handlePointerLeave, { passive: true });
-
-        // Tab visibility handler: suspend work when tab hidden, resume smoothly on return
-        const handleVisibilityChange = () => {
-          if (document.hidden) {
-            isParallaxRunningRef.current = false;
-            if (parallaxRafRef.current) {
-              cancelAnimationFrame(parallaxRafRef.current);
-              parallaxRafRef.current = null;
-            }
-            if (cometTimerRef.current) {
-              clearTimeout(cometTimerRef.current);
-              cometTimerRef.current = null;
-            }
-            if (activeCometTlRef.current) {
-              activeCometTlRef.current.pause();
-            }
-          } else if (!motionPausedRef.current && !prefersReducedMotion) {
-            isParallaxRunningRef.current = true;
-            parallaxRafRef.current = requestAnimationFrame(updateParallax);
-            if (activeCometTlRef.current) {
-              activeCometTlRef.current.resume();
-            }
-            if (!cometTimerRef.current) {
-              cometTimerRef.current = window.setTimeout(triggerFallingComet, 1200);
-            }
-          }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        return () => {
+        cleanupPointerListenersRef.current = () => {
           scene.removeEventListener('mousemove', handlePointerMove);
           scene.removeEventListener('mouseleave', handlePointerLeave);
-          document.removeEventListener('visibilitychange', handleVisibilityChange);
-          if (parallaxRafRef.current) cancelAnimationFrame(parallaxRafRef.current);
-          isParallaxRunningRef.current = false;
         };
       }
     }, scene);
 
+    const pauseHeroWork = () => {
+      idleTweensRef.current.forEach((t) => t.pause());
+      if (activeCometTlRef.current) activeCometTlRef.current.pause();
+      if (cometTimerRef.current) {
+        clearTimeout(cometTimerRef.current);
+        cometTimerRef.current = null;
+      }
+      isParallaxRunningRef.current = false;
+      if (parallaxRafRef.current) {
+        cancelAnimationFrame(parallaxRafRef.current);
+        parallaxRafRef.current = null;
+      }
+    };
+
+    const resumeHeroWork = () => {
+      if (motionPausedRef.current || prefersReducedMotion) return;
+      idleTweensRef.current.forEach((t) => t.resume());
+      if (activeCometTlRef.current) {
+        activeCometTlRef.current.resume();
+      } else if (!cometTimerRef.current) {
+        cometTimerRef.current = window.setTimeout(triggerFallingComet, 1200);
+      }
+      isParallaxRunningRef.current = true;
+      if (parallaxRafRef.current === null) {
+        const finePointer = window.matchMedia('(pointer: fine)').matches;
+        if (finePointer) {
+          // Trigger a frame to reconcile settled position
+          parallaxRafRef.current = requestAnimationFrame(() => {
+            parallaxRafRef.current = null;
+          });
+        }
+      }
+    };
+    resumeHeroWorkRef.current = resumeHeroWork;
+    pauseHeroWorkRef.current = pauseHeroWork;
+
+    // Visibility change handler (tab suspension)
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        pauseHeroWork();
+      } else if (!motionPausedRef.current && isHeroVisibleRef.current) {
+        resumeHeroWork();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // IntersectionObserver to pause idle decorative loops and parallax when hero is offscreen
+    let heroObserver: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      heroObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          const visible = entry ? entry.isIntersecting : false;
+          isHeroVisibleRef.current = visible;
+          if (visible && !document.hidden && !motionPausedRef.current) {
+            resumeHeroWork();
+          } else {
+            pauseHeroWork();
+          }
+        },
+        { threshold: 0.05 }
+      );
+      heroObserver.observe(scene);
+    }
+
     return () => {
+      if (heroObserver) heroObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (cleanupPointerListenersRef.current) {
+        cleanupPointerListenersRef.current();
+        cleanupPointerListenersRef.current = null;
+      }
+      pauseHeroWork();
       ctx.revert();
       if (cometTimerRef.current) {
         clearTimeout(cometTimerRef.current);
@@ -398,32 +472,10 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
 
   // Handle Pause Motion state: pause or resume all idle tweens without jumping
   useEffect(() => {
-    idleTweensRef.current.forEach((tween) => {
-      if (motionPaused) {
-        tween.pause();
-      } else {
-        tween.resume();
-      }
-    });
-
     if (motionPaused) {
-      if (cometTimerRef.current) {
-        clearTimeout(cometTimerRef.current);
-        cometTimerRef.current = null;
-      }
-      if (activeCometTlRef.current) {
-        activeCometTlRef.current.pause();
-      }
-      isParallaxRunningRef.current = false;
-      if (parallaxRafRef.current) {
-        cancelAnimationFrame(parallaxRafRef.current);
-        parallaxRafRef.current = null;
-      }
-    } else {
-      isParallaxRunningRef.current = true;
-      if (activeCometTlRef.current) {
-        activeCometTlRef.current.resume();
-      }
+      pauseHeroWorkRef.current?.();
+    } else if (isHeroVisibleRef.current && !document.hidden) {
+      resumeHeroWorkRef.current?.();
     }
   }, [motionPaused]);
 }

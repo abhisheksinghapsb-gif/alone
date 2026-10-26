@@ -49,6 +49,7 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
   const delayRightShotRef = useRef<NodeJS.Timeout | null>(null);
   const recoilTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const buzzTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const audioShotTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Cleanup all timers on unmount
   useEffect(() => {
@@ -58,6 +59,7 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
       if (delayRightShotRef.current) clearTimeout(delayRightShotRef.current);
       if (recoilTimeoutRef.current) clearTimeout(recoilTimeoutRef.current);
       if (buzzTimeoutRef.current) clearTimeout(buzzTimeoutRef.current);
+      if (audioShotTimeoutRef.current) clearTimeout(audioShotTimeoutRef.current);
     };
   }, []);
 
@@ -88,7 +90,8 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
         if (soundEnabled) {
           uiAudio.playColtBlaster();
           // Second shot sound 60ms later for the paired volley
-          setTimeout(() => {
+          if (audioShotTimeoutRef.current) clearTimeout(audioShotTimeoutRef.current);
+          audioShotTimeoutRef.current = setTimeout(() => {
             if (soundEnabled) uiAudio.playColtBlaster();
           }, 60);
         }

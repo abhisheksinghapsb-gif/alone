@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import './sponsors.css';
 import {
   SPONSORS_COPY,
   SPONSORS_ASSETS,

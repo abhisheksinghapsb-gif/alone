@@ -20,12 +20,10 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     height: 380,
   });
 
-  // Track cursor position inside the text box for reading spotlight glow
-  const [cursorPos, setCursorPos] = useState<{ x: number; y: number; active: boolean }>({
-    x: 0,
-    y: 0,
-    active: false,
-  });
+  // Direct DOM refs for reading spotlight reflection (avoids React state updates on every pointer move)
+  const reflectionGradRef = useRef<SVGRadialGradientElement | null>(null);
+  const reflectionPathRef = useRef<SVGPathElement | null>(null);
+  const pointerRafRef = useRef<number | null>(null);
 
   // Scrolling state management
   const [canScroll, setCanScroll] = useState<boolean>(false);
@@ -111,6 +109,27 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     [motionPaused, stopAutoScroll, checkScrollState]
   );
 
+  const updateReflectionPosition = (clientX: number, clientY: number) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const px = Math.round(clientX - rect.left);
+    const py = Math.round(clientY - rect.top);
+
+    if (pointerRafRef.current !== null) {
+      cancelAnimationFrame(pointerRafRef.current);
+    }
+    pointerRafRef.current = requestAnimationFrame(() => {
+      pointerRafRef.current = null;
+      if (reflectionGradRef.current) {
+        reflectionGradRef.current.setAttribute('cx', String(px));
+        reflectionGradRef.current.setAttribute('cy', String(py));
+      }
+      if (reflectionPathRef.current) {
+        reflectionPathRef.current.style.opacity = '1';
+      }
+    });
+  };
+
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === 'touch') return;
     const prefersReducedMotion =
@@ -118,13 +137,7 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setCursorPos({
-      x: Math.round(e.clientX - rect.left),
-      y: Math.round(e.clientY - rect.top),
-      active: true,
-    });
+    updateReflectionPosition(e.clientX, e.clientY);
   };
 
   const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -138,19 +151,20 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setCursorPos({
-      x: Math.round(e.clientX - rect.left),
-      y: Math.round(e.clientY - rect.top),
-      active: true,
-    });
+    updateReflectionPosition(e.clientX, e.clientY);
   };
 
   const handlePointerLeave = () => {
     isHoveredRef.current = false;
     onHoverChange?.(false);
-    setCursorPos((prev) => ({ ...prev, active: false }));
+
+    if (pointerRafRef.current !== null) {
+      cancelAnimationFrame(pointerRafRef.current);
+      pointerRafRef.current = null;
+    }
+    if (reflectionPathRef.current) {
+      reflectionPathRef.current.style.opacity = '0';
+    }
 
     const el = scrollRef.current;
     if (el && el.scrollTop < el.scrollHeight - el.clientHeight - 20) {
@@ -179,11 +193,17 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     }
   };
 
-  // Ensure initial scroll position starts at the very top
+  // Ensure initial scroll position starts at the very top and cancel pending frames on unmount
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
     }
+    return () => {
+      if (pointerRafRef.current !== null) {
+        cancelAnimationFrame(pointerRafRef.current);
+        pointerRafRef.current = null;
+      }
+    };
   }, []);
 
   // Track container dimensions via ResizeObserver for precise SVG frame geometry
@@ -331,9 +351,10 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
 
           {/* Dynamic Border Reflection Gradient: catches cyan-white light at the nearest panel border */}
           <radialGradient
+            ref={reflectionGradRef}
             id="panelReflectionGrad"
-            cx={cursorPos.x}
-            cy={cursorPos.y}
+            cx="0"
+            cy="0"
             r="160"
             gradientUnits="userSpaceOnUse"
           >
@@ -371,6 +392,7 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
 
         {/* 1D. Subtle Frame Reflection that follows pointer along the panel's outline */}
         <path
+          ref={reflectionPathRef}
           d={panelPath}
           stroke="url(#panelReflectionGrad)"
           strokeWidth="3.5"
@@ -378,7 +400,7 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
           fill="none"
           className="briefingBorderReflection"
           style={{
-            opacity: cursorPos.active ? 1 : 0,
+            opacity: 0,
             transition: 'opacity 200ms ease',
           }}
         />

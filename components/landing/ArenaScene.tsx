@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import './landing.css';
 import { EVENT_COPY, SCENE_ASSETS } from '../../data/landingScene';
 import { GameButton } from './GameButton';
 import { AnimatedCharacter } from './AnimatedCharacter';

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { PrizeItem, VR_HOLO_COLORS } from './prizePoolData';
 import { uiAudio } from '../../lib/uiAudio';
 
@@ -25,9 +25,19 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
   const [isFlourishing, setIsFlourishing] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isHoloActive, setIsHoloActive] = useState<boolean>(false);
-  const cooldownRef = useRef<boolean>(false);
+  const lastActivateTimeRef = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const holoSequenceRef = useRef<boolean>(false);
+
+  // Clean up flourish timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
 
   const vrColors = isVr
     ? VR_HOLO_COLORS[item.rankNumber as 1 | 2] || VR_HOLO_COLORS[1]
@@ -66,8 +76,10 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
   };
 
   const handleActivate = useCallback(() => {
-    if (cooldownRef.current) return;
-    cooldownRef.current = true;
+    const now = Date.now();
+    // 900ms protection cooldown based on timestamp comparison
+    if (now - lastActivateTimeRef.current < 900) return;
+    lastActivateTimeRef.current = now;
 
     // Trigger visual celebration flourish
     setIsFlourishing(true);
@@ -81,22 +93,15 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
       onActivate(item);
     }
 
-    // 800ms celebration flourish duration, 900ms protection cooldown
+    // 750ms celebration flourish duration
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     timeoutRef.current = setTimeout(() => {
       setIsFlourishing(false);
+      timeoutRef.current = null;
     }, 750);
-
-    setTimeout(() => {
-      cooldownRef.current = false;
-    }, 900);
   }, [item, soundEnabled, onActivate]);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleActivate();
-    }
-  };
 
   // Particles for celebration burst (6 local particles with defined trajectories)
   const burstParticles = [
@@ -132,7 +137,6 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
         className="prizeMedalBtn"
         aria-label={item.accessibleName}
         onClick={handleActivate}
-        onKeyDown={handleKeyDown}
         onMouseEnter={handlePointerEnter}
         onMouseLeave={handlePointerLeave}
         onFocus={handleFocus}

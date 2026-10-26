@@ -128,6 +128,59 @@ export const useAboutMotion = ({
 
     if (prefersReducedMotion || motionPaused) return;
 
+    // Cache DOM targets once
+    const bg = section.querySelector<HTMLElement>('#about-bg-layer');
+    const dec = section.querySelector<HTMLElement>('#about-decorative-pattern');
+    const identityGroup = section.querySelector<HTMLElement>('#about-identity-group');
+
+    let isRunning = false;
+
+    const updateParallax = () => {
+      const dx = mouseTarget.current.x - mouseCurrent.current.x;
+      const dy = mouseTarget.current.y - mouseCurrent.current.y;
+
+      let settled = false;
+      if (Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001) {
+        mouseCurrent.current.x = mouseTarget.current.x;
+        mouseCurrent.current.y = mouseTarget.current.y;
+        settled = true;
+      } else {
+        mouseCurrent.current.x += dx * 0.08;
+        mouseCurrent.current.y += dy * 0.08;
+      }
+
+      const cx = mouseCurrent.current.x;
+      const cy = mouseCurrent.current.y;
+
+      // 1. Battle background translation: max 5px
+      if (bg) {
+        bg.style.transform = `translate3d(${-cx * 5}px, ${-cy * 4}px, 0)`;
+      }
+
+      // 2. Decorative pattern translation: max 3px
+      if (dec) {
+        dec.style.transform = `translate3d(${cx * 3}px, ${cy * 2.5}px, 0)`;
+      }
+
+      // 3. Plaque & Emblem group translation: max 4px, slight tilt
+      if (identityGroup) {
+        identityGroup.style.transform = `translate3d(${cx * 4}px, ${cy * 3}px, 0) rotate(${cx * 1.2}deg)`;
+      }
+
+      if (!settled) {
+        pointerRafRef.current = requestAnimationFrame(updateParallax);
+      } else {
+        isRunning = false;
+        pointerRafRef.current = null;
+      }
+    };
+
+    const startParallax = () => {
+      if (isRunning) return;
+      isRunning = true;
+      pointerRafRef.current = requestAnimationFrame(updateParallax);
+    };
+
     const handlePointerMove = (e: PointerEvent) => {
       const rect = section.getBoundingClientRect();
       if (rect.width <= 0 || rect.height <= 0) return;
@@ -141,56 +194,23 @@ export const useAboutMotion = ({
         y: Math.max(-1, Math.min(1, ny)),
         isHovering: true,
       };
+      startParallax();
     };
 
     const handlePointerLeave = () => {
       mouseTarget.current = { x: 0, y: 0, isHovering: false };
+      startParallax();
     };
 
     section.addEventListener('pointermove', handlePointerMove, { passive: true });
     section.addEventListener('pointerleave', handlePointerLeave);
 
-    // Smooth RAF loop
-    let running = true;
-    const updateParallax = () => {
-      if (!running) return;
-
-      // Interpolate with lerp factor 0.08
-      const lerp = 0.08;
-      mouseCurrent.current.x += (mouseTarget.current.x - mouseCurrent.current.x) * lerp;
-      mouseCurrent.current.y += (mouseTarget.current.y - mouseCurrent.current.y) * lerp;
-
-      const cx = mouseCurrent.current.x;
-      const cy = mouseCurrent.current.y;
-
-      // 1. Battle background translation: max 5px
-      const bg = section.querySelector<HTMLElement>('#about-bg-layer');
-      if (bg) {
-        bg.style.transform = `translate3d(${-cx * 5}px, ${-cy * 4}px, 0)`;
-      }
-
-      // 2. Decorative pattern translation: max 3px
-      const dec = section.querySelector<HTMLElement>('#about-decorative-pattern');
-      if (dec) {
-        dec.style.transform = `translate3d(${cx * 3}px, ${cy * 2.5}px, 0)`;
-      }
-
-      // 3. Plaque & Emblem group translation: max 4px, slight tilt
-      const identityGroup = section.querySelector<HTMLElement>('#about-identity-group');
-      if (identityGroup) {
-        identityGroup.style.transform = `translate3d(${cx * 4}px, ${cy * 3}px, 0) rotate(${cx * 1.2}deg)`;
-      }
-
-      // Paragraph & cyan panel remain completely stable!
-
-      pointerRafRef.current = requestAnimationFrame(updateParallax);
-    };
-
-    pointerRafRef.current = requestAnimationFrame(updateParallax);
-
     return () => {
-      running = false;
-      if (pointerRafRef.current) cancelAnimationFrame(pointerRafRef.current);
+      if (pointerRafRef.current) {
+        cancelAnimationFrame(pointerRafRef.current);
+        pointerRafRef.current = null;
+      }
+      isRunning = false;
       section.removeEventListener('pointermove', handlePointerMove);
       section.removeEventListener('pointerleave', handlePointerLeave);
     };
