@@ -407,6 +407,86 @@
   opacity: 0.9;
 }
 
+/* Hover / Keyboard Focus Border Brightening in Card's Color (Requirement 6B) */
+.slotHoverBorder {
+  position: absolute;
+  top: 5px;
+  left: 3%;
+  width: 94%;
+  height: 88%;
+  border: 2.5px solid var(--slot-accent);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 18px var(--slot-accent), inset 0 0 8px var(--slot-accent);
+  transform: skewX(-4.8deg);
+  opacity: 0;
+  transition: opacity 180ms ease, box-shadow 180ms ease;
+  z-index: 5;
+}
+
+.sponsorSlotHitTarget.isHovered .slotHoverBorder,
+.sponsorSlotHitTarget.isFocused .slotHoverBorder,
+.sponsorSlotHitTarget:focus-visible .slotHoverBorder {
+  opacity: 0.95;
+}
+
+/* Staggered Board Arrival Card Border Illumination (Requirement 6A) */
+.slotArrivalHighlight {
+  position: absolute;
+  top: 5px;
+  left: 3%;
+  width: 94%;
+  height: 88%;
+  border: 2.5px solid var(--slot-accent);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 20px var(--slot-accent), inset 0 0 10px var(--slot-accent);
+  transform: skewX(-4.8deg);
+  opacity: 0;
+  z-index: 6;
+}
+
+/* Miniature Illustrated Window Glint (Requirement 6B) */
+.slotWindowGlintTrack {
+  position: absolute;
+  bottom: 20px;
+  left: 10%;
+  right: 10%;
+  height: 68px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 4;
+  clip-path: polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%);
+}
+
+.slotWindowGlintBeam {
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  width: 50px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+  transform: translateX(-150%) skewX(-20deg);
+  opacity: 0;
+}
+
+.slotWindowGlintTrack.runGlint .slotWindowGlintBeam {
+  animation: slotWindowGlintSweep 550ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes slotWindowGlintSweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(450%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
 /* Energy Pulse Runner SVG */
 .slotPulseSvg {
   position: absolute;
@@ -466,6 +546,18 @@
   border-radius: 9999px;
   padding: 8px 24px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.1);
+  animation: captionQuickTransition 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes captionQuickTransition {
+  0% {
+    opacity: 0.45;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .captionAccentDot {
@@ -507,11 +599,25 @@
   pointer-events: none;
   z-index: 15;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.7));
+  transform-origin: 50% 90%;
   transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.spikeCharacterAccent.characterSettle {
-  transform: translateY(-4px);
+/* Companion response (Requirement 6C): small lean + 2-4px lift and settling motion */
+.spikeCharacterAccent.companionReact {
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.spikeCharacterAccent.companionReact.lean-left {
+  transform: translateY(-3.5px) rotate(-3.2deg);
+}
+
+.spikeCharacterAccent.companionReact.lean-center {
+  transform: translateY(-3.5px) rotate(-0.8deg);
+}
+
+.spikeCharacterAccent.companionReact.lean-right {
+  transform: translateY(-3.5px) rotate(2.2deg);
 }
 
 .spikeCharacterImg {
@@ -796,6 +902,20 @@
     animation: none !important;
   }
   
+  .slotWindowGlintBeam {
+    animation: none !important;
+    display: none !important;
+  }
+
+  .slotArrivalHighlight {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  .sponsorCaptionBar {
+    animation: none !important;
+  }
+
   .spikeCharacterAccent {
     transition: none !important;
     transform: none !important;

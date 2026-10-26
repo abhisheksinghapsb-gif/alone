@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { PrizeTrack, PrizeItem, MAIN_SHOT_COLORS, GunshotColors } from './prizePoolData';
 import { PrizeMedal } from './PrizeMedal';
 import { useCharacterBlink } from './useCharacterBlink';
@@ -36,66 +36,118 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
     motionPaused,
   });
 
-  // 2. Cowboy Gunfire state and throttle controls
-  const [activeShot, setActiveShot] = useState<ActiveShot | null>(null);
+  // 2. Cowboy Gunfire state (Paired volley from both guns) & Space Ranger Reaction
+  const [shotLeft, setShotLeft] = useState<ActiveShot | null>(null);
+  const [shotRight, setShotRight] = useState<ActiveShot | null>(null);
   const [isRecoiling, setIsRecoiling] = useState<boolean>(false);
+  const [isBuzzReacting, setIsBuzzReacting] = useState<boolean>(false);
+
   const lastShotTimeRef = useRef<number>(0);
   const lastTriggerKeyRef = useRef<string>('');
-  const shotTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const leftShotTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const rightShotTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const delayRightShotRef = useRef<NodeJS.Timeout | null>(null);
   const recoilTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const buzzTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup all timers on unmount
+  useEffect(() => {
+    return () => {
+      if (leftShotTimeoutRef.current) clearTimeout(leftShotTimeoutRef.current);
+      if (rightShotTimeoutRef.current) clearTimeout(rightShotTimeoutRef.current);
+      if (delayRightShotRef.current) clearTimeout(delayRightShotRef.current);
+      if (recoilTimeoutRef.current) clearTimeout(recoilTimeoutRef.current);
+      if (buzzTimeoutRef.current) clearTimeout(buzzTimeoutRef.current);
+    };
+  }, []);
 
   const handleTriggerGunfire = useCallback(
     (item: PrizeItem, triggerType: 'hover' | 'focus' | 'tap') => {
-      // Only the Cowboy on the Main Prize stage shoots for Main Prizes
-      if (!isMain || item.trackId !== 'main') return;
+      // 1) Main Stage Cowboy Firing (Paired Volley from Both Guns)
+      if (isMain && item.trackId === 'main') {
+        const now = performance.now();
+        // 750ms cooldown against spam / overlapping shots
+        if (now - lastShotTimeRef.current < 750) {
+          return;
+        }
 
-      const now = performance.now();
-      // 750ms cooldown against spam / overlapping shots (650-850ms spec)
-      if (now - lastShotTimeRef.current < 750) {
-        return;
+        // Prevent duplicate focus shot right after hover shot on the same medal
+        const triggerKey = `${item.id}-${triggerType}`;
+        if (
+          triggerType === 'focus' &&
+          lastTriggerKeyRef.current === `${item.id}-hover` &&
+          now - lastShotTimeRef.current < 1200
+        ) {
+          return;
+        }
+
+        lastShotTimeRef.current = now;
+        lastTriggerKeyRef.current = triggerKey;
+
+        // Play blaster audio if sound is enabled
+        if (soundEnabled) {
+          uiAudio.playColtBlaster();
+          // Second shot sound 60ms later for the paired volley
+          setTimeout(() => {
+            if (soundEnabled) uiAudio.playColtBlaster();
+          }, 60);
+        }
+
+        const prefersReducedMotion =
+          typeof window !== 'undefined' &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!motionPaused && !prefersReducedMotion) {
+          const colors = MAIN_SHOT_COLORS[item.rankNumber];
+
+          // Gun 1 (Left barrel) fires immediately at t = 0
+          setShotLeft({
+            id: now,
+            rankNumber: item.rankNumber,
+            colors,
+          });
+          setIsRecoiling(true);
+
+          if (leftShotTimeoutRef.current) clearTimeout(leftShotTimeoutRef.current);
+          leftShotTimeoutRef.current = setTimeout(() => {
+            setShotLeft(null);
+          }, 260);
+
+          // Gun 2 (Right barrel) fires ~60ms later
+          if (delayRightShotRef.current) clearTimeout(delayRightShotRef.current);
+          delayRightShotRef.current = setTimeout(() => {
+            setShotRight({
+              id: now + 60,
+              rankNumber: item.rankNumber,
+              colors,
+            });
+
+            if (rightShotTimeoutRef.current) clearTimeout(rightShotTimeoutRef.current);
+            rightShotTimeoutRef.current = setTimeout(() => {
+              setShotRight(null);
+            }, 260);
+          }, 60);
+
+          if (recoilTimeoutRef.current) clearTimeout(recoilTimeoutRef.current);
+          recoilTimeoutRef.current = setTimeout(() => {
+            setIsRecoiling(false);
+          }, 420);
+        }
       }
 
-      // Prevent duplicate focus shot right after hover shot on the same medal
-      const triggerKey = `${item.id}-${triggerType}`;
-      if (
-        triggerType === 'focus' &&
-        lastTriggerKeyRef.current === `${item.id}-hover` &&
-        now - lastShotTimeRef.current < 1200
-      ) {
-        return;
-      }
+      // 2) VR Stage Space Ranger Complementary Reaction
+      if (!isMain && item.trackId === 'vr') {
+        const prefersReducedMotion =
+          typeof window !== 'undefined' &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      lastShotTimeRef.current = now;
-      lastTriggerKeyRef.current = triggerKey;
-
-      // Play restrained blaster audio if sound is enabled
-      if (soundEnabled) {
-        uiAudio.playColtBlaster();
-      }
-
-      // If motion is paused or reduced motion is active, suppress visual recoil & projectile
-      const prefersReducedMotion =
-        typeof window !== 'undefined' &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      if (!motionPaused && !prefersReducedMotion) {
-        const colors = MAIN_SHOT_COLORS[item.rankNumber];
-        setActiveShot({
-          id: now,
-          rankNumber: item.rankNumber,
-          colors,
-        });
-        setIsRecoiling(true);
-
-        if (recoilTimeoutRef.current) clearTimeout(recoilTimeoutRef.current);
-        recoilTimeoutRef.current = setTimeout(() => {
-          setIsRecoiling(false);
-        }, 360);
-
-        if (shotTimeoutRef.current) clearTimeout(shotTimeoutRef.current);
-        shotTimeoutRef.current = setTimeout(() => {
-          setActiveShot(null);
-        }, 380);
+        if (!motionPaused && !prefersReducedMotion) {
+          setIsBuzzReacting(true);
+          if (buzzTimeoutRef.current) clearTimeout(buzzTimeoutRef.current);
+          buzzTimeoutRef.current = setTimeout(() => {
+            setIsBuzzReacting(false);
+          }, 700);
+        }
       }
     },
     [isMain, soundEnabled, motionPaused]
@@ -117,7 +169,6 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
 
   const handleMedalActivate = useCallback(
     (item: PrizeItem) => {
-      // Touch or click activation can trigger gunfire if not already fired
       handleTriggerGunfire(item, 'tap');
       if (onActivateMedal) {
         onActivateMedal(item);
@@ -196,23 +247,43 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
                       draggable={false}
                     />
 
-                    {/* Cowboy Gunfire Rig anchored to viewer's right gun muzzle */}
-                    {activeShot && (
+                    {/* Gun 1: Left Barrel (Viewer's Left, pointing at -114deg) */}
+                    {shotLeft && (
                       <div
-                        className={`cowboyGunfireRig rank-${activeShot.rankNumber}`}
+                        className={`cowboyGunfireRig gunRigLeft rank-${shotLeft.rankNumber}`}
                         style={
                           {
-                            '--shot-core': activeShot.colors.core,
-                            '--shot-glow': activeShot.colors.glow,
-                            '--shot-beam': activeShot.colors.beam,
-                            '--shot-flare': activeShot.colors.flare,
+                            '--shot-core': shotLeft.colors.core,
+                            '--shot-glow': shotLeft.colors.glow,
+                            '--shot-beam': shotLeft.colors.beam,
+                            '--shot-flare': shotLeft.colors.flare,
                           } as React.CSSProperties
                         }
                         aria-hidden="true"
                       >
                         <div className="gunBarrelFlare" />
-                        <div className="gunMuzzleFlash" />
-                        <div className="gunProjectileBeam" />
+                        <div className="gunMuzzleFlash gunMuzzleFlashLeft" />
+                        <div className="gunProjectileBeam gunProjectileBeamLeft" />
+                      </div>
+                    )}
+
+                    {/* Gun 2: Right Barrel (Viewer's Right, pointing at -66deg) */}
+                    {shotRight && (
+                      <div
+                        className={`cowboyGunfireRig gunRigRight rank-${shotRight.rankNumber}`}
+                        style={
+                          {
+                            '--shot-core': shotRight.colors.core,
+                            '--shot-glow': shotRight.colors.glow,
+                            '--shot-beam': shotRight.colors.beam,
+                            '--shot-flare': shotRight.colors.flare,
+                          } as React.CSSProperties
+                        }
+                        aria-hidden="true"
+                      >
+                        <div className="gunBarrelFlare" />
+                        <div className="gunMuzzleFlash gunMuzzleFlashRight" />
+                        <div className="gunProjectileBeam gunProjectileBeamRight" />
                       </div>
                     )}
                   </div>
@@ -253,7 +324,11 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
 
             {/* Separate Transform Wrappers for Hover Pop and Idle Drift */}
             <div className="characterHoverFrame">
-              <div className="characterIdleFrame buzzIdle">
+              <div
+                className={`characterIdleFrame buzzIdle ${
+                  isBuzzReacting ? 'is-buzz-reacting' : ''
+                }`}
+              >
                 <div className="characterArtFrame">
                   {/* Base Open Eyes Character Illustration */}
                   <img
@@ -280,6 +355,14 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
                     className={`characterBlinkLayer ${blinkState === 'closed' ? 'is-visible' : ''}`}
                     draggable={false}
                   />
+
+                  {/* Masked Visor Glint during VR Medal Activation */}
+                  <div
+                    className={`buzzVisorGlintFrame ${isBuzzReacting ? 'is-active' : ''}`}
+                    aria-hidden="true"
+                  >
+                    <div className="buzzVisorGlintSweep" />
+                  </div>
                 </div>
               </div>
             </div>

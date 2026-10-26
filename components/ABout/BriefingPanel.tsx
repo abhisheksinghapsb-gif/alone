@@ -320,45 +320,80 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
         }}
       >
         <defs>
-          {/* Intense Neon Boundary Glow Filter */}
-          <filter id="panelBoundaryNeonGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="8" result="blur1" />
-            <feGaussianBlur stdDeviation="16" result="blur2" />
+          {/* Subtle Outer Boundary Cyan Accent Filter */}
+          <filter id="panelBoundarySubtleGlow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
-              <feMergeNode in="blur2" />
-              <feMergeNode in="blur1" />
+              <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+
+          {/* Dynamic Border Reflection Gradient: catches cyan-white light at the nearest panel border */}
+          <radialGradient
+            id="panelReflectionGrad"
+            cx={cursorPos.x}
+            cy={cursorPos.y}
+            r="160"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+            <stop offset="25%" stopColor="#cffafe" stopOpacity="0.7" />
+            <stop offset="55%" stopColor="#38bdf8" stopOpacity="0.3" />
+            <stop offset="85%" stopColor="#0284c7" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+          </radialGradient>
+
+          {/* Stationary Focus Border Gradient */}
+          <linearGradient id="panelFocusGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.25" />
+            <stop offset="50%" stopColor="#ffffff" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.25" />
+          </linearGradient>
         </defs>
 
-        {/* 1A. Glowing Effect on Text Box Boundary (Stepped Silhouette Neon Glow) */}
-        <path
-          d={panelPath}
-          stroke="#00E5FF"
-          strokeWidth="11"
-          strokeLinejoin="miter"
-          filter="url(#panelBoundaryNeonGlow)"
-          opacity="0.9"
-          className="briefingGlowBorderPath"
-        />
+        {/* 1A. Physical Thickness Offset Shadow */}
+        <path d={shadowPath} fill="#050814" opacity="0.95" />
 
-        {/* 1B. Crisp Cyan Edge Rim Accent */}
+        {/* 1B. Solid Opaque Cyan Fill Plate (#BCE6F2) - Stable background contrast */}
+        <path d={panelPath} fill="#BCE6F2" />
+
+        {/* 1C. Clean Subtle Frame Definition Accent Rim */}
         <path
           d={panelPath}
           stroke="#38BDF8"
-          strokeWidth="4"
+          strokeWidth="1.5"
           strokeLinejoin="miter"
-          opacity="0.95"
+          opacity="0.5"
+          filter="url(#panelBoundarySubtleGlow)"
+          fill="none"
         />
 
-        {/* 1C. Physical Thickness Offset Shadow */}
-        <path d={shadowPath} fill="#050814" opacity="0.95" />
+        {/* 1D. Subtle Frame Reflection that follows pointer along the panel's outline */}
+        <path
+          d={panelPath}
+          stroke="url(#panelReflectionGrad)"
+          strokeWidth="3.5"
+          strokeLinejoin="miter"
+          fill="none"
+          className="briefingBorderReflection"
+          style={{
+            opacity: cursorPos.active ? 1 : 0,
+            transition: 'opacity 200ms ease',
+          }}
+        />
 
-        {/* 1D. Solid Opaque Cyan Fill Plate (#BCE6F2) */}
-        <path d={panelPath} fill="#BCE6F2" />
+        {/* 1E. Quiet, Stationary Border Highlight on Keyboard Focus */}
+        <path
+          d={panelPath}
+          stroke="url(#panelFocusGrad)"
+          strokeWidth="2.5"
+          strokeLinejoin="miter"
+          fill="none"
+          className="briefingFocusBorder"
+        />
 
-        {/* 1E. 5px Solid Black Outline */}
+        {/* 1F. 5px Solid Black Outline */}
         <path
           d={panelPath}
           stroke="#000000"
@@ -368,24 +403,6 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
           fill="none"
         />
       </svg>
-
-      {/* 2. Reading Cursor Glow: Perceptible spotlight behind readable text */}
-      <div
-        className="briefingReadingPlateGlow"
-        aria-hidden="true"
-        style={{
-          opacity: cursorPos.active ? 1 : 0,
-          background: `radial-gradient(circle 120px at ${cursorPos.x}px ${cursorPos.y}px, rgba(255, 255, 255, 0.45) 0%, rgba(220, 235, 255, 0.3) 30%, rgba(139, 92, 246, 0.12) 60%, transparent 80%)`,
-        }}
-      />
-      <div
-        className="briefingCursorReadingHalo"
-        aria-hidden="true"
-        style={{
-          opacity: cursorPos.active ? 0.9 : 0,
-          transform: `translate3d(${cursorPos.x}px, ${cursorPos.y}px, 0) translate(-50%, -50%)`,
-        }}
-      />
 
       {/* 3. Real Bounded Scrollport & Viewport (Clips text strictly within panel boundaries) */}
       <div className="briefingReadingScrollport">

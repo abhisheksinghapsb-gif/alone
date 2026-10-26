@@ -129,13 +129,12 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       });
       idleTweens.push(bluePlanetSmallRot);
 
-      // Purple Ringed Planet: keep ring's original diagonal orientation fixed (no complete-image tumble)
-      // Subtle celestial floating rocking & drift only
+      // Purple Ringed Planet: keep rings strictly held at current inclination and size
+      // Surface features rotate continuously via internal spherical projection canvas
       const planetIdle = gsap.to('#ringed-planet-idle', {
-        y: -4,
-        x: 2,
-        rotation: 1.5,
-        duration: 7.2,
+        y: -3,
+        x: 1.5,
+        duration: 8.5,
         ease: 'sine.inOut',
         yoyo: true,
         repeat: -1,

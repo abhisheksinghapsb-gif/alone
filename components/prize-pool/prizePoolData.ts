@@ -44,6 +44,30 @@ export const MAIN_SHOT_COLORS: Record<1 | 2 | 3, GunshotColors> = {
   },
 };
 
+export interface VrHoloColors {
+  primary: string;
+  accent: string;
+  beam: string;
+  glow: string;
+}
+
+export const VR_HOLO_COLORS: Record<1 | 2, VrHoloColors> = {
+  1: {
+    // 1st Prize — Cyan with restrained gold accent
+    primary: '#00f0ff',
+    accent: '#ffd700',
+    beam: 'rgba(0, 240, 255, 0.45)',
+    glow: 'rgba(255, 215, 0, 0.35)',
+  },
+  2: {
+    // 2nd Prize — Icy cyan with silver
+    primary: '#a5f3fc',
+    accent: '#e2e8f0',
+    beam: 'rgba(165, 243, 252, 0.4)',
+    glow: 'rgba(226, 232, 240, 0.35)',
+  },
+};
+
 export interface PrizeTrack {
   id: 'main' | 'vr';
   trackTitle: string;

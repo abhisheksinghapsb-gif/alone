@@ -47,7 +47,7 @@ export const useSponsorsMotion = ({
         scrollTrigger: {
           trigger: section,
           start: 'top 75%',
-          once: true,
+          toggleActions: 'play reverse play reverse',
         },
       });
 
@@ -55,7 +55,7 @@ export const useSponsorsMotion = ({
       tl.fromTo(
         '#sponsors-heading-group',
         { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' },
+        { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out' },
         0
       );
 
@@ -63,11 +63,11 @@ export const useSponsorsMotion = ({
       tl.fromTo(
         '#past-sponsors-panel',
         { x: -28, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.75, ease: 'power2.out' },
-        0.12
+        { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' },
+        0.1
       );
 
-      // 3. Six sponsor slots appear with restrained 60ms stagger
+      // 3. Six sponsor slots appear with restrained stagger
       tl.fromTo(
         '.sponsorSlotHitTarget',
         { y: 18, scale: 0.96, opacity: 0 },
@@ -75,26 +75,55 @@ export const useSponsorsMotion = ({
           y: 0,
           scale: 1,
           opacity: 1,
-          duration: 0.6,
-          stagger: 0.06,
+          duration: 0.5,
+          stagger: 0.05,
           ease: 'back.out(1.2)',
         },
-        0.25
+        0.2
       );
 
-      // 4. Board caption settles
+      // 4. Staggered card border illumination sequence across all 6 slots (Requirement 6A)
+      tl.fromTo(
+        '.slotArrivalHighlight',
+        { opacity: 0 },
+        {
+          opacity: 0.95,
+          duration: 0.18,
+          stagger: 0.07,
+          yoyo: true,
+          repeat: 1,
+          ease: 'sine.inOut',
+        },
+        0.35
+      );
+
+      // 5. Finishing glint highlight on heading artwork (Requirement 6A)
+      tl.fromTo(
+        '.headingWordmarkImg',
+        { filter: 'drop-shadow(0 0 0px transparent)' },
+        {
+          filter: 'drop-shadow(0 0 22px rgba(0, 240, 255, 0.85)) brightness(1.25)',
+          duration: 0.25,
+          yoyo: true,
+          repeat: 1,
+          ease: 'power2.out',
+        },
+        0.82
+      );
+
+      // 6. Board caption settles
       tl.fromTo(
         '#sponsor-board-caption',
         { y: 10, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+        { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out' },
         0.65
       );
 
-      // 5. Spike character settles last
+      // 7. Spike character settles last
       tl.fromTo(
         '#sponsor-spike-character',
         { y: 22, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out' },
+        { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' },
         0.75
       );
     }, section);

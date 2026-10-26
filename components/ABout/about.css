@@ -273,17 +273,18 @@
   max-height: 410px;
   display: flex;
   flex-direction: column;
-  filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.75))
-         drop-shadow(0 0 38px rgba(0, 180, 255, 0.42))
-         drop-shadow(0 12px 28px rgba(0, 0, 0, 0.85));
+  /* Substantially reduced outer cyan bloom for crisp, clearly defined frame */
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.35))
+         drop-shadow(0 0 14px rgba(0, 180, 255, 0.18))
+         drop-shadow(0 10px 24px rgba(0, 0, 0, 0.85));
   transition: filter 0.3s ease;
   overflow: visible;
 }
 
 .briefingBoardContainer:hover {
-  filter: drop-shadow(0 0 26px rgba(0, 245, 255, 0.95))
-         drop-shadow(0 0 50px rgba(0, 200, 255, 0.55))
-         drop-shadow(0 14px 32px rgba(0, 0, 0, 0.9));
+  filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.5))
+         drop-shadow(0 0 20px rgba(0, 200, 255, 0.25))
+         drop-shadow(0 12px 28px rgba(0, 0, 0, 0.9));
 }
 
 /* Scalable Frame SVG */
@@ -298,52 +299,23 @@
   overflow: visible;
 }
 
-/* Breathing Neon Boundary Stroke Glow */
-.briefingGlowBorderPath {
-  animation: boundaryGlowBreathing 3.2s ease-in-out infinite alternate;
-}
-
-@keyframes boundaryGlowBreathing {
-  0% {
-    opacity: 0.7;
-    stroke-width: 9px;
-  }
-  100% {
-    opacity: 1;
-    stroke-width: 13px;
-  }
-}
-
-/* Interactive Cursor Reading Spotlight on the Cyan Plate */
-.briefingReadingPlateGlow {
-  position: absolute;
-  inset: 0;
+/* Subtle Frame Border Reflection: catches light along the border nearest to pointer */
+.briefingBorderReflection {
   pointer-events: none;
-  z-index: 2;
-  transition: opacity 0.25s ease-out;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+         drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+  will-change: opacity, stroke;
 }
 
-/* Subtle Cursor Reading Halo: Placed strictly behind text (z-index: 2) to preserve crisp readability */
-.briefingCursorReadingHalo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
+/* Quiet, stationary border highlight on keyboard focus */
+.briefingFocusBorder {
+  opacity: 0;
   pointer-events: none;
-  z-index: 2;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(224, 235, 255, 0.42) 30%,
-    rgba(147, 130, 245, 0.2) 62%,
-    transparent 100%
-  );
-  border: 1.5px solid rgba(124, 58, 237, 0.35);
-  box-shadow: 0 0 16px rgba(139, 92, 246, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.5);
-  transition: opacity 0.22s ease-out;
-  will-change: transform;
+  transition: opacity 0.22s ease-in-out;
+}
+
+.briefingBoardContainer:focus-within .briefingFocusBorder {
+  opacity: 1;
 }
 
 /* Dedicated Bounded Reading Scrollport: Clips scrolling content strictly within panel borders */

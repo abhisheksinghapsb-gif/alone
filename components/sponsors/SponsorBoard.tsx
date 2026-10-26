@@ -56,8 +56,8 @@ export const SponsorBoard: React.FC<SponsorBoardProps> = ({
           {selectedSlot.captionText}
         </div>
 
-        {/* Visual Stable Caption Bar */}
-        <div className="sponsorCaptionBar" aria-hidden="true">
+        {/* Visual Stable Caption Bar with quick readable transition */}
+        <div key={selectedSlot.id} className="sponsorCaptionBar" aria-hidden="true">
           <span
             className="captionAccentDot"
             style={{ backgroundColor: selectedSlot.accentColor }}

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
-import { PrizeItem } from './prizePoolData';
+import { PrizeItem, VR_HOLO_COLORS } from './prizePoolData';
 import { uiAudio } from '../../lib/uiAudio';
 
 export interface PrizeMedalProps {
@@ -21,9 +21,49 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
   onHover,
   onFocus,
 }) => {
+  const isVr = item.trackId === 'vr';
   const [isFlourishing, setIsFlourishing] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isHoloActive, setIsHoloActive] = useState<boolean>(false);
   const cooldownRef = useRef<boolean>(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const holoSequenceRef = useRef<boolean>(false);
+
+  const vrColors = isVr
+    ? VR_HOLO_COLORS[item.rankNumber as 1 | 2] || VR_HOLO_COLORS[1]
+    : null;
+
+  const handlePointerEnter = () => {
+    setIsHovered(true);
+    onHover?.(item);
+
+    if (isVr && !holoSequenceRef.current && !motionPaused) {
+      holoSequenceRef.current = true;
+      setIsHoloActive(true);
+    }
+  };
+
+  const handlePointerLeave = () => {
+    setIsHovered(false);
+    setIsHoloActive(false);
+    holoSequenceRef.current = false;
+  };
+
+  const handleFocus = () => {
+    setIsHovered(true);
+    onFocus?.(item);
+
+    if (isVr && !holoSequenceRef.current && !motionPaused) {
+      holoSequenceRef.current = true;
+      setIsHoloActive(true);
+    }
+  };
+
+  const handleBlur = () => {
+    setIsHovered(false);
+    setIsHoloActive(false);
+    holoSequenceRef.current = false;
+  };
 
   const handleActivate = useCallback(() => {
     if (cooldownRef.current) return;
@@ -70,10 +110,20 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
 
   return (
     <div
-      className={`prizeMedalItem rank-${item.position} ${isFlourishing ? 'is-flourishing' : ''}`}
+      className={`prizeMedalItem rank-${item.position} track-${item.trackId} ${
+        isFlourishing ? 'is-flourishing' : ''
+      } ${isHovered ? 'is-hovered' : ''} ${isHoloActive ? 'is-holo-active' : ''}`}
       style={
         {
           '--spotlight-color': item.spotlightColor,
+          ...(vrColors
+            ? {
+                '--holo-primary': vrColors.primary,
+                '--holo-accent': vrColors.accent,
+                '--holo-beam': vrColors.beam,
+                '--holo-glow': vrColors.glow,
+              }
+            : {}),
         } as React.CSSProperties
       }
     >
@@ -83,8 +133,10 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
         aria-label={item.accessibleName}
         onClick={handleActivate}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => onHover?.(item)}
-        onFocus={() => onFocus?.(item)}
+        onMouseEnter={handlePointerEnter}
+        onMouseLeave={handlePointerLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         tabIndex={0}
       >
         {/* Stage Spotlight Behind Medal */}
@@ -92,6 +144,22 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
 
         {/* Contact Floor Shadow Underneath */}
         <div className="medalContactShadow" aria-hidden="true" />
+
+        {/* VR Holographic Projection Sequence Rig */}
+        {isVr && (
+          <div className={`vrHoloRig ${isHoloActive ? 'is-active' : ''}`} aria-hidden="true">
+            {/* 1. Perspective-Tilted Holographic Base Ellipse */}
+            <div className="vrHoloEmitterBase">
+              <div className="vrHoloRingsOuter" />
+              <div className="vrHoloRingsInner" />
+            </div>
+
+            {/* 2. Soft Rising Light Fragments */}
+            <span className="vrHoloFragment frag1" />
+            <span className="vrHoloFragment frag2" />
+            <span className="vrHoloFragment frag3" />
+          </div>
+        )}
 
         {/* Scalable Vector Medal (Front Plaque, Amount, & Separate Star Badge) */}
         <div className="medalSvgWrapper">
@@ -105,6 +173,13 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
           />
           {/* Gleam light sweep on activation */}
           <div className="medalGleamStripe" aria-hidden="true" />
+
+          {/* VR Holographic Soft Scan Highlight Sweep across medal artwork */}
+          {isVr && (
+            <div className={`vrHoloScanOverlay ${isHoloActive ? 'run-scan' : ''}`} aria-hidden="true">
+              <div className="vrHoloScanLine" />
+            </div>
+          )}
         </div>
 
         {/* Particle Celebration Burst */}

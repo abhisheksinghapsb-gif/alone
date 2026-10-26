@@ -49,6 +49,73 @@
   pointer-events: none;
 }
 
+.ringedPlanetRig {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1444 / 752;
+  filter: drop-shadow(0 0 24px rgba(147, 51, 234, 0.45));
+}
+
+.planetRingsBack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.planetSphereWindow {
+  position: absolute;
+  left: 23.6149%;
+  top: 0;
+  width: 50.6925%;
+  height: 97.3404%;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: none;
+  background: #060214;
+}
+
+.planetSurfaceCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+}
+
+.planetAtmosphereOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.38;
+}
+
+.planetRingsFront {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  z-index: 3;
+  pointer-events: none;
+}
+
 #ringed-planet-rot {
   transform-origin: 48.93% 48.60%;
   will-change: transform;
@@ -962,6 +1029,118 @@
   .dividerEmblemImg {
     width: 26px;
     height: 26px;
+  }
+}
+
+/* ==========================================================================
+   Second Hero Character: Hooded Ninja (Leon)
+   - Slow 2-3px vertical idle movement + subtle lean, feet visually anchored
+   - Hover lift ~4px, scale ~1.035, inward lean toward center (-1.2deg)
+   - Violet/cyan energy crescent flourish around weapon/hand on pointer entry
+   ========================================================================== */
+
+.ninjaIdleWrapper {
+  position: relative;
+  width: 100%;
+  transform-origin: 50% 92%;
+  animation: ninjaIdleStance 4.6s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.ninjaIdleWrapper.paused {
+  animation: none !important;
+}
+
+@keyframes ninjaIdleStance {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2.5px) rotate(-0.5deg);
+  }
+  100% {
+    transform: translateY(-1.2px) rotate(0.3deg);
+  }
+}
+
+.ninjaHoverFrame {
+  position: relative;
+  width: 100%;
+  transform-origin: 50% 92%;
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 260ms ease;
+  will-change: transform;
+}
+
+.ninjaHoverFrame.isHovered {
+  /* Lift approximately 4px, scale ~1.035, inward lean toward hero center */
+  transform: translateY(-4px) scale(1.035) rotate(-1.2deg);
+  filter: drop-shadow(0 14px 32px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 16px rgba(168, 85, 247, 0.35));
+}
+
+/* Violet / Cyan Weapon Energy Crescent Flourish */
+.ninjaCrescentRig {
+  position: absolute;
+  left: 2%;
+  top: 55%;
+  width: 105px;
+  height: 105px;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+}
+
+.ninjaCrescentRig.isFlourishing {
+  opacity: 1;
+  animation: ninjaCrescentArc 0.55s cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
+}
+
+.ninjaCrescentArc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3.5px solid transparent;
+  border-left: 4px solid #22d3ee;
+  border-top: 4px solid #c084fc;
+  filter: drop-shadow(0 0 8px #a855f7) drop-shadow(0 0 4px #22d3ee);
+  transform: rotate(-35deg);
+}
+
+.ninjaCrescentSparks {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dashed rgba(34, 211, 238, 0.7);
+  opacity: 0.6;
+}
+
+@keyframes ninjaCrescentArc {
+  0% {
+    transform: scale(0.4) rotate(-55deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.05) rotate(0deg);
+  }
+  65% {
+    opacity: 0.85;
+    transform: scale(1.15) rotate(45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3) rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ninjaIdleWrapper {
+    animation: none !important;
+  }
+  .ninjaHoverFrame.isHovered {
+    transform: none !important;
+  }
+  .ninjaCrescentRig {
+    display: none !important;
   }
 }
 

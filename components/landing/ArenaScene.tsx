@@ -6,6 +6,7 @@ import { EVENT_COPY, SCENE_ASSETS } from '../../data/landingScene';
 import { GameButton } from './GameButton';
 import { AnimatedCharacter } from './AnimatedCharacter';
 import { SpaceEffects } from './SpaceEffects';
+import { RingedPlanet } from './RingedPlanet';
 import { useLandingMotion } from '../../hooks/useLandingMotion';
 
 export interface ArenaSceneProps {
@@ -41,22 +42,13 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
       <SpaceEffects motionPaused={motionPaused} />
 
       {/* 2. Celestial Depth Layer (Parallax Celestial) */}
-      {/* Ringed Planet (Upper Right Space) */}
+      {/* Ringed Planet (Upper Right Space) — Rotating spherical surface with fixed rings */}
       <div
         id="ringed-planet-layer"
         className="ringedPlanetWrap parallax-celestial"
       >
         <div id="ringed-planet-idle">
-          <div id="ringed-planet-rot">
-            <img
-              src={SCENE_ASSETS.ringedPlanet.src}
-              alt={SCENE_ASSETS.ringedPlanet.alt}
-              width={SCENE_ASSETS.ringedPlanet.width}
-              height={SCENE_ASSETS.ringedPlanet.height}
-              className="ringedPlanetImg"
-              draggable={false}
-            />
-          </div>
+          <RingedPlanet motionPaused={motionPaused} />
         </div>
       </div>
 

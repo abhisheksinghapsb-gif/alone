@@ -19,18 +19,19 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
   const cardRef = useRef<HTMLButtonElement | null>(null);
   const visualRef = useRef<HTMLDivElement | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
   const [tiltStyle, setTiltStyle] = useState<React.CSSProperties>({});
   const [pulseKey, setPulseKey] = useState<number>(0);
 
-  // Pointer move tilt calculation (capped at ~2 degrees for fine pointers only)
+  // Pointer move tilt calculation (restrained to <= 1.5 degrees)
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLButtonElement>) => {
       if (motionPaused || e.pointerType === 'touch') return;
       const rect = e.currentTarget.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to +0.5
       const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to +0.5
-      const rotateX = -y * 3.5; // capped around 1.75deg
-      const rotateY = x * 3.5;
+      const rotateX = Math.max(-1.5, Math.min(1.5, -y * 3.0)); // capped at 1.5deg
+      const rotateY = Math.max(-1.5, Math.min(1.5, x * 3.0));
       setTiltStyle({
         transform: `perspective(600px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px) scale(1.02)`,
       });
@@ -44,7 +45,23 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
 
   const handlePointerLeave = () => {
     setIsHovered(false);
-    setTiltStyle({});
+    if (!isFocused) {
+      setTiltStyle({});
+    }
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    setTiltStyle({
+      transform: 'perspective(600px) translateY(-4px) scale(1.02)',
+    });
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    if (!isHovered) {
+      setTiltStyle({});
+    }
   };
 
   const handleClick = () => {
@@ -67,9 +84,11 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       role="button"
       aria-pressed={isSelected}
       aria-label={slot.ariaLabel}
-      className={`sponsorSlotHitTarget ${isSelected ? 'isSelected' : ''} ${isHovered ? 'isHovered' : ''}`}
+      className={`sponsorSlotHitTarget ${isSelected ? 'isSelected' : ''} ${isHovered ? 'isHovered' : ''} ${isFocused ? 'isFocused' : ''}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
@@ -108,7 +127,21 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
             <span className="slotStatusText">{slot.status}</span>
           </div>
 
-          {/* Energy Pulse Perimeter Runner (Triggered on deliberate selection) */}
+          {/* Miniature Illustrated Window Glint (passes briefly on hover / keyboard focus) */}
+          <div
+            className={`slotWindowGlintTrack ${(isHovered || isFocused) && !motionPaused ? 'runGlint' : ''}`}
+            aria-hidden="true"
+          >
+            <div className="slotWindowGlintBeam" />
+          </div>
+
+          {/* Hover / Focus Border Brightening in Card's Color */}
+          <div className="slotHoverBorder" aria-hidden="true" />
+
+          {/* Arrival Staggered Illumination Highlight */}
+          <div className="slotArrivalHighlight" aria-hidden="true" />
+
+          {/* Refined Selection Perimeter Energy Runner */}
           {isSelected && (
             <svg
               key={pulseKey}
@@ -116,7 +149,6 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
               viewBox="0 0 315 185"
               aria-hidden="true"
             >
-              {/* Slanted Parallelogram Path matching the exact card geometry */}
               <polygon
                 points="45,55 326,55 314,199 32,199"
                 className="slotPulsePoly"
@@ -125,7 +157,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
             </svg>
           )}
 
-          {/* Persistent Active Border Glow */}
+          {/* Persistent Clear Active Border in Card's Accent Color */}
           {isSelected && (
             <div
               className="slotActiveGlowBorder"

@@ -221,21 +221,98 @@
 }
 
 .characterRecoilFrame.is-recoiling {
-  animation: cowboyRecoil 0.36s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  animation: cowboyRecoil 0.42s cubic-bezier(0.2, 0.85, 0.25, 1) forwards;
 }
 
+/* Two-beat paired recoil response matching Left Gun (t=0) then Right Gun (t=60ms) */
 @keyframes cowboyRecoil {
   0% {
     transform: translate(0, 0) rotate(0deg);
   }
-  20% {
-    transform: translate(-2.5px, 3.5px) rotate(-1.2deg);
+  16% {
+    /* First kick: recoil from left gun */
+    transform: translate(2.2px, 3.2px) rotate(1.1deg);
   }
-  50% {
-    transform: translate(-1.2px, 1.8px) rotate(-0.6deg);
+  38% {
+    /* Second kick: recoil from right gun */
+    transform: translate(-3.0px, 4.0px) rotate(-1.4deg);
+  }
+  65% {
+    transform: translate(-0.8px, 1.2px) rotate(-0.3deg);
   }
   100% {
     transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Space Ranger (Buzzlight) Holographic Activation Reaction
+   Leans toward the prize stage, lifts 3-4px, and sweeps a glint over the visor
+   -------------------------------------------------------------------------- */
+.buzzIdle.is-buzz-reacting {
+  animation: buzzHoloReact 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes buzzHoloReact {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  35% {
+    /* Lean toward prize medals (to the left) */
+    transform: translate(-6px, -4px) rotate(-2deg) scale(1.02);
+  }
+  75% {
+    transform: translate(-1.5px, -1px) rotate(-0.5deg) scale(1.008);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+/* Masked Visor Glint Frame: precisely shaped to the space ranger's helmet visor */
+.buzzVisorGlintFrame {
+  position: absolute;
+  left: 22%;
+  top: 10%;
+  width: 38%;
+  height: 22%;
+  border-radius: 46% 46% 38% 38%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 5;
+}
+
+.buzzVisorGlintFrame.is-active {
+  opacity: 1;
+}
+
+.buzzVisorGlintSweep {
+  position: absolute;
+  top: -50%;
+  left: -120%;
+  width: 70%;
+  height: 200%;
+  transform: rotate(26deg);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 30%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(0, 240, 255, 0.6) 70%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.7));
+  animation: visorSheenSweep 0.55s ease-out forwards;
+}
+
+@keyframes visorSheenSweep {
+  0% {
+    left: -120%;
+  }
+  100% {
+    left: 180%;
   }
 }
 
@@ -286,13 +363,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   3b. Cowboy Gunfire Rig (Rank-Coloured Muzzle Flash & Projectile)
-   Anchored directly to the viewer's right gun muzzle center: left 93.4%, top 22.3%
+   3b. Cowboy Paired Gunfire Rig (Both Guns: Left -114deg, Right -66deg)
    -------------------------------------------------------------------------- */
 .cowboyGunfireRig {
   position: absolute;
-  left: 93.4%;
-  top: 22.3%;
   width: 0;
   height: 0;
   pointer-events: none;
@@ -300,7 +374,19 @@
   transform: translate(-50%, -50%);
 }
 
-/* Local gun flare: brief 100ms radial glow behind muzzle */
+/* Left Gun Barrel Center (Viewer's Left): left: 2.2%, top: 27.8% */
+.cowboyGunfireRig.gunRigLeft {
+  left: 2.2%;
+  top: 27.8%;
+}
+
+/* Right Gun Barrel Center (Viewer's Right): left: 94.0%, top: 22.8% */
+.cowboyGunfireRig.gunRigRight {
+  left: 94.0%;
+  top: 22.8%;
+}
+
+/* Local gun flare: brief radial glow behind muzzle */
 .gunBarrelFlare {
   position: absolute;
   left: -24px;
@@ -312,14 +398,21 @@
   animation: flareFlash 0.12s ease-out forwards;
 }
 
-/* Compact rank-coloured muzzle flash: 80ms star burst */
+/* Compact rank-coloured muzzle flashes */
 .gunMuzzleFlash {
   position: absolute;
   left: -18px;
   top: -18px;
   width: 36px;
   height: 36px;
-  animation: muzzleBurst 0.085s ease-out forwards;
+}
+
+.gunMuzzleFlash.gunMuzzleFlashLeft {
+  animation: muzzleBurstLeft 0.085s ease-out forwards;
+}
+
+.gunMuzzleFlash.gunMuzzleFlashRight {
+  animation: muzzleBurstRight 0.085s ease-out forwards;
 }
 
 .gunMuzzleFlash::before,
@@ -339,7 +432,15 @@
   filter: drop-shadow(0 0 8px var(--shot-glow, #ffd700));
 }
 
-.gunMuzzleFlash::after {
+.gunMuzzleFlash.gunMuzzleFlashLeft::after {
+  width: 38px;
+  height: 6px;
+  background: linear-gradient(90deg, transparent, var(--shot-core, #fffde0), #ffffff, var(--shot-core, #fffde0), transparent);
+  border-radius: 3px;
+  transform: translate(-50%, -50%) rotate(-114deg);
+}
+
+.gunMuzzleFlash.gunMuzzleFlashRight::after {
   width: 38px;
   height: 6px;
   background: linear-gradient(90deg, transparent, var(--shot-core, #fffde0), #ffffff, var(--shot-core, #fffde0), transparent);
@@ -347,7 +448,7 @@
   transform: translate(-50%, -50%) rotate(-66deg);
 }
 
-/* Small stylised projectile with fading trail along -66deg barrel trajectory */
+/* Small stylised projectiles along barrel trajectories */
 .gunProjectileBeam {
   position: absolute;
   left: 0;
@@ -358,7 +459,16 @@
   transform-origin: left center;
   background: linear-gradient(90deg, transparent 0%, var(--shot-beam, #ffb700) 30%, var(--shot-glow, #ffd700) 70%, #ffffff 95%, #ffffff 100%);
   box-shadow: 0 0 10px var(--shot-glow, #ffd700), 0 0 4px #ffffff;
-  animation: projectileFly 0.19s cubic-bezier(0.15, 0.8, 0.35, 1) forwards;
+}
+
+.gunProjectileBeam.gunProjectileBeamLeft {
+  transform: rotate(-114deg);
+  animation: projectileFlyLeft 0.22s cubic-bezier(0.15, 0.8, 0.35, 1) forwards;
+}
+
+.gunProjectileBeam.gunProjectileBeamRight {
+  transform: rotate(-66deg);
+  animation: projectileFlyRight 0.22s cubic-bezier(0.15, 0.8, 0.35, 1) forwards;
 }
 
 @keyframes flareFlash {
@@ -367,13 +477,38 @@
   100% { transform: scale(1.4); opacity: 0; }
 }
 
-@keyframes muzzleBurst {
+@keyframes muzzleBurstLeft {
+  0% { transform: scale(0.2) rotate(-114deg); opacity: 1; }
+  45% { transform: scale(1.25) rotate(-114deg); opacity: 1; }
+  100% { transform: scale(0.6) rotate(-114deg); opacity: 0; }
+}
+
+@keyframes muzzleBurstRight {
   0% { transform: scale(0.2) rotate(-66deg); opacity: 1; }
   45% { transform: scale(1.25) rotate(-66deg); opacity: 1; }
   100% { transform: scale(0.6) rotate(-66deg); opacity: 0; }
 }
 
-@keyframes projectileFly {
+@keyframes projectileFlyLeft {
+  0% {
+    transform: rotate(-114deg) translateX(0px) scaleX(0.35);
+    opacity: 1;
+  }
+  30% {
+    transform: rotate(-114deg) translateX(45px) scaleX(1.2);
+    opacity: 1;
+  }
+  75% {
+    transform: rotate(-114deg) translateX(120px) scaleX(1.0);
+    opacity: 0.85;
+  }
+  100% {
+    transform: rotate(-114deg) translateX(165px) scaleX(0.7);
+    opacity: 0;
+  }
+}
+
+@keyframes projectileFlyRight {
   0% {
     transform: rotate(-66deg) translateX(0px) scaleX(0.35);
     opacity: 1;
@@ -500,10 +635,177 @@
 /* Medal Graphic Layer */
 .medalSvgWrapper {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: block;
   transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
   will-change: transform;
+}
+
+/* VR Medal Hover Lift (5-7px, scale ~1.025) */
+.prizeMedalItem.track-vr.is-hovered .medalSvgWrapper,
+.prizeMedalItem.track-vr:focus-within .medalSvgWrapper {
+  transform: translateY(-6px) scale(1.025);
+}
+
+/* --------------------------------------------------------------------------
+   VR Holographic Projection Rig
+   Thin perspective-tilted ellipse, rising light fragments, and soft scan sweep
+   -------------------------------------------------------------------------- */
+.vrHoloRig {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 70px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.22s ease-out;
+}
+
+.vrHoloRig.is-active,
+.prizeMedalItem.track-vr.is-hovered .vrHoloRig,
+.prizeMedalItem.track-vr:focus-within .vrHoloRig {
+  opacity: 1;
+}
+
+/* Perspective-Tilted Holographic Ellipse at Base */
+.vrHoloEmitterBase {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) perspective(280px) rotateX(68deg);
+  width: 175px;
+  height: 54px;
+  border-radius: 50%;
+  border: 1.5px solid var(--holo-primary, #00f0ff);
+  box-shadow: 0 0 10px var(--holo-primary, #00f0ff),
+              inset 0 0 8px var(--holo-accent, #ffd700),
+              0 0 20px rgba(0, 240, 255, 0.3);
+  background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.18) 0%, transparent 70%);
+}
+
+.vrHoloRingsOuter {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px dashed var(--holo-accent, #ffd700);
+  opacity: 0.55;
+  animation: holoRingSpin 12s linear infinite;
+}
+
+.vrHoloRingsInner {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1px solid var(--holo-primary, #00f0ff);
+  opacity: 0.7;
+}
+
+@keyframes holoRingSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Rising light fragments from the holographic ellipse (2-3 fragments) */
+.vrHoloFragment {
+  position: absolute;
+  bottom: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px var(--holo-primary, #00f0ff), 0 0 3px var(--holo-accent, #ffd700);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vrHoloRig.is-active .vrHoloFragment.frag1 {
+  left: 36%;
+  width: 4px;
+  height: 4px;
+  animation: holoFragRise1 0.75s ease-out forwards;
+}
+
+.vrHoloRig.is-active .vrHoloFragment.frag2 {
+  left: 52%;
+  width: 5px;
+  height: 5px;
+  animation: holoFragRise2 0.7s ease-out 0.08s forwards;
+}
+
+.vrHoloRig.is-active .vrHoloFragment.frag3 {
+  left: 64%;
+  width: 4px;
+  height: 4px;
+  animation: holoFragRise3 0.8s ease-out 0.14s forwards;
+}
+
+@keyframes holoFragRise1 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translate(-8px, -45px) scale(1.2); opacity: 0; }
+}
+
+@keyframes holoFragRise2 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translate(6px, -52px) scale(1.1); opacity: 0; }
+}
+
+@keyframes holoFragRise3 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translate(-4px, -38px) scale(1.3); opacity: 0; }
+}
+
+/* Translucent Soft Scan Highlight Sweep across medal artwork */
+.vrHoloScanOverlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.vrHoloScanLine {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--holo-beam, rgba(0, 240, 255, 0.35)) 40%,
+    rgba(255, 255, 255, 0.7) 50%,
+    var(--holo-accent, rgba(255, 215, 0, 0.3)) 60%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 6px var(--holo-primary, #00f0ff));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vrHoloScanOverlay.run-scan .vrHoloScanLine {
+  animation: holoScanSweep 0.65s cubic-bezier(0.25, 0.85, 0.35, 1) forwards;
+}
+
+@keyframes holoScanSweep {
+  0% {
+    bottom: -20px;
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    bottom: 105%;
+    opacity: 0;
+  }
 }
 
 .medalSvg {
@@ -938,6 +1240,16 @@
   }
 
   .cowboyGunfireRig {
+    display: none !important;
+  }
+
+  .buzzIdle.is-buzz-reacting,
+  .buzzVisorGlintFrame,
+  .vrHoloRig,
+  .vrHoloScanOverlay,
+  .vrHoloScanLine {
+    animation: none !important;
+    transform: none !important;
     display: none !important;
   }
 }

@@ -38,14 +38,38 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
   // --- Hover States ---
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isBalloonHovered, setIsBalloonHovered] = useState<boolean>(false);
+  const [isNinjaFlourishing, setIsNinjaFlourishing] = useState<boolean>(false);
+  const ninjaFlourishTimerRef = useRef<number | null>(null);
 
   // Track unmount lifecycle
   useEffect(() => {
     isUnmountedRef.current = false;
     return () => {
       isUnmountedRef.current = true;
+      if (ninjaFlourishTimerRef.current !== null) {
+        window.clearTimeout(ninjaFlourishTimerRef.current);
+      }
     };
   }, []);
+
+  const triggerNinjaFlourish = useCallback(() => {
+    if (isUnmountedRef.current || motionPaused) return;
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    setIsNinjaFlourishing(true);
+    if (ninjaFlourishTimerRef.current !== null) {
+      window.clearTimeout(ninjaFlourishTimerRef.current);
+    }
+    ninjaFlourishTimerRef.current = window.setTimeout(() => {
+      if (!isUnmountedRef.current) {
+        setIsNinjaFlourishing(false);
+      }
+      ninjaFlourishTimerRef.current = null;
+    }, 550);
+  }, [motionPaused]);
 
   // --------------------------------------------------------------------------
   // 1. Natural Eyelid Blinking for Colt (Gunslinger)
@@ -539,43 +563,60 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         aria-label="Leon the Chameleon Hood Ninja Brawler. Hover to inspect."
         onPointerEnter={() => {
           setIsHovered(true);
+          triggerNinjaFlourish();
           uiAudio.playHoverTick();
         }}
-        onPointerLeave={() => setIsHovered(false)}
+        onPointerLeave={() => {
+          setIsHovered(false);
+          setIsNinjaFlourishing(false);
+        }}
+        onFocus={() => {
+          setIsHovered(true);
+          triggerNinjaFlourish();
+        }}
+        onBlur={() => {
+          setIsHovered(false);
+          setIsNinjaFlourishing(false);
+        }}
+        tabIndex={0}
         style={{
           position: 'relative',
           display: 'block',
           userSelect: 'none',
+          outline: 'none',
         }}
       >
-        <div
-          id="leon-hover-popup"
-          style={{
-            transform: isHovered
-              ? 'translateY(-14px) scale(1.05)'
-              : 'translateY(0px) scale(1)',
-            filter: isHovered
-              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
-              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
-            transformOrigin: '50% 92%',
-            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
-            willChange: 'transform',
-          }}
-        >
-          <img
-            src={SCENE_ASSETS.ninja.src}
-            alt={SCENE_ASSETS.ninja.alt}
-            width={SCENE_ASSETS.ninja.width}
-            height={SCENE_ASSETS.ninja.height}
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              userSelect: 'none',
-              pointerEvents: 'none',
-            }}
-            draggable={false}
-          />
+        {/* Separate Idle Motion Wrapper: Slow 2-3px movement, visually anchored feet */}
+        <div className={`ninjaIdleWrapper ${motionPaused ? 'paused' : ''}`}>
+          {/* Hover Frame: Lift ~4px, scale ~1.035, inward lean toward center (-1.2deg) */}
+          <div
+            id="leon-hover-popup"
+            className={`ninjaHoverFrame ${isHovered ? 'isHovered' : ''}`}
+          >
+            <img
+              src={SCENE_ASSETS.ninja.src}
+              alt={SCENE_ASSETS.ninja.alt}
+              width={SCENE_ASSETS.ninja.width}
+              height={SCENE_ASSETS.ninja.height}
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+              draggable={false}
+            />
+
+            {/* Violet/Cyan Weapon Energy Crescent Flourish (around visible left hand/weapon) */}
+            <div
+              className={`ninjaCrescentRig ${isNinjaFlourishing ? 'isFlourishing' : ''}`}
+              aria-hidden="true"
+            >
+              <div className="ninjaCrescentArc" />
+              <div className="ninjaCrescentSparks" />
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -25,7 +25,7 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
   const [selectedSlotId, setSelectedSlotId] = useState<string>(
     SPONSORS_COPY.defaultSlotId
   );
-  const [characterSettled, setCharacterSettled] = useState<boolean>(false);
+  const [companionReaction, setCompanionReaction] = useState<'idle' | 'lean-left' | 'lean-center' | 'lean-right'>('idle');
   const settleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Coordinated entrance and ambient motion
@@ -42,15 +42,23 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
       uiAudio.playPressClack();
     }
 
-    // Character accent makes one small local upward settle (~3-4px)
+    // Companion response (Requirement 6C):
+    // Small lean toward that side of the board + subtle 2-4px lift and settling motion
     if (!motionPaused) {
-      setCharacterSettled(true);
+      let lean: 'lean-left' | 'lean-center' | 'lean-right' = 'lean-center';
+      if (slotId === 'title-sponsor' || slotId === 'slot-4') {
+        lean = 'lean-left';
+      } else if (slotId === 'platform-sponsor' || slotId === 'slot-6') {
+        lean = 'lean-right';
+      }
+
+      setCompanionReaction(lean);
       if (settleTimeoutRef.current) {
         clearTimeout(settleTimeoutRef.current);
       }
       settleTimeoutRef.current = setTimeout(() => {
-        setCharacterSettled(false);
-      }, 350);
+        setCompanionReaction('idle');
+      }, 420);
     }
   };
 
@@ -149,7 +157,7 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
             {/* Blue/Green Spike Character Accent near Lower Right of Board */}
             <div
               id="sponsor-spike-character"
-              className={`spikeCharacterAccent ${characterSettled ? 'characterSettle' : ''}`}
+              className={`spikeCharacterAccent ${companionReaction !== 'idle' ? `companionReact ${companionReaction}` : ''}`}
               aria-hidden="true"
             >
               <img
