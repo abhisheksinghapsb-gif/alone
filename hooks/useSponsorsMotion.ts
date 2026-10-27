@@ -99,7 +99,7 @@ export const useSponsorsMotion = ({
 
       // ── 2. Restrained Asynchronous Idle Motion (Crown, Chest, Mascot) ──
       // ~2–3px displacement, 6–9 seconds per cycle, no synchronized bouncing
-      const crownIdle = gsap.to('.crownFlankImg, [class*="crownFlankImg"]', {
+      const crownIdle = gsap.to('[class*="crownIdleWrap"]', {
         y: -2.5,
         duration: 6.5,
         ease: 'sine.inOut',
@@ -107,7 +107,7 @@ export const useSponsorsMotion = ({
         yoyo: true,
       });
 
-      const chestIdle = gsap.to('.chestFlankImg, [class*="chestFlankImg"]', {
+      const chestIdle = gsap.to('[class*="chestIdleWrap"]', {
         y: -3,
         duration: 8.2,
         ease: 'sine.inOut',
@@ -115,7 +115,7 @@ export const useSponsorsMotion = ({
         yoyo: true,
       });
 
-      const mascotIdle = gsap.to('#sponsor-spike-character', {
+      const mascotIdle = gsap.to('[class*="spikeIdleWrap"]', {
         y: -2.5,
         duration: 7.4,
         ease: 'sine.inOut',

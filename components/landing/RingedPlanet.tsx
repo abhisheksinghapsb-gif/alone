@@ -88,8 +88,12 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
 
     const periodMs = 42000; // 42 seconds per revolution
 
+    const isReducedMotion = () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const loop = (time: number) => {
-      if (isDestroyed || !isVisible || motionPausedRef.current || document.hidden) return;
+      if (isDestroyed || !isVisible || motionPausedRef.current || document.hidden || isReducedMotion()) return;
 
       const dt = Math.max(0, time - lastActiveTime);
       lastActiveTime = time;
@@ -105,7 +109,7 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
     };
 
     const startLoop = () => {
-      if (animId !== null || isDestroyed || !isVisible || motionPausedRef.current || document.hidden) return;
+      if (animId !== null || isDestroyed || !isVisible || motionPausedRef.current || document.hidden || isReducedMotion()) return;
       lastActiveTime = performance.now();
       animId = requestAnimationFrame(loop);
     };
@@ -245,10 +249,25 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
 
+    // Media query listener for live prefers-reduced-motion OS changes
+    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const onMotionPreferenceChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        stopLoop();
+      } else if (isVisible && !motionPausedRef.current && !document.hidden) {
+        startLoop();
+      }
+    };
+    mql?.addEventListener('change', onMotionPreferenceChange);
+
     mapImg.src = '/assets/genesis/static/ringed-planet-surface-map.webp';
     mapImg.onload = () => {
       mapLoaded = true;
       tryInitLUT();
+    };
+    mapImg.onerror = () => {
+      // In case of texture load failure, preserve static layout
+      mapLoaded = false;
     };
 
     sphereImg.src = '/assets/genesis/static/ringed-planet-sphere.webp';
@@ -256,12 +275,16 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
       sphereLoaded = true;
       tryInitLUT();
     };
+    sphereImg.onerror = () => {
+      sphereLoaded = false;
+    };
 
     return () => {
       isDestroyed = true;
       stopLoop();
       observer.disconnect();
       document.removeEventListener('visibilitychange', onVisibilityChange);
+      mql?.removeEventListener('change', onMotionPreferenceChange);
       startLoopRef.current = null;
       stopLoopRef.current = null;
     };

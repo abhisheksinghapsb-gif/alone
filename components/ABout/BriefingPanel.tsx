@@ -35,6 +35,7 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
 
   const userInteractedRef = useRef<boolean>(false);
   const isHoveredRef = useRef<boolean>(false);
+  const scrollAccumulatorRef = useRef<number>(0);
   const autoScrollRafRef = useRef<number | null>(null);
   const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -43,17 +44,19 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     if (!el) return;
     const { scrollTop, scrollHeight, clientHeight } = el;
     const scrollable = scrollHeight > clientHeight + 4;
-    setCanScroll(scrollable);
+    setCanScroll((prev) => (prev === scrollable ? prev : scrollable));
 
     if (scrollable) {
       const atBottom = scrollTop + clientHeight >= scrollHeight - 18;
-      setIsAtBottom(atBottom);
-      setHasMaskTop(scrollTop > 10);
-      setHasMaskBottom(!atBottom);
+      const hasTop = scrollTop > 10;
+      const hasBottom = !atBottom;
+      setIsAtBottom((prev) => (prev === atBottom ? prev : atBottom));
+      setHasMaskTop((prev) => (prev === hasTop ? prev : hasTop));
+      setHasMaskBottom((prev) => (prev === hasBottom ? prev : hasBottom));
     } else {
-      setIsAtBottom(false);
-      setHasMaskTop(false);
-      setHasMaskBottom(false);
+      setIsAtBottom((prev) => (prev === false ? prev : false));
+      setHasMaskTop((prev) => (prev === false ? prev : false));
+      setHasMaskBottom((prev) => (prev === false ? prev : false));
     }
   }, []);
 
@@ -79,11 +82,14 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
       if (motionPaused || prefersReducedMotion) return;
 
       autoScrollTimeoutRef.current = setTimeout(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+        scrollAccumulatorRef.current = el.scrollTop;
         let lastTime = performance.now();
 
         const step = (time: number) => {
-          const el = scrollRef.current;
-          if (!el || isHoveredRef.current || userInteractedRef.current) {
+          const currentEl = scrollRef.current;
+          if (!currentEl || isHoveredRef.current || userInteractedRef.current || document.hidden) {
             stopAutoScroll();
             return;
           }
@@ -91,15 +97,19 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
           const delta = Math.min(32, time - lastTime);
           lastTime = time;
 
-          const maxScroll = el.scrollHeight - el.clientHeight;
-          if (el.scrollTop >= maxScroll - 2) {
-            setIsAtBottom(true);
+          const maxScroll = currentEl.scrollHeight - currentEl.clientHeight;
+          // Subpixel floating-point accumulator to prevent rounding stall
+          scrollAccumulatorRef.current += (24 * delta) / 1000;
+
+          if (scrollAccumulatorRef.current >= maxScroll - 2) {
+            currentEl.scrollTop = maxScroll;
+            setIsAtBottom((prev) => (prev === true ? prev : true));
+            setHasMaskBottom((prev) => (prev === false ? prev : false));
             stopAutoScroll();
             return;
           }
 
-          // ~24px per second readable glide
-          el.scrollTop += (24 * delta) / 1000;
+          currentEl.scrollTop = Math.floor(scrollAccumulatorRef.current);
           checkScrollState();
 
           autoScrollRafRef.current = requestAnimationFrame(step);
@@ -184,6 +194,15 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     }
   };
 
+  // Synchronize accumulator on manual scroll and update masks
+  const handleScroll = () => {
+    const el = scrollRef.current;
+    if (el) {
+      scrollAccumulatorRef.current = el.scrollTop;
+    }
+    checkScrollState();
+  };
+
   const handleUserInteraction = () => {
     userInteractedRef.current = true;
     stopAutoScroll();
@@ -196,11 +215,13 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
 
     if (isAtBottom) {
       userInteractedRef.current = false;
+      scrollAccumulatorRef.current = 0;
       el.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       userInteractedRef.current = true;
       const step = Math.min(el.clientHeight * 0.7, 160);
       const target = Math.min(el.scrollTop + step, el.scrollHeight - el.clientHeight);
+      scrollAccumulatorRef.current = target;
       el.scrollTo({ top: target, behavior: 'smooth' });
     }
   };
@@ -209,6 +230,7 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
+      scrollAccumulatorRef.current = 0;
     }
     return () => {
       if (pointerRafRef.current !== null) {
@@ -217,6 +239,30 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
       }
     };
   }, []);
+
+  // Suspend auto-scroll in hidden tabs and resume after delay when visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopAutoScroll();
+      } else {
+        const el = scrollRef.current;
+        if (
+          el &&
+          !userInteractedRef.current &&
+          !isHoveredRef.current &&
+          el.scrollTop < el.scrollHeight - el.clientHeight - 20
+        ) {
+          startAutoScroll(2000);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [startAutoScroll, stopAutoScroll]);
 
   // Track container dimensions via ResizeObserver for precise SVG frame geometry
   useEffect(() => {
@@ -281,15 +327,15 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     };
   }, [motionPaused, checkScrollState, startAutoScroll, stopAutoScroll]);
 
-  // Compute exact silhouette path following Vector 38 geometry
+  // Compute exact silhouette path following Vector 38 geometry with proportional bounds for 320px
   const w = Math.max(280, dimensions.width);
   const h = Math.max(240, dimensions.height);
 
   // Tab anchors (centered cleanly on container width matching Vector 38 silhouette)
-  const tabWidth = Math.min(220, Math.max(160, Math.round(w * 0.32)));
+  const tabWidth = Math.min(220, Math.max(120, Math.round(w * 0.32)));
   const tabLeft = Math.round((w - tabWidth) / 2);
   const tabRight = tabLeft + tabWidth;
-  const bevelWidth = 32.5;
+  const bevelWidth = Math.min(32.5, Math.max(16, Math.round(tabLeft * 0.45)));
   const tabHeight = 42.5;
 
   const leftShoulderX = Math.max(2.5, tabLeft - bevelWidth);
@@ -479,9 +525,18 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
         <div
           ref={scrollRef}
           className={`briefingScrollContainer ${hasMaskTop ? 'hasMaskTop' : ''} ${hasMaskBottom ? 'hasMaskBottom' : ''}`}
-          onScroll={checkScrollState}
+          tabIndex={0}
+          role="region"
+          aria-label={ABOUT_COPY.heading}
+          onScroll={handleScroll}
           onWheel={handleUserInteraction}
           onTouchStart={handleUserInteraction}
+          onPointerDown={handleUserInteraction}
+          onKeyDown={(e) => {
+            if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(e.key)) {
+              handleUserInteraction();
+            }
+          }}
         >
           <div className="briefingContent">
             <p className="briefingParagraph" id="briefing-p1">

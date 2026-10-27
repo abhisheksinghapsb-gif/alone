@@ -40,8 +40,10 @@ export const ExperienceControls: React.FC<ExperienceControlsProps> = ({
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '42px',
-          height: '42px',
+          minWidth: '44px',
+          minHeight: '44px',
+          width: '44px',
+          height: '44px',
           borderRadius: '10px',
           background: motionPaused
             ? 'linear-gradient(180deg, #F59E0B 0%, #D97706 100%)'
@@ -53,7 +55,6 @@ export const ExperienceControls: React.FC<ExperienceControlsProps> = ({
           cursor: 'pointer',
           transition: 'transform 150ms ease, background 200ms ease, box-shadow 200ms ease',
           color: '#FFFFFF',
-          outline: 'none',
         }}
       >
         {motionPaused ? (
@@ -93,8 +94,10 @@ export const ExperienceControls: React.FC<ExperienceControlsProps> = ({
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '42px',
-          height: '42px',
+          minWidth: '44px',
+          minHeight: '44px',
+          width: '44px',
+          height: '44px',
           borderRadius: '10px',
           background: soundEnabled
             ? 'linear-gradient(180deg, #38BDF8 0%, #0284C7 100%)'
@@ -106,7 +109,6 @@ export const ExperienceControls: React.FC<ExperienceControlsProps> = ({
           cursor: 'pointer',
           transition: 'transform 150ms ease, background 200ms ease, box-shadow 200ms ease',
           color: '#FFFFFF',
-          outline: 'none',
         }}
       >
         {soundEnabled ? (

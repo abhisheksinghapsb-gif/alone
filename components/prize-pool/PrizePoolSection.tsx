@@ -32,6 +32,9 @@ export const PrizePoolSection: React.FC<PrizePoolSectionProps> = ({
       {/* Background Vignette */}
       <div className="prizePoolVignette" aria-hidden="true" />
 
+      {/* Anchor alias supporting both #prize-pool and #prizepool navigation targets */}
+      <div id="prizepool" style={{ position: 'absolute', top: 0 }} aria-hidden="true" />
+
       {/* Screen reader semantic heading hierarchy */}
       <h2 id="prize-pool-heading" className="sr-only">
         Genesis 6 Prize Pool
@@ -46,6 +49,8 @@ export const PrizePoolSection: React.FC<PrizePoolSectionProps> = ({
             width={527}
             height={116}
             className="prizePoolBannerImg"
+            loading="lazy"
+            decoding="async"
             draggable={false}
           />
         </div>
@@ -68,6 +73,8 @@ export const PrizePoolSection: React.FC<PrizePoolSectionProps> = ({
               width={140}
               height={150}
               className="gemAccentImg"
+              loading="lazy"
+              decoding="async"
               draggable={false}
             />
           </div>

@@ -208,9 +208,39 @@ export const usePrizeMotion = ({
         if (motionPaused) t2.pause();
         idleTweensRef.current.push(t2);
       }
+
+      // Suspend repeated character idle loops when section is offscreen
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        onEnter: () => {
+          if (!motionPaused && !document.hidden) {
+            idleTweensRef.current.forEach((t) => t.play());
+          }
+        },
+        onLeave: () => idleTweensRef.current.forEach((t) => t.pause()),
+        onEnterBack: () => {
+          if (!motionPaused && !document.hidden) {
+            idleTweensRef.current.forEach((t) => t.play());
+          }
+        },
+        onLeaveBack: () => idleTweensRef.current.forEach((t) => t.pause()),
+      });
     }, section);
 
+    // Pause idle loops when tab is hidden
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        idleTweensRef.current.forEach((t) => t.pause());
+      } else if (!motionPaused && !prefersReducedMotion) {
+        idleTweensRef.current.forEach((t) => t.resume());
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       idleTweensRef.current.forEach((t) => t.kill());
       idleTweensRef.current = [];
       ctx.revert();

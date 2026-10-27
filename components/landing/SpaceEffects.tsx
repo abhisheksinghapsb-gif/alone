@@ -258,12 +258,25 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
       observer.observe(canvas);
     }
 
+    // Media query listener for live prefers-reduced-motion OS changes
+    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const onMotionPreferenceChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        stopLoop();
+        drawStationaryFrame();
+      } else if (isVisible && !motionPaused) {
+        startLoop();
+      }
+    };
+    mql?.addEventListener('change', onMotionPreferenceChange);
+
     window.addEventListener('resize', handleResize, { passive: true });
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      mql?.removeEventListener('change', onMotionPreferenceChange);
       if (observer) observer.disconnect();
       stopLoop();
     };

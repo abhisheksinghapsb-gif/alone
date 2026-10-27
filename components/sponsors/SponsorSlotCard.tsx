@@ -87,15 +87,26 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
     onSelect(slot.id);
   };
 
-  // Cancel pending animation frame on unmount
+  // Clear inline tilt when motion is paused or on unmount
+  useEffect(() => {
+    if (motionPaused) {
+      if (tiltRafRef.current !== null) {
+        cancelAnimationFrame(tiltRafRef.current);
+        tiltRafRef.current = null;
+      }
+      applyVisualTransform('');
+    }
+  }, [motionPaused, applyVisualTransform]);
+
   useEffect(() => {
     return () => {
       if (tiltRafRef.current !== null) {
         cancelAnimationFrame(tiltRafRef.current);
         tiltRafRef.current = null;
       }
+      applyVisualTransform('');
     };
-  }, []);
+  }, [applyVisualTransform]);
 
   return (
     <button
@@ -132,7 +143,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
             width={315}
             height={185}
             className={styles.slotSvgArtwork}
-            loading="eager"
+            loading="lazy"
             decoding="async"
             draggable={false}
           />

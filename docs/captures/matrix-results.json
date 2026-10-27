@@ -1,0 +1,914 @@
+[
+  {
+    "viewport": "412x924 (phone-412x924)",
+    "status": "PASS",
+    "clearance": "19px",
+    "charGap": "75px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\phone-412x924.png",
+    "measurements": {
+      "scrollWidth": 412,
+      "clientWidth": 412,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 700,
+        "left": 0,
+        "right": 412,
+        "width": 412,
+        "height": 700
+      },
+      "header": {
+        "top": 0,
+        "bottom": 124,
+        "left": 0,
+        "right": 412,
+        "width": 412,
+        "height": 124
+      },
+      "nav": {
+        "top": 72,
+        "bottom": 116,
+        "left": 12,
+        "right": 400,
+        "width": 388,
+        "height": 44
+      },
+      "hero": {
+        "top": 135,
+        "bottom": 391,
+        "left": 58,
+        "right": 354,
+        "width": 296,
+        "height": 256
+      },
+      "logo": {
+        "top": 135,
+        "bottom": 284,
+        "left": 88,
+        "right": 324,
+        "width": 236,
+        "height": 149
+      },
+      "register": {
+        "top": 322,
+        "bottom": 387,
+        "left": 139,
+        "right": 273,
+        "width": 134,
+        "height": 64
+      },
+      "gunslinger": {
+        "top": 475,
+        "bottom": 617,
+        "left": -8,
+        "right": 173,
+        "width": 181,
+        "height": 142
+      },
+      "ninja": {
+        "top": 462,
+        "bottom": 617,
+        "left": 251,
+        "right": 420,
+        "width": 169,
+        "height": 155
+      },
+      "barrier": {
+        "top": 595,
+        "bottom": 700,
+        "left": 0,
+        "right": 412,
+        "width": 412,
+        "height": 105
+      },
+      "balloon": {
+        "top": 597,
+        "bottom": 696,
+        "left": 99,
+        "right": 161,
+        "width": 62,
+        "height": 99
+      },
+      "cannon": {
+        "top": 600,
+        "bottom": 700,
+        "left": 2,
+        "right": 84,
+        "width": 82,
+        "height": 100
+      },
+      "moon": {
+        "top": 438,
+        "bottom": 598,
+        "left": 37,
+        "right": 375,
+        "width": 338,
+        "height": 160
+      },
+      "headerWordmarkClearance": 19,
+      "registerToCharGap": 75,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": 0
+    }
+  },
+  {
+    "viewport": "393x852 (phone-393x852)",
+    "status": "PASS",
+    "clearance": "21px",
+    "charGap": "64px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\phone-393x852.png",
+    "measurements": {
+      "scrollWidth": 393,
+      "clientWidth": 393,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 682,
+        "left": 0,
+        "right": 393,
+        "width": 393,
+        "height": 682
+      },
+      "header": {
+        "top": 0,
+        "bottom": 124,
+        "left": 0,
+        "right": 393,
+        "width": 393,
+        "height": 124
+      },
+      "nav": {
+        "top": 72,
+        "bottom": 116,
+        "left": 12,
+        "right": 381,
+        "width": 369,
+        "height": 44
+      },
+      "hero": {
+        "top": 137,
+        "bottom": 397,
+        "left": 46,
+        "right": 347,
+        "width": 301,
+        "height": 260
+      },
+      "logo": {
+        "top": 137,
+        "bottom": 288,
+        "left": 76,
+        "right": 317,
+        "width": 240,
+        "height": 151
+      },
+      "register": {
+        "top": 328,
+        "bottom": 393,
+        "left": 129,
+        "right": 264,
+        "width": 136,
+        "height": 65
+      },
+      "gunslinger": {
+        "top": 470,
+        "bottom": 605,
+        "left": -8,
+        "right": 165,
+        "width": 173,
+        "height": 135
+      },
+      "ninja": {
+        "top": 457,
+        "bottom": 605,
+        "left": 240,
+        "right": 401,
+        "width": 161,
+        "height": 148
+      },
+      "barrier": {
+        "top": 581,
+        "bottom": 682,
+        "left": 0,
+        "right": 393,
+        "width": 393,
+        "height": 100
+      },
+      "balloon": {
+        "top": 578,
+        "bottom": 678,
+        "left": 94,
+        "right": 156,
+        "width": 62,
+        "height": 99
+      },
+      "cannon": {
+        "top": 586,
+        "bottom": 682,
+        "left": 2,
+        "right": 81,
+        "width": 79,
+        "height": 96
+      },
+      "moon": {
+        "top": 435,
+        "bottom": 588,
+        "left": 35,
+        "right": 358,
+        "width": 322,
+        "height": 153
+      },
+      "headerWordmarkClearance": 21,
+      "registerToCharGap": 64,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": 0
+    }
+  },
+  {
+    "viewport": "320x568 (phone-320x568)",
+    "status": "PASS",
+    "clearance": "12px",
+    "charGap": "52px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\phone-320x568.png",
+    "measurements": {
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 620,
+        "left": 0,
+        "right": 320,
+        "width": 320,
+        "height": 620
+      },
+      "header": {
+        "top": 0,
+        "bottom": 124,
+        "left": 0,
+        "right": 320,
+        "width": 320,
+        "height": 124
+      },
+      "nav": {
+        "top": 72,
+        "bottom": 116,
+        "left": 12,
+        "right": 308,
+        "width": 296,
+        "height": 44
+      },
+      "hero": {
+        "top": 128,
+        "bottom": 379,
+        "left": 16,
+        "right": 304,
+        "width": 288,
+        "height": 251
+      },
+      "logo": {
+        "top": 128,
+        "bottom": 279,
+        "left": 40,
+        "right": 280,
+        "width": 240,
+        "height": 151
+      },
+      "register": {
+        "top": 317,
+        "bottom": 375,
+        "left": 100,
+        "right": 220,
+        "width": 120,
+        "height": 58
+      },
+      "gunslinger": {
+        "top": 439,
+        "bottom": 560,
+        "left": -6,
+        "right": 149,
+        "width": 155,
+        "height": 121
+      },
+      "ninja": {
+        "top": 427,
+        "bottom": 560,
+        "left": 181,
+        "right": 326,
+        "width": 145,
+        "height": 133
+      },
+      "barrier": {
+        "top": 538,
+        "bottom": 620,
+        "left": 0,
+        "right": 320,
+        "width": 320,
+        "height": 82
+      },
+      "balloon": {
+        "top": 517,
+        "bottom": 616,
+        "left": 84,
+        "right": 146,
+        "width": 62,
+        "height": 99
+      },
+      "cannon": {
+        "top": 529,
+        "bottom": 620,
+        "left": 2,
+        "right": 77,
+        "width": 75,
+        "height": 91
+      },
+      "moon": {
+        "top": 420,
+        "bottom": 545,
+        "left": 29,
+        "right": 291,
+        "width": 262,
+        "height": 125
+      },
+      "headerWordmarkClearance": 12,
+      "registerToCharGap": 52,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": 0
+    }
+  },
+  {
+    "viewport": "768x1024 (tablet-768x1024)",
+    "status": "PASS",
+    "clearance": "31px",
+    "charGap": "150px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\tablet-768x1024.png",
+    "measurements": {
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 881,
+        "left": 0,
+        "right": 768,
+        "width": 768,
+        "height": 881
+      },
+      "header": {
+        "top": 0,
+        "bottom": 68,
+        "left": 0,
+        "right": 768,
+        "width": 768,
+        "height": 68
+      },
+      "nav": {
+        "top": 16,
+        "bottom": 60,
+        "left": 211,
+        "right": 557,
+        "width": 346,
+        "height": 44
+      },
+      "hero": {
+        "top": 91,
+        "bottom": 424,
+        "left": 215,
+        "right": 553,
+        "width": 339,
+        "height": 333
+      },
+      "logo": {
+        "top": 91,
+        "bottom": 304,
+        "left": 215,
+        "right": 553,
+        "width": 339,
+        "height": 213
+      },
+      "register": {
+        "top": 347,
+        "bottom": 419,
+        "left": 309,
+        "right": 459,
+        "width": 149,
+        "height": 72
+      },
+      "gunslinger": {
+        "top": 593,
+        "bottom": 788,
+        "left": 19,
+        "right": 269,
+        "width": 250,
+        "height": 196
+      },
+      "ninja": {
+        "top": 569,
+        "bottom": 788,
+        "left": 509,
+        "right": 749,
+        "width": 240,
+        "height": 220
+      },
+      "barrier": {
+        "top": 684,
+        "bottom": 881,
+        "left": 0,
+        "right": 768,
+        "width": 768,
+        "height": 196
+      },
+      "balloon": {
+        "top": 743,
+        "bottom": 873,
+        "left": 497,
+        "right": 741,
+        "width": 244,
+        "height": 130
+      },
+      "cannon": {
+        "top": 716,
+        "bottom": 881,
+        "left": 8,
+        "right": 143,
+        "width": 135,
+        "height": 164
+      },
+      "moon": {
+        "top": 548,
+        "bottom": 748,
+        "left": 174,
+        "right": 594,
+        "width": 420,
+        "height": 199
+      },
+      "headerWordmarkClearance": 31,
+      "registerToCharGap": 150,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": 0
+    }
+  },
+  {
+    "viewport": "960x1440 (tablet-960x1440)",
+    "status": "PASS",
+    "clearance": "39px",
+    "charGap": "217px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\tablet-960x1440.png",
+    "measurements": {
+      "scrollWidth": 950,
+      "clientWidth": 950,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 1040,
+        "left": 0,
+        "right": 950,
+        "width": 950,
+        "height": 1040
+      },
+      "header": {
+        "top": 0,
+        "bottom": 68,
+        "left": 0,
+        "right": 950,
+        "width": 950,
+        "height": 68
+      },
+      "nav": {
+        "top": 16,
+        "bottom": 60,
+        "left": 302,
+        "right": 648,
+        "width": 346,
+        "height": 44
+      },
+      "hero": {
+        "top": 99,
+        "bottom": 460,
+        "left": 273,
+        "right": 677,
+        "width": 404,
+        "height": 362
+      },
+      "logo": {
+        "top": 99,
+        "bottom": 326,
+        "left": 295,
+        "right": 655,
+        "width": 361,
+        "height": 227
+      },
+      "register": {
+        "top": 369,
+        "bottom": 454,
+        "left": 387,
+        "right": 563,
+        "width": 176,
+        "height": 85
+      },
+      "gunslinger": {
+        "top": 694,
+        "bottom": 935,
+        "left": 24,
+        "right": 331,
+        "width": 307,
+        "height": 241
+      },
+      "ninja": {
+        "top": 671,
+        "bottom": 935,
+        "left": 638,
+        "right": 926,
+        "width": 288,
+        "height": 264
+      },
+      "barrier": {
+        "top": 797,
+        "bottom": 1040,
+        "left": 0,
+        "right": 950,
+        "width": 950,
+        "height": 243
+      },
+      "balloon": {
+        "top": 902,
+        "bottom": 1032,
+        "left": 672,
+        "right": 916,
+        "width": 244,
+        "height": 130
+      },
+      "cannon": {
+        "top": 865,
+        "bottom": 1040,
+        "left": 8,
+        "right": 152,
+        "width": 144,
+        "height": 175
+      },
+      "moon": {
+        "top": 634,
+        "bottom": 880,
+        "left": 216,
+        "right": 734,
+        "width": 518,
+        "height": 246
+      },
+      "headerWordmarkClearance": 39,
+      "registerToCharGap": 217,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": 0
+    }
+  },
+  {
+    "viewport": "1366x768 (laptop-1366x768)",
+    "status": "PASS",
+    "clearance": "25px",
+    "charGap": "-237px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\laptop-1366x768.png",
+    "measurements": {
+      "scrollWidth": 1356,
+      "clientWidth": 1356,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 768,
+        "left": 0,
+        "right": 1356,
+        "width": 1356,
+        "height": 768
+      },
+      "header": {
+        "top": 0,
+        "bottom": 72,
+        "left": 0,
+        "right": 1356,
+        "width": 1356,
+        "height": 72
+      },
+      "nav": {
+        "top": 16,
+        "bottom": 60,
+        "left": 480,
+        "right": 876,
+        "width": 396,
+        "height": 44
+      },
+      "hero": {
+        "top": 85,
+        "bottom": 474,
+        "left": 486,
+        "right": 869,
+        "width": 383,
+        "height": 389
+      },
+      "logo": {
+        "top": 85,
+        "bottom": 326,
+        "left": 486,
+        "right": 869,
+        "width": 383,
+        "height": 241
+      },
+      "register": {
+        "top": 374,
+        "bottom": 467,
+        "left": 581,
+        "right": 775,
+        "width": 194,
+        "height": 93
+      },
+      "gunslinger": {
+        "top": 246,
+        "bottom": 492,
+        "left": 82,
+        "right": 396,
+        "width": 314,
+        "height": 246
+      },
+      "ninja": {
+        "top": 230,
+        "bottom": 506,
+        "left": 974,
+        "right": 1274,
+        "width": 301,
+        "height": 275
+      },
+      "barrier": {
+        "top": 457,
+        "bottom": 803,
+        "left": 0,
+        "right": 1356,
+        "width": 1356,
+        "height": 347
+      },
+      "balloon": {
+        "top": 569,
+        "bottom": 756,
+        "left": 960,
+        "right": 1320,
+        "width": 360,
+        "height": 187
+      },
+      "cannon": {
+        "top": 519,
+        "bottom": 768,
+        "left": 12,
+        "right": 217,
+        "width": 205,
+        "height": 249
+      },
+      "moon": {
+        "top": 200,
+        "bottom": 472,
+        "left": 391,
+        "right": 965,
+        "width": 574,
+        "height": 272
+      },
+      "headerWordmarkClearance": 25,
+      "registerToCharGap": -237,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": -35
+    }
+  },
+  {
+    "viewport": "1536x730 (laptop-1536x730)",
+    "status": "PASS",
+    "clearance": "23px",
+    "charGap": "-274px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\laptop-1536x730.png",
+    "measurements": {
+      "scrollWidth": 1526,
+      "clientWidth": 1526,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 730,
+        "left": 0,
+        "right": 1526,
+        "width": 1526,
+        "height": 730
+      },
+      "header": {
+        "top": 0,
+        "bottom": 76,
+        "left": 0,
+        "right": 1526,
+        "width": 1526,
+        "height": 76
+      },
+      "nav": {
+        "top": 16,
+        "bottom": 61,
+        "left": 537,
+        "right": 989,
+        "width": 452,
+        "height": 45
+      },
+      "hero": {
+        "top": 84,
+        "bottom": 503,
+        "left": 523,
+        "right": 1003,
+        "width": 481,
+        "height": 419
+      },
+      "logo": {
+        "top": 84,
+        "bottom": 356,
+        "left": 548,
+        "right": 978,
+        "width": 431,
+        "height": 271
+      },
+      "register": {
+        "top": 403,
+        "bottom": 497,
+        "left": 666,
+        "right": 860,
+        "width": 194,
+        "height": 93
+      },
+      "gunslinger": {
+        "top": 237,
+        "bottom": 527,
+        "left": 130,
+        "right": 500,
+        "width": 370,
+        "height": 290
+      },
+      "ninja": {
+        "top": 223,
+        "bottom": 543,
+        "left": 1046,
+        "right": 1396,
+        "width": 350,
+        "height": 321
+      },
+      "barrier": {
+        "top": 434,
+        "bottom": 824,
+        "left": 0,
+        "right": 1526,
+        "width": 1526,
+        "height": 390
+      },
+      "balloon": {
+        "top": 509,
+        "bottom": 718,
+        "left": 1098,
+        "right": 1490,
+        "width": 392,
+        "height": 209
+      },
+      "cannon": {
+        "top": 420,
+        "bottom": 730,
+        "left": 12,
+        "right": 267,
+        "width": 255,
+        "height": 310
+      },
+      "moon": {
+        "top": 204,
+        "bottom": 518,
+        "left": 433,
+        "right": 1093,
+        "width": 660,
+        "height": 313
+      },
+      "headerWordmarkClearance": 23,
+      "registerToCharGap": -274,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": -94
+    }
+  },
+  {
+    "viewport": "844x390 (mobile-landscape-844x390)",
+    "status": "PASS",
+    "clearance": "13px",
+    "charGap": "-6px",
+    "balloonOverlap": "PASS",
+    "overflow": "PASS",
+    "screenshot": "G:\\alone\\docs\\captures\\mobile-landscape-844x390.png",
+    "measurements": {
+      "scrollWidth": 834,
+      "clientWidth": 834,
+      "hasHorizontalOverflow": false,
+      "scene": {
+        "top": 0,
+        "bottom": 390,
+        "left": 0,
+        "right": 834,
+        "width": 834,
+        "height": 390
+      },
+      "header": {
+        "top": 0,
+        "bottom": 52,
+        "left": 0,
+        "right": 834,
+        "width": 834,
+        "height": 52
+      },
+      "nav": {
+        "top": 16,
+        "bottom": 60,
+        "left": 244,
+        "right": 590,
+        "width": 346,
+        "height": 44
+      },
+      "hero": {
+        "top": 73,
+        "bottom": 273,
+        "left": 277,
+        "right": 557,
+        "width": 281,
+        "height": 200
+      },
+      "logo": {
+        "top": 73,
+        "bottom": 180,
+        "left": 332,
+        "right": 502,
+        "width": 170,
+        "height": 107
+      },
+      "register": {
+        "top": 216,
+        "bottom": 269,
+        "left": 362,
+        "right": 472,
+        "width": 110,
+        "height": 53
+      },
+      "gunslinger": {
+        "top": 272,
+        "bottom": 382,
+        "left": 17,
+        "right": 157,
+        "width": 140,
+        "height": 110
+      },
+      "ninja": {
+        "top": 263,
+        "bottom": 382,
+        "left": 687,
+        "right": 817,
+        "width": 130,
+        "height": 119
+      },
+      "barrier": {
+        "top": 177,
+        "bottom": 390,
+        "left": 0,
+        "right": 834,
+        "width": 834,
+        "height": 213
+      },
+      "balloon": {
+        "top": 302,
+        "bottom": 386,
+        "left": 229,
+        "right": 387,
+        "width": 158,
+        "height": 84
+      },
+      "cannon": {
+        "top": 293,
+        "bottom": 390,
+        "left": 4,
+        "right": 84,
+        "width": 80,
+        "height": 97
+      },
+      "moon": {
+        "top": 264,
+        "bottom": 378,
+        "left": 297,
+        "right": 537,
+        "width": 240,
+        "height": 114
+      },
+      "headerWordmarkClearance": 13,
+      "registerToCharGap": -6,
+      "balloonNinjaOverlap": false,
+      "barrierBottomDistance": 0
+    }
+  }
+]

@@ -42,6 +42,7 @@ export const useAboutMotion = ({
       gsap.set(
         [
           '#about-bg-layer',
+          '#about-bg-entrance',
           '#about-plaque-wrapper',
           '#about-emblem-btn',
           '#about-wordmark-wrapper',
@@ -63,9 +64,9 @@ export const useAboutMotion = ({
         },
       });
 
-      // 1. Background settles from a small enlargement
+      // 1. Background settles from a small enlargement (separate transform owner from pointer parallax)
       tl.fromTo(
-        '#about-bg-layer',
+        '#about-bg-entrance',
         { scale: 1.04, opacity: 0.8 },
         { scale: 1.0, opacity: 1, duration: 0.9, ease: 'power2.out' },
         0
@@ -114,6 +115,10 @@ export const useAboutMotion = ({
 
     return () => {
       ctx.revert();
+      if (emblemAnimRef.current) {
+        emblemAnimRef.current.kill();
+        emblemAnimRef.current = null;
+      }
     };
   }, [sectionRef]);
 
@@ -236,7 +241,7 @@ export const useAboutMotion = ({
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || motionPaused) return;
 
     const tl = gsap.timeline();
     emblemAnimRef.current = tl;

@@ -127,7 +127,10 @@ export const useContactMotion = ({
       return;
     }
 
-    // Pointer move handler with rate-limited GSAP interpolation
+    const quickX = gsap.quickTo(bg, 'x', { duration: 0.6, ease: 'power2.out' });
+    const quickY = gsap.quickTo(bg, 'y', { duration: 0.6, ease: 'power2.out' });
+
+    // Pointer move handler using reusable quickTo setters to eliminate GC thrashing
     const handlePointerMove = (e: PointerEvent) => {
       if (isOffscreenRef.current || document.hidden) return;
 
@@ -142,23 +145,13 @@ export const useContactMotion = ({
       const targetX = Math.max(-4, Math.min(4, nx * 4));
       const targetY = Math.max(-3, Math.min(3, ny * 3));
 
-      gsap.to(bg, {
-        x: targetX,
-        y: targetY,
-        duration: 0.6,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      });
+      quickX(targetX);
+      quickY(targetY);
     };
 
     const handlePointerLeave = () => {
-      gsap.to(bg, {
-        x: 0,
-        y: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      });
+      quickX(0);
+      quickY(0);
     };
 
     section.addEventListener('pointermove', handlePointerMove, { passive: true });
@@ -168,6 +161,7 @@ export const useContactMotion = ({
       section.removeEventListener('pointermove', handlePointerMove);
       section.removeEventListener('pointerleave', handlePointerLeave);
       gsap.killTweensOf(bg);
+      gsap.set(bg, { x: 0, y: 0 });
     };
   }, [sectionRef, bgRef, motionPaused]);
 

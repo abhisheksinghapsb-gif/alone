@@ -411,13 +411,22 @@
   border: none;
   padding: 0;
   margin: 0;
-  outline: none;
   appearance: none;
   -webkit-appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.gameBtn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.gameBtn:focus-visible {
+  outline: 3px solid var(--color-gold-primary);
+  outline-offset: 4px;
+  border-radius: 8px;
 }
 
 .gameBtnCta,
@@ -427,7 +436,6 @@
   border: none;
   padding: 0;
   margin: 0;
-  outline: none;
   appearance: none;
   -webkit-appearance: none;
   width: 220px;
@@ -435,6 +443,16 @@
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.75))
          drop-shadow(0 0 20px rgba(255, 208, 0, 0.45));
   transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 160ms ease;
+}
+
+.registerBtnWrap:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.registerBtnWrap:focus-visible {
+  outline: 3px solid var(--color-gold-primary);
+  outline-offset: 4px;
+  border-radius: 12px;
 }
 
 .registerBtnWrap:hover {
@@ -757,9 +775,9 @@
 
 /* 2. Standard Laptops <= 1366px */
 @media (max-width: 1366px) {
-  .heroCenterCluster {
-    bottom: 27%;
-    width: 440px;
+  .centerHeroWrap {
+    top: clamp(64px, 11vh, 85px);
+    width: clamp(380px, 28vw, 440px);
   }
 
   .genesisLogoWrap {
@@ -774,13 +792,42 @@
     gap: 12px;
   }
 
+  .gunslingerWrap {
+    top: clamp(210px, 32vh, 250px);
+    left: clamp(4%, 6vw, 8.5%);
+    width: clamp(300px, 23vw, 360px);
+  }
+
+  .ninjaWrap {
+    top: clamp(200px, 30vh, 240px);
+    right: clamp(4%, 6vw, 8.5%);
+    width: clamp(290px, 22vw, 340px);
+  }
+
+  .moonWrap {
+    top: clamp(180px, 26vh, 220px);
+    width: clamp(500px, 42vw, 640px);
+  }
+
+  .ringedPlanetWrap {
+    width: clamp(200px, 18vw, 260px);
+  }
+
+  .bluePlanetLeftWrap {
+    width: clamp(90px, 8vw, 115px);
+  }
+
+  .cannonWrap {
+    width: clamp(190px, 15vw, 240px);
+  }
+
   .arenaSectionDivider {
     height: 84px;
   }
 }
 
 /* 3. Landscape Tablets <= 1024px */
-@media (max-width: 1024px) {
+@media (max-width: 1024px) and (orientation: landscape) {
   .landingHeader {
     padding: 12px 20px;
   }
@@ -797,25 +844,63 @@
     width: 110px;
   }
 
-  .heroCenterCluster {
-    bottom: 28%;
-    width: 400px;
+  .centerHeroWrap {
+    top: clamp(68px, 10vh, 88px);
+    width: clamp(340px, 36vw, 400px);
   }
 
   .genesisLogoWrap {
     max-width: 350px;
   }
 
-  .coltWrap {
-    left: 4%;
+  .gunslingerWrap {
+    top: auto;
     bottom: 12%;
-    width: 400px;
+    left: 4%;
+    width: clamp(270px, 32vw, 360px);
   }
 
   .ninjaWrap {
-    right: 4%;
+    top: auto;
     bottom: 12%;
-    width: 380px;
+    right: 4%;
+    width: clamp(260px, 30vw, 340px);
+  }
+
+  .moonWrap {
+    top: auto;
+    bottom: 14%;
+    width: clamp(460px, 52vw, 560px);
+  }
+
+  .barrierLayer {
+    top: auto;
+    bottom: 0;
+  }
+
+  .ringedPlanetWrap {
+    top: 8%;
+    right: 3%;
+    width: clamp(160px, 18vw, 220px);
+  }
+
+  .bluePlanetLeftWrap {
+    top: 16%;
+    left: 3%;
+    width: clamp(80px, 8vw, 100px);
+  }
+
+  .cannonWrap {
+    bottom: 0px;
+    left: 8px;
+    width: clamp(150px, 16vw, 190px);
+  }
+
+  .balloonWrap {
+    bottom: 8px;
+    right: 16px;
+    transform: scale(0.88);
+    transform-origin: bottom right;
   }
 
   .dividerSideDetails.leftSide {
@@ -831,14 +916,24 @@
   }
 }
 
-/* 4. Portrait Tablets <= 768px */
-@media (max-width: 768px) {
+/* 4. Portrait Tablets (768x1024 iPad, 820x1180, 960x1440 Surface Pro 10)
+   - Coherent bottom ground plane: barrierLayer anchored to bottom: 0
+   - Characters and moon anchored to shared bottom rail reference
+   - Completely resolves mid-air barrier cut defect and head occlusion
+   - Bounded scene height prevents giant empty void on high-res portrait screens */
+@media (max-width: 1024px) and (orientation: portrait), (max-width: 960px) and (min-height: 800px) {
+  .sceneContainer {
+    height: clamp(740px, 86vh, 1040px);
+    min-height: 680px;
+    max-height: 1040px;
+  }
+
   .landingHeader {
-    padding: 12px 16px;
+    padding: 12px 20px;
   }
 
   .gdaiBadgeImg {
-    width: 38px;
+    width: 42px;
   }
 
   .primaryNavControls {
@@ -846,67 +941,79 @@
   }
 
   .navBtnItem {
-    width: 100px;
+    width: 110px;
   }
 
-  .heroCenterCluster {
-    bottom: 30%;
-    width: 340px;
+  .centerHeroWrap {
+    top: clamp(76px, 9vh, 98px);
+    width: clamp(340px, 42vw, 420px);
   }
 
   .genesisLogoWrap {
-    max-width: 300px;
+    max-width: 360px;
   }
 
   .editionBadge {
-    font-size: 11.5px;
-    padding: 2px 10px;
-  }
-
-  .descriptorText {
-    font-size: 11.5px;
-    max-width: 300px;
+    font-size: 12px;
+    padding: 2px 12px;
   }
 
   .registerBtnWrap {
-    width: 180px;
+    width: clamp(170px, 22vw, 200px);
   }
 
-  .coltWrap {
-    left: -2%;
-    bottom: 10%;
-    width: 320px;
+  .barrierLayer {
+    top: auto;
+    bottom: 0;
+  }
+
+  .gunslingerWrap {
+    top: auto;
+    bottom: clamp(70px, 9vh, 105px);
+    left: clamp(1%, 2.5vw, 4%);
+    width: clamp(250px, 32vw, 320px);
   }
 
   .ninjaWrap {
-    right: -2%;
-    bottom: 10%;
-    width: 310px;
+    top: auto;
+    bottom: clamp(70px, 9vh, 105px);
+    right: clamp(1%, 2.5vw, 4%);
+    width: clamp(240px, 30vw, 310px);
   }
 
-  .cannonTurretWrap {
-    left: 1%;
-    bottom: 2%;
-    width: 140px;
+  .moonWrap {
+    top: auto;
+    bottom: clamp(110px, 13vh, 160px);
+    width: clamp(420px, 54vw, 540px);
+  }
+
+  .ringedPlanetWrap {
+    top: 7%;
+    right: 3%;
+    width: clamp(140px, 16vw, 190px);
+  }
+
+  .bluePlanetLeftWrap {
+    top: 14%;
+    left: 3%;
+    width: clamp(70px, 8vw, 95px);
+  }
+
+  .cannonWrap {
+    bottom: 0px;
+    left: 8px;
+    width: clamp(135px, 15vw, 175px);
   }
 
   .balloonWrap {
-    right: 1%;
-    bottom: 2%;
+    bottom: 8px;
+    right: clamp(20px, 3.5vw, 36px);
+    transform: scale(0.85);
+    transform-origin: bottom right;
   }
 
   .arenaSectionDivider {
-    height: 68px;
-  }
-
-  .dividerCenterEmblemBezel {
-    width: 52px;
-    height: 52px;
-  }
-
-  .dividerEmblemImg {
-    width: 30px;
-    height: 30px;
+    height: 70px;
   }
 
   .dividerSideDetails {
@@ -914,16 +1021,34 @@
   }
 }
 
-/* 5. Mobile Devices <= 640px / 390px / 360px */
+/* 5. Mobile Devices <= 640px (412x924, 393x852, 360x800, 320x568)
+   Compact phone composition:
+   - Row 1: GDAI Badge left, Utility controls right
+   - Row 2: 3 Primary nav buttons centered
+   - Clean top offset below 2-row header: 0% wordmark overlap
+   - Bounded height eliminates empty blue gulf (target gap: 32-96px)
+   - Shared bottom ground plane: barrier rail at bottom: 0
+   - Balloon relocated to floor clear zone to the left of Ninja Leon */
 @media (max-width: 640px) {
-  /* Intentional header reflow without hamburger menu:
-     Row 1: GDAI Badge (left) & Utility Controls (right)
-     Row 2: Primary Nav Controls (Brochure, Prize, Sponsors) centered */
+  .sceneContainer {
+    min-height: 560px;
+    height: clamp(620px, 80svh, 700px);
+    max-height: 720px;
+  }
+
   .landingHeader {
+    display: flex;
     flex-wrap: wrap;
-    padding: 10px 14px;
-    row-gap: 8px;
+    justify-content: space-between;
     align-items: center;
+    padding: 8px 12px;
+    row-gap: 6px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-header);
+    pointer-events: none;
   }
 
   .gdaiBadgeWrap {
@@ -932,10 +1057,19 @@
     transform: none;
     left: auto;
     top: auto;
+    pointer-events: auto;
+  }
+
+  .gdaiBadgeImg {
+    width: 32px;
+    height: auto;
   }
 
   #utility-controls {
     order: 2;
+    position: static;
+    transform: none;
+    pointer-events: auto;
   }
 
   .primaryNavControls {
@@ -945,26 +1079,27 @@
     left: auto;
     top: auto;
     width: 100%;
+    display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     margin: 2px 0 0 0;
+    pointer-events: auto;
   }
 
   .navBtnItem {
-    width: 88px;
+    width: clamp(72px, 24vw, 86px);
   }
 
-  .gdaiBadgeImg {
-    width: 34px;
-  }
-
-  .heroCenterCluster {
-    bottom: 33%;
-    width: 280px;
+  /* Central Hero Identity positioned below 2-row header */
+  .centerHeroWrap {
+    top: clamp(128px, 16vh, 140px);
+    bottom: auto;
+    width: min(90vw, 300px);
   }
 
   .genesisLogoWrap {
-    max-width: 250px;
+    max-width: min(80vw, 240px);
+    margin-bottom: 2px;
   }
 
   .editionBadge {
@@ -972,31 +1107,82 @@
     padding: 1.5px 8px;
   }
 
-  .registerBtnWrap {
-    width: 155px;
+  .ctaContainer {
+    margin-top: 2px;
   }
 
-  .coltWrap {
-    left: -8%;
-    bottom: 6%;
-    width: 240px;
+  .registerBtnWrap {
+    width: clamp(136px, 40vw, 154px);
+  }
+
+  /* Celestial planets safely tucked into top corners away from center lettering */
+  .ringedPlanetWrap {
+    top: 96px;
+    right: 1.5%;
+    width: clamp(72px, 20vw, 92px);
+  }
+
+  .bluePlanetLeftWrap {
+    top: 98px;
+    left: 1.5%;
+    width: clamp(36px, 10vw, 46px);
+  }
+
+  .asteroidLeftWrap {
+    top: 210px;
+    left: 2%;
+    width: 16px;
+  }
+
+  .asteroidRightWrap {
+    top: 220px;
+    right: 2%;
+    width: 20px;
+  }
+
+  /* Midground characters grounded and framing center without overlapping */
+  .gunslingerWrap {
+    top: auto;
+    bottom: clamp(60px, 9vh, 85px);
+    left: -2%;
+    width: clamp(155px, 44vw, 195px);
   }
 
   .ninjaWrap {
-    right: -8%;
-    bottom: 6%;
-    width: 230px;
+    top: auto;
+    bottom: clamp(60px, 9vh, 85px);
+    right: -2%;
+    width: clamp(145px, 41vw, 185px);
   }
 
-  .cannonTurretWrap {
-    left: -3%;
-    bottom: -1%;
-    width: 105px;
+  .moonWrap {
+    top: auto;
+    bottom: clamp(75px, 11vh, 105px);
+    width: clamp(260px, 82vw, 340px);
   }
 
-  .balloonWrap {
-    right: 0;
+  .barrierLayer {
+    top: auto;
     bottom: 0;
+  }
+
+  .cannonWrap {
+    top: auto;
+    left: 2px;
+    bottom: 0px;
+    width: clamp(75px, 20vw, 95px);
+  }
+
+  /* Relocated Balloon: safely placed on floor clear zone to the left of Ninja Leon.
+     Guarantees balloon never overlaps Ninja Leon's face or body! */
+  .balloonWrap {
+    top: auto;
+    left: clamp(84px, 24vw, 110px);
+    right: auto;
+    bottom: 4px;
+    transform: scale(0.65);
+    transform-origin: bottom left;
+    pointer-events: none;
   }
 
   .squeakDialogWrap {
@@ -1004,17 +1190,114 @@
   }
 
   .arenaSectionDivider {
-    height: 58px;
+    height: 56px;
   }
 
   .dividerCenterEmblemBezel {
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
   }
 
   .dividerEmblemImg {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .dividerSideDetails {
+    display: none;
+  }
+}
+
+/* 6. Short Landscape Mobile Screens (e.g. 844x390, 740x360) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .sceneContainer {
+    height: 100vh;
+    min-height: 360px;
+    max-height: 500px;
+  }
+
+  .landingHeader {
+    padding: 4px 16px;
+    flex-wrap: nowrap;
+  }
+
+  .primaryNavControls {
+    width: auto;
+    order: 2;
+    margin: 0;
+  }
+
+  #utility-controls {
+    order: 3;
+  }
+
+  .centerHeroWrap {
+    top: 72px;
+    width: 280px;
+  }
+
+  .genesisLogoWrap {
+    max-width: 170px;
+  }
+
+  .editionBadge {
+    font-size: 9.5px;
+    padding: 1px 6px;
+  }
+
+  .registerBtnWrap {
+    width: 125px;
+  }
+
+  .gunslingerWrap {
+    top: auto;
+    bottom: 8px;
+    left: 2%;
+    width: 140px;
+  }
+
+  .ninjaWrap {
+    top: auto;
+    bottom: 8px;
+    right: 2%;
+    width: 130px;
+  }
+
+  .moonWrap {
+    top: auto;
+    bottom: 12px;
+    width: 240px;
+  }
+
+  .barrierLayer {
+    top: auto;
+    bottom: 0;
+  }
+
+  .cannonWrap {
+    bottom: 0;
+    left: 4px;
+    width: 80px;
+  }
+
+  .balloonWrap {
+    bottom: 4px;
+    left: 100px;
+    right: auto;
+    transform: scale(0.55);
+    pointer-events: none;
+  }
+
+  .ringedPlanetWrap {
+    top: 44px;
+    right: 2%;
+    width: 70px;
+  }
+
+  .bluePlanetLeftWrap {
+    top: 46px;
+    left: 2%;
+    width: 32px;
   }
 }
 

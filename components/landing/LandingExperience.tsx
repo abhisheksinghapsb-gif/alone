@@ -24,6 +24,20 @@ export const LandingExperience: React.FC = () => {
   const pageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mql.matches) {
+        setMotionPaused(true);
+      }
+      const handleMotionPreference = (e: MediaQueryListEvent) => {
+        setMotionPaused(e.matches);
+      };
+      mql.addEventListener('change', handleMotionPreference);
+      return () => mql.removeEventListener('change', handleMotionPreference);
+    }
+  }, []);
+
+  useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.dataset.motionPaused = motionPaused ? 'true' : 'false';
     }

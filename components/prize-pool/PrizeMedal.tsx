@@ -173,6 +173,8 @@ export const PrizeMedal: React.FC<PrizeMedalProps> = ({
             width={265}
             height={315}
             className="medalSvg"
+            loading="lazy"
+            decoding="async"
             draggable={false}
           />
           {/* Gleam light sweep on activation */}

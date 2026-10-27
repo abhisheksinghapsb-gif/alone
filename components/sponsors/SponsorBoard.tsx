@@ -95,17 +95,23 @@ export const SponsorBoard: React.FC<SponsorBoardProps> = ({
         {/* Spike Companion Mascot at lower-right with dedicated reserved bounding area */}
         <div
           id="sponsor-spike-character"
-          className={`${styles.spikeCharacterDock} ${reactionClass}`}
+          className={styles.spikeCharacterDock}
           aria-hidden="true"
         >
-          <img
-            src={SPONSORS_ASSETS.characterSpike.src}
-            alt=""
-            width={SPONSORS_ASSETS.characterSpike.width}
-            height={SPONSORS_ASSETS.characterSpike.height}
-            className={styles.spikeCharacterImg}
-            draggable={false}
-          />
+          <div className={styles.spikeIdleWrap}>
+            <div className={`${styles.spikeReactionWrap} ${reactionClass}`}>
+              <img
+                src={SPONSORS_ASSETS.characterSpike.src}
+                alt=""
+                width={SPONSORS_ASSETS.characterSpike.width}
+                height={SPONSORS_ASSETS.characterSpike.height}
+                className={styles.spikeCharacterImg}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

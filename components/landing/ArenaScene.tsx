@@ -69,26 +69,30 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
       </div>
 
 
-      {/* Asteroids (Left & Right) */}
-      <div className="asteroidLeftWrap parallax-celestial asteroid-idle">
-        <img
-          src={SCENE_ASSETS.asteroidSmall.src}
-          alt={SCENE_ASSETS.asteroidSmall.alt}
-          width={SCENE_ASSETS.asteroidSmall.width}
-          height={SCENE_ASSETS.asteroidSmall.height}
-          style={{ width: '100%', height: 'auto', display: 'block' }}
-          draggable={false}
-        />
+      {/* Asteroids (Left & Right) — Separate outer parallax wrapper from inner idle wrapper */}
+      <div className="asteroidLeftWrap parallax-celestial">
+        <div className="asteroid-idle">
+          <img
+            src={SCENE_ASSETS.asteroidSmall.src}
+            alt={SCENE_ASSETS.asteroidSmall.alt}
+            width={SCENE_ASSETS.asteroidSmall.width}
+            height={SCENE_ASSETS.asteroidSmall.height}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+            draggable={false}
+          />
+        </div>
       </div>
-      <div className="asteroidRightWrap parallax-celestial asteroid-idle">
-        <img
-          src={SCENE_ASSETS.asteroidLarge.src}
-          alt={SCENE_ASSETS.asteroidLarge.alt}
-          width={SCENE_ASSETS.asteroidLarge.width}
-          height={SCENE_ASSETS.asteroidLarge.height}
-          style={{ width: '100%', height: 'auto', display: 'block' }}
-          draggable={false}
-        />
+      <div className="asteroidRightWrap parallax-celestial">
+        <div className="asteroid-idle">
+          <img
+            src={SCENE_ASSETS.asteroidLarge.src}
+            alt={SCENE_ASSETS.asteroidLarge.alt}
+            width={SCENE_ASSETS.asteroidLarge.width}
+            height={SCENE_ASSETS.asteroidLarge.height}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+            draggable={false}
+          />
+        </div>
       </div>
 
       {/* Dynamic Falling Comet Artwork (Supplied Neon Comet variants) */}
@@ -147,6 +151,8 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
           width={SCENE_ASSETS.arenaRailTight.width}
           height={SCENE_ASSETS.arenaRailTight.height}
           className="barrierImage"
+          loading="eager"
+          decoding="async"
           draggable={false}
         />
       </div>
@@ -178,6 +184,9 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
             width={SCENE_ASSETS.genesisHero.width}
             height={SCENE_ASSETS.genesisHero.height}
             className="genesisLogoImg"
+            loading="eager"
+            {...({ fetchPriority: 'high' } as any)}
+            decoding="async"
             draggable={false}
           />
         </div>

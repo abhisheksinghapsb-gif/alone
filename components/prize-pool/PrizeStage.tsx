@@ -51,6 +51,22 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
   const buzzTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const audioShotTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Immediate cleanup of in-flight shots, recoils, and reactions when motion is paused
+  useEffect(() => {
+    if (motionPaused) {
+      setShotLeft(null);
+      setShotRight(null);
+      setIsRecoiling(false);
+      setIsBuzzReacting(false);
+      if (leftShotTimeoutRef.current) clearTimeout(leftShotTimeoutRef.current);
+      if (rightShotTimeoutRef.current) clearTimeout(rightShotTimeoutRef.current);
+      if (delayRightShotRef.current) clearTimeout(delayRightShotRef.current);
+      if (recoilTimeoutRef.current) clearTimeout(recoilTimeoutRef.current);
+      if (buzzTimeoutRef.current) clearTimeout(buzzTimeoutRef.current);
+      if (audioShotTimeoutRef.current) clearTimeout(audioShotTimeoutRef.current);
+    }
+  }, [motionPaused]);
+
   // Cleanup all timers on unmount
   useEffect(() => {
     return () => {
@@ -193,6 +209,8 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
             src={track.headingAsset}
             alt={track.headingAlt}
             className="stageHeadingImg"
+            loading="lazy"
+            decoding="async"
             draggable={false}
           />
         </div>
@@ -229,6 +247,8 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
                       src={track.characterAsset}
                       alt={track.characterAlt}
                       className="characterIllustration cowboyIllustration"
+                      loading="lazy"
+                      decoding="async"
                       draggable={false}
                     />
 
@@ -238,6 +258,8 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
                       alt=""
                       aria-hidden="true"
                       className={`characterBlinkLayer ${blinkState === 'half' ? 'is-visible' : ''}`}
+                      loading="lazy"
+                      decoding="async"
                       draggable={false}
                     />
 
@@ -247,6 +269,8 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
                       alt=""
                       aria-hidden="true"
                       className={`characterBlinkLayer ${blinkState === 'closed' ? 'is-visible' : ''}`}
+                      loading="lazy"
+                      decoding="async"
                       draggable={false}
                     />
 
@@ -325,46 +349,54 @@ export const PrizeStage: React.FC<PrizeStageProps> = ({
             {/* Stable Contact Shadow on Floor */}
             <div className="characterShadowBase" aria-hidden="true" />
 
-            {/* Separate Transform Wrappers for Hover Pop and Idle Drift */}
+            {/* Separate Transform Wrappers for Hover Pop, Idle Drift, and Hologram Reaction */}
             <div className="characterHoverFrame">
-              <div
-                className={`characterIdleFrame buzzIdle ${
-                  isBuzzReacting ? 'is-buzz-reacting' : ''
-                }`}
-              >
-                <div className="characterArtFrame">
-                  {/* Base Open Eyes Character Illustration */}
-                  <img
-                    src={track.characterAsset}
-                    alt={track.characterAlt}
-                    className="characterIllustration buzzIllustration"
-                    draggable={false}
-                  />
+              <div className="characterIdleFrame buzzIdle">
+                <div
+                  className={`characterReactionFrame ${
+                    isBuzzReacting ? 'is-buzz-reacting' : ''
+                  }`}
+                >
+                  <div className="characterArtFrame">
+                    {/* Base Open Eyes Character Illustration */}
+                    <img
+                      src={track.characterAsset}
+                      alt={track.characterAlt}
+                      className="characterIllustration buzzIllustration"
+                      loading="lazy"
+                      decoding="async"
+                      draggable={false}
+                    />
 
-                  {/* Half-Closed Eyelid Expression Layer */}
-                  <img
-                    src="/assets/genesis/prize-pool/buzzlight-blink-half.webp"
-                    alt=""
-                    aria-hidden="true"
-                    className={`characterBlinkLayer ${blinkState === 'half' ? 'is-visible' : ''}`}
-                    draggable={false}
-                  />
+                    {/* Half-Closed Eyelid Expression Layer */}
+                    <img
+                      src="/assets/genesis/prize-pool/buzzlight-blink-half.webp"
+                      alt=""
+                      aria-hidden="true"
+                      className={`characterBlinkLayer ${blinkState === 'half' ? 'is-visible' : ''}`}
+                      loading="lazy"
+                      decoding="async"
+                      draggable={false}
+                    />
 
-                  {/* Fully Closed Eyelid Expression Layer */}
-                  <img
-                    src="/assets/genesis/prize-pool/buzzlight-blink.webp"
-                    alt=""
-                    aria-hidden="true"
-                    className={`characterBlinkLayer ${blinkState === 'closed' ? 'is-visible' : ''}`}
-                    draggable={false}
-                  />
+                    {/* Fully Closed Eyelid Expression Layer */}
+                    <img
+                      src="/assets/genesis/prize-pool/buzzlight-blink.webp"
+                      alt=""
+                      aria-hidden="true"
+                      className={`characterBlinkLayer ${blinkState === 'closed' ? 'is-visible' : ''}`}
+                      loading="lazy"
+                      decoding="async"
+                      draggable={false}
+                    />
 
-                  {/* Masked Visor Glint during VR Medal Activation */}
-                  <div
-                    className={`buzzVisorGlintFrame ${isBuzzReacting ? 'is-active' : ''}`}
-                    aria-hidden="true"
-                  >
-                    <div className="buzzVisorGlintSweep" />
+                    {/* Masked Visor Glint during VR Medal Activation */}
+                    <div
+                      className={`buzzVisorGlintFrame ${isBuzzReacting ? 'is-active' : ''}`}
+                      aria-hidden="true"
+                    >
+                      <div className="buzzVisorGlintSweep" />
+                    </div>
                   </div>
                 </div>
               </div>

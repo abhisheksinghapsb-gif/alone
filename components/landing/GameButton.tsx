@@ -55,6 +55,11 @@ export const GameButton: React.FC<GameButtonProps> = ({
   };
 
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Preserve native modified clicks (e.g. Cmd/Ctrl/Shift/Alt click to open in new tab/window)
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+      return;
+    }
+
     if (href?.startsWith('#')) {
       const targetId = href.slice(1);
       const targetEl = document.getElementById(targetId);
@@ -70,8 +75,11 @@ export const GameButton: React.FC<GameButtonProps> = ({
           block: 'start',
         });
 
+        // Avoid pushing duplicate identical history state
         if (typeof window !== 'undefined' && window.history && window.history.pushState) {
-          window.history.pushState(null, '', href);
+          if (window.location.hash !== href) {
+            window.history.pushState(null, '', href);
+          }
         }
       }
     }
@@ -84,8 +92,9 @@ export const GameButton: React.FC<GameButtonProps> = ({
     position: 'relative',
     cursor: 'pointer',
     touchAction: 'manipulation',
+    minWidth: '44px',
+    minHeight: '44px',
     transition: 'transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 160ms ease',
-    outline: 'none',
     background: 'transparent',
     backgroundColor: 'transparent',
     border: 'none',

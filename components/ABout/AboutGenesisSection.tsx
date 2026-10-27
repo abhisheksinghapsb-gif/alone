@@ -31,6 +31,9 @@ export const AboutGenesisSection: React.FC<AboutGenesisSectionProps> = ({
       aria-labelledby="about-genesis-heading"
       className="aboutSectionContainer"
     >
+      {/* Anchor alias supporting both #about and #about-genesis navigation targets */}
+      <div id="about" style={{ position: 'absolute', top: 0 }} aria-hidden="true" />
+
       {/* Semantic Accessible Heading */}
       <h2 id="about-genesis-heading" className="srOnly">
         {ABOUT_COPY.heading}
@@ -38,15 +41,17 @@ export const AboutGenesisSection: React.FC<AboutGenesisSectionProps> = ({
 
       {/* 1. Base Arena Battle Background Scene (City, Mechas, Skyline) */}
       <div id="about-bg-layer" className="aboutBgLayer">
-        <img
-          src={ABOUT_ASSETS.battleBackground.src}
-          alt={ABOUT_ASSETS.battleBackground.alt}
-          width={ABOUT_ASSETS.battleBackground.width}
-          height={ABOUT_ASSETS.battleBackground.height}
-          className="aboutBgImage"
-          loading="lazy"
-          decoding="async"
-        />
+        <div id="about-bg-entrance" className="aboutBgEntrance">
+          <img
+            src={ABOUT_ASSETS.battleBackground.src}
+            alt={ABOUT_ASSETS.battleBackground.alt}
+            width={ABOUT_ASSETS.battleBackground.width}
+            height={ABOUT_ASSETS.battleBackground.height}
+            className="aboutBgImage"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </div>
 
       {/* 2. Top Seam Transition (Smooth bridge from Landing Arena floor to Nighttime City) */}
@@ -67,6 +72,8 @@ export const AboutGenesisSection: React.FC<AboutGenesisSectionProps> = ({
           width={ABOUT_ASSETS.decorativePattern.width}
           height={ABOUT_ASSETS.decorativePattern.height}
           className="aboutPatternImg"
+          loading="lazy"
+          decoding="async"
           draggable={false}
         />
       </div>
@@ -100,6 +107,8 @@ export const AboutGenesisSection: React.FC<AboutGenesisSectionProps> = ({
                 width={ABOUT_ASSETS.skullEmblem.width}
                 height={ABOUT_ASSETS.skullEmblem.height}
                 className={`aboutEmblemIcon ${isAboutHovered ? 'isRotating' : ''}`}
+                loading="lazy"
+                decoding="async"
                 draggable={false}
               />
             </button>
@@ -117,6 +126,8 @@ export const AboutGenesisSection: React.FC<AboutGenesisSectionProps> = ({
                 width={ABOUT_ASSETS.aboutPlaque.width}
                 height={ABOUT_ASSETS.aboutPlaque.height}
                 className="aboutPlaqueImg"
+                loading="lazy"
+                decoding="async"
                 draggable={false}
               />
             </div>
@@ -135,6 +146,8 @@ export const AboutGenesisSection: React.FC<AboutGenesisSectionProps> = ({
               width={ABOUT_ASSETS.genesisWordmark.width}
               height={ABOUT_ASSETS.genesisWordmark.height}
               className="aboutWordmarkImg"
+              loading="lazy"
+              decoding="async"
               draggable={false}
             />
           </div>

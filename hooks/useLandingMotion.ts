@@ -225,15 +225,6 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
         SCENE_ASSETS.cometVariant3.src,
       ];
 
-      const cometPaths = [
-        // Path A: Upper-left open sky corridor, descending down-right across upper arena
-        { startX: -160, startY: -60, endX: 740, endY: 390, duration: 1.85 },
-        // Path B: Central high cosmic corridor, descending across the upper center sky
-        { startX: 380, startY: -110, endX: 1340, endY: 370, duration: 2.05 },
-        // Path C: Right sky lane crossing downward past the upper right
-        { startX: 620, startY: -80, endX: 1580, endY: 410, duration: 1.95 },
-      ];
-
       let cometIndex = 0;
 
       triggerFallingComet = () => {
@@ -247,7 +238,42 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
         if (!cometImg) return;
 
         const variantSrc = cometVariants[cometIndex % cometVariants.length];
-        const path = cometPaths[cometIndex % cometPaths.length];
+
+        // Dynamically compute flight path from actual scene bounds so comets never disappear on phones
+        const sceneWidth = heroElement.clientWidth || window.innerWidth;
+        const sceneHeight = heroElement.clientHeight || window.innerHeight;
+        const skyLimit = sceneHeight * 0.72;
+
+        let path: { startX: number; startY: number; endX: number; endY: number; duration: number };
+        const lane = cometIndex % 3;
+        if (lane === 0) {
+          // Lane A: Upper-left descending down-right across upper center
+          path = {
+            startX: -140,
+            startY: -50,
+            endX: sceneWidth * 0.55 + 50,
+            endY: skyLimit * 0.8,
+            duration: 1.85,
+          };
+        } else if (lane === 1) {
+          // Lane B: Center high cosmic corridor descending rightward
+          path = {
+            startX: sceneWidth * 0.15,
+            startY: -80,
+            endX: sceneWidth * 0.88 + 40,
+            endY: skyLimit * 0.75,
+            duration: 2.05,
+          };
+        } else {
+          // Lane C: Upper mid sky crossing toward right horizon
+          path = {
+            startX: sceneWidth * 0.3,
+            startY: -60,
+            endX: sceneWidth + 80,
+            endY: skyLimit * 0.85,
+            duration: 1.95,
+          };
+        }
         cometIndex++;
 
         // Switch to chosen variant artwork

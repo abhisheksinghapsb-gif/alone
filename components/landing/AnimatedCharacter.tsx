@@ -513,7 +513,6 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
                 border: 'none',
                 padding: 0,
                 margin: 0,
-                outline: 'none',
               }}
             />
           </div>
@@ -524,38 +523,62 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
 
   // ==========================================================================
   // 2. NINJA (LEON) — Right Hero Character
-  // Visually plain and stationary at layout anchor:
-  // - No circular, aura, shield, reticle or independently spinning overlay
-  // - No hover glow, pulse, pop or tilt
-  // - No pointer parallax or added idle/character-specific animation
+  // Responsive Cursor Hover Pop-Out:
+  // - On hover: lifts -14px with spring scale 1.05 and deep drop-shadow
+  // - Plays soft audio hover tick via uiAudio.playHoverTick()
+  // - Smooth transition returning to baseline rest on pointer leave
+  // - Preserves clean character art without circular aura, reticle, or idle loops
   // ==========================================================================
   if (type === 'ninja') {
     return (
       <div
         id="leon-character-wrap"
-        className={`ninjaCharacterWrap ${className}`}
-        aria-label="Leon the Chameleon Hood Ninja Brawler."
+        className={`ninjaCharacterWrap characterInteractionTarget ${className}`}
+        aria-label="Leon the Chameleon Hood Ninja Brawler. Hover to inspect."
+        onPointerEnter={() => {
+          setIsHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onPointerLeave={() => setIsHovered(false)}
         style={{
           position: 'relative',
           display: 'block',
+          cursor: 'pointer',
           userSelect: 'none',
           outline: 'none',
         }}
       >
-        <img
-          src={SCENE_ASSETS.ninja.src}
-          alt={SCENE_ASSETS.ninja.alt}
-          width={SCENE_ASSETS.ninja.width}
-          height={SCENE_ASSETS.ninja.height}
+        <div
+          id="leon-hover-popup"
           style={{
-            width: '100%',
-            height: 'auto',
-            display: 'block',
-            userSelect: 'none',
-            pointerEvents: 'none',
+            transform: isHovered
+              ? 'translateY(-14px) scale(1.05)'
+              : 'translateY(0px) scale(1)',
+            filter: isHovered
+              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
+              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
+            transformOrigin: '50% 92%',
+            transition: motionPaused
+              ? 'none'
+              : 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            willChange: 'transform, filter',
           }}
-          draggable={false}
-        />
+        >
+          <img
+            src={SCENE_ASSETS.ninja.src}
+            alt={SCENE_ASSETS.ninja.alt}
+            width={SCENE_ASSETS.ninja.width}
+            height={SCENE_ASSETS.ninja.height}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              userSelect: 'none',
+              pointerEvents: 'none',
+            }}
+            draggable={false}
+          />
+        </div>
       </div>
     );
   }

@@ -48,9 +48,10 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
 
   const currentActiveIndexRef = useRef<number>(0);
   const railBoundsRef = useRef<{ top: number; height: number }>({ top: 36, height: 1200 });
+  const nodeCentersRef = useRef<number[]>([]);
   const pulseTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Recalculate rail geometry between first and last node centers
+  // Recalculate rail geometry between first and last node centers & cache document-space milestone centers
   const measureRailGeometry = useCallback(() => {
     const firstNode = nodeRefs.current[0];
     const lastNode = nodeRefs.current[nodeRefs.current.length - 1];
@@ -70,7 +71,16 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
       height: totalHeight,
     };
     railBoundsRef.current = bounds;
-    setRailBounds(bounds);
+    setRailBounds((prev) =>
+      prev.top === bounds.top && prev.height === bounds.height ? prev : bounds
+    );
+
+    // Pre-calculate and cache node center Y offsets relative to listEl (avoids layout thrashing on scroll)
+    nodeCentersRef.current = nodeRefs.current.map((node) => {
+      if (!node) return 0;
+      const r = node.getBoundingClientRect();
+      return r.top + r.height / 2 - listRect.top;
+    });
   }, []);
 
   useEffect(() => {
@@ -197,34 +207,34 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
           const progress = Math.max(0, Math.min(1, self.progress));
           const currentHeight = railBoundsRef.current.height;
 
-          // Continuous rail progress and marker translation
+          // Continuous rail progress via GPU transform scaleY & unified marker translation
           if (markerRef.current) {
             const markerY = progress * currentHeight;
-            markerRef.current.style.transform = `translate(-50%, calc(-50% + ${markerY}px))`;
+            markerRef.current.style.transform = `translate3d(-50%, calc(-50% + ${markerY}px), 0)`;
           }
           if (progressLineRef.current) {
-            progressLineRef.current.style.height = `${progress * 100}%`;
+            progressLineRef.current.style.transform = `scaleY(${Math.max(0.04, progress)})`;
           }
 
-          // Discrete Reading Position Threshold Detection
-          const readingLine = window.innerHeight * 0.52;
-          let closestIdx = 0;
-          let minDistance = Infinity;
+          // Discrete Reading Position using pre-cached milestone geometry (zero layout thrashing)
+          const markerOffsetFromList = railBoundsRef.current.top + progress * currentHeight;
+          const centers = nodeCentersRef.current;
+          if (centers.length > 0) {
+            let closestIdx = 0;
+            let minDistance = Infinity;
 
-          nodeRefs.current.forEach((node, i) => {
-            if (!node) return;
-            const r = node.getBoundingClientRect();
-            const centerY = r.top + r.height / 2;
-            const dist = Math.abs(centerY - readingLine);
-            if (dist < minDistance) {
-              minDistance = dist;
-              closestIdx = i;
+            for (let i = 0; i < centers.length; i++) {
+              const dist = Math.abs(centers[i] - markerOffsetFromList);
+              if (dist < minDistance) {
+                minDistance = dist;
+                closestIdx = i;
+              }
             }
-          });
 
-          if (closestIdx !== currentActiveIndexRef.current) {
-            currentActiveIndexRef.current = closestIdx;
-            setActiveStageIndex(closestIdx);
+            if (closestIdx !== currentActiveIndexRef.current) {
+              currentActiveIndexRef.current = closestIdx;
+              setActiveStageIndex(closestIdx);
+            }
           }
         },
       });
@@ -251,9 +261,15 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
 
     const targetRow = rowRefs.current[index];
     if (targetRow) {
-      targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const prefersReduced =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      targetRow.scrollIntoView({
+        behavior: motionPaused || prefersReduced ? 'auto' : 'smooth',
+        block: 'center',
+      });
     }
-  }, [soundEnabled]);
+  }, [motionPaused, soundEnabled]);
 
   const handleStageHover = useCallback((index: number, hovered: boolean) => {
     if (hovered) {
@@ -306,6 +322,8 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
               height={82}
               draggable={false}
               className={styles.bannerGlowImg}
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <img
@@ -315,6 +333,8 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
             height={82}
             draggable={false}
             className={styles.bannerImg}
+            loading="lazy"
+            decoding="async"
           />
           <img
             src={TIMELINE_ASSETS.headingText}
@@ -323,6 +343,8 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
             height={34}
             draggable={false}
             className={styles.titleWordmark}
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
@@ -380,23 +402,23 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
               height: `${railBounds.height}px`,
             }}
           >
-            {/* Dynamic Illuminated Progress Overlay Layer */}
+            {/* Dynamic Illuminated Progress Overlay Layer (GPU Transform Scale) */}
             <div
               ref={progressLineRef}
               data-timeline-progress="true"
               className={styles.railProgressFill}
               style={{
-                height: `${Math.min(100, Math.max(10, (activeStageIndex / 3) * 100))}%`,
+                transform: `scaleY(${Math.min(1, Math.max(0.04, activeStageIndex / 3))})`,
               }}
             />
 
-            {/* Traveling Progress Marker */}
+            {/* Traveling Progress Marker (Single Coordinate System via translate3d) */}
             <div
               ref={markerRef}
               data-timeline-marker="true"
               className={styles.travellingMarker}
               style={{
-                top: `${(activeStageIndex / 3) * railBounds.height}px`,
+                transform: `translate3d(-50%, calc(-50% + ${(activeStageIndex / 3) * railBounds.height}px), 0)`,
               }}
             />
           </div>

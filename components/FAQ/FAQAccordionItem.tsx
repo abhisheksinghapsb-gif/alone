@@ -65,7 +65,6 @@ export const FAQAccordionItem: React.FC<FAQAccordionItemProps> = ({
         id={contentId}
         role="region"
         aria-labelledby={headingId}
-        hidden={!isOpen}
         className={`${styles.answerDrawer} ${
           isOpen ? styles.answerDrawerOpen : styles.answerDrawerClosed
         }`}

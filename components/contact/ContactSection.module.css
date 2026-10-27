@@ -375,6 +375,7 @@
   user-select: text;
   -webkit-user-select: text;
   margin-top: -6px;
+  white-space: nowrap;
 }
 
 /* 11. Venue Information Area */
@@ -524,6 +525,7 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
+  min-height: 44px;
   padding: 10px 16px;
   background: linear-gradient(180deg, #ffde32 0%, #e6a800 100%);
   border: 2px solid #000000;
@@ -646,6 +648,43 @@
 
   .headingWordmark {
     width: 250px;
+  }
+}
+
+@media (max-width: 360px) {
+  .contentContainer {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .plateAnchor {
+    width: 200px;
+    height: 56px;
+  }
+
+  .phoneDigits {
+    font-size: 19px;
+    margin-top: -3px;
+  }
+
+  .personName {
+    font-size: 20px;
+  }
+
+  .headingWordmark {
+    width: 220px;
+  }
+
+  .venueCard {
+    padding: 12px 10px;
+  }
+
+  .venueInstitution {
+    font-size: 15px;
+  }
+
+  .venueAddress {
+    font-size: 12px;
   }
 }
 

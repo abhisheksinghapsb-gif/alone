@@ -121,10 +121,14 @@ export const useFAQMotion = ({
     const section = sectionRef.current;
     if (!section) return;
 
-    // Interrupt any active category transition
+    // Interrupt any active category transition safely and restore neutral presentation
     if (categorySwitchTimelineRef.current) {
       categorySwitchTimelineRef.current.kill();
       categorySwitchTimelineRef.current = null;
+      const allItems = section.querySelectorAll<HTMLElement>('[data-faq-item]');
+      const allTitles = section.querySelectorAll<HTMLElement>('[data-faq-title]');
+      gsap.set(allItems, { clearProps: 'transform,opacity' });
+      gsap.set(allTitles, { clearProps: 'transform,opacity' });
     }
 
     const prefersReducedMotion =
@@ -132,6 +136,13 @@ export const useFAQMotion = ({
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReducedMotion || motionPaused) {
+      const activePanel = section.querySelector<HTMLElement>(
+        `[id="faq-panel-${activeCategoryId}"]`
+      );
+      if (activePanel) {
+        const items = activePanel.querySelectorAll<HTMLElement>('[data-faq-item]');
+        gsap.set(items, { clearProps: 'transform,opacity' });
+      }
       return;
     }
 
@@ -145,7 +156,11 @@ export const useFAQMotion = ({
 
     const items = activePanel.querySelectorAll<HTMLElement>('[data-faq-item]');
 
-    const tl = gsap.timeline();
+    const tl = gsap.timeline({
+      onComplete: () => {
+        categorySwitchTimelineRef.current = null;
+      },
+    });
     categorySwitchTimelineRef.current = tl;
 
     // Subtle header text bump
@@ -153,7 +168,7 @@ export const useFAQMotion = ({
       tl.fromTo(
         categoryTitle,
         { opacity: 0.4, y: -4 },
-        { opacity: 1, y: 0, duration: 0.22, ease: 'power2.out' },
+        { opacity: 1, y: 0, duration: 0.22, ease: 'power2.out', clearProps: 'transform,opacity' },
         0
       );
     }
@@ -179,6 +194,12 @@ export const useFAQMotion = ({
       if (categorySwitchTimelineRef.current) {
         categorySwitchTimelineRef.current.kill();
         categorySwitchTimelineRef.current = null;
+      }
+      if (items.length > 0) {
+        gsap.set(items, { clearProps: 'transform,opacity' });
+      }
+      if (categoryTitle) {
+        gsap.set(categoryTitle, { clearProps: 'transform,opacity' });
       }
     };
   }, [activeCategoryId, sectionRef, motionPaused]);

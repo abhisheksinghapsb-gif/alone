@@ -117,7 +117,7 @@ export const ContactPlate: React.FC<ContactPlateProps> = ({
               className={styles.plateSvg}
               preserveAspectRatio="none"
             >
-              <g filter="url(#plate_shadow)">
+              <g filter={`url(#plate_shadow_${person.id})`}>
                 {/* Yellow Face: #FFDE32 */}
                 <path
                   d="M14.5 0C11.1863 0 8.5 2.68629 8.5 6V51.4239H251.5V6C251.5 2.68629 248.814 0 245.5 0H14.5Z"
@@ -132,7 +132,7 @@ export const ContactPlate: React.FC<ContactPlateProps> = ({
               </g>
               <defs>
                 <filter
-                  id="plate_shadow"
+                  id={`plate_shadow_${person.id}`}
                   x="0"
                   y="0"
                   width="258"

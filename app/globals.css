@@ -51,6 +51,27 @@ html[data-motion-paused="true"] {
   scroll-behavior: auto !important;
 }
 
+/* Pause all CSS keyframes and pseudo-element animations when motion is paused */
+html[data-motion-paused="true"] *,
+html[data-motion-paused="true"] *::before,
+html[data-motion-paused="true"] *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 html,
 body {
   width: 100%;

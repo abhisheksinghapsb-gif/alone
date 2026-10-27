@@ -111,14 +111,18 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
         <div id="sponsors-heading-group" className={styles.sponsorsHeadingGroup}>
           {/* Crowned Green Character Icon (Left flank) */}
           <div className={styles.headingIconFlank} aria-hidden="true">
-            <img
-              src={SPONSORS_ASSETS.crownedIcon.src}
-              alt=""
-              width={SPONSORS_ASSETS.crownedIcon.width}
-              height={SPONSORS_ASSETS.crownedIcon.height}
-              className={styles.crownFlankImg}
-              draggable={false}
-            />
+            <div className={styles.crownIdleWrap}>
+              <img
+                src={SPONSORS_ASSETS.crownedIcon.src}
+                alt=""
+                width={SPONSORS_ASSETS.crownedIcon.width}
+                height={SPONSORS_ASSETS.crownedIcon.height}
+                className={styles.crownFlankImg}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
+            </div>
           </div>
 
           {/* SPONSORS Wordmark */}
@@ -129,23 +133,28 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
               width={SPONSORS_ASSETS.wordmark.width}
               height={SPONSORS_ASSETS.wordmark.height}
               className={styles.headingWordmarkImg}
+              loading="lazy"
+              decoding="async"
               draggable={false}
             />
           </div>
 
-          {/* Credits Chest Icon (Right flank with subtle connected settle) */}
-          <div
-            className={`${styles.headingIconFlank} ${chestSettle ? styles.chestReact : ''}`}
-            aria-hidden="true"
-          >
-            <img
-              src={SPONSORS_ASSETS.creditsChest.src}
-              alt=""
-              width={SPONSORS_ASSETS.creditsChest.width}
-              height={SPONSORS_ASSETS.creditsChest.height}
-              className={styles.chestFlankImg}
-              draggable={false}
-            />
+          {/* Credits Chest Icon (Right flank with dedicated idle & reaction wrappers) */}
+          <div className={styles.headingIconFlank} aria-hidden="true">
+            <div className={styles.chestIdleWrap}>
+              <div className={`${styles.chestReactWrap} ${chestSettle ? styles.chestReact : ''}`}>
+                <img
+                  src={SPONSORS_ASSETS.creditsChest.src}
+                  alt=""
+                  width={SPONSORS_ASSETS.creditsChest.width}
+                  height={SPONSORS_ASSETS.creditsChest.height}
+                  className={styles.chestFlankImg}
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
+              </div>
+            </div>
           </div>
         </div>
 

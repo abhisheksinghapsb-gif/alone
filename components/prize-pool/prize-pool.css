@@ -177,13 +177,13 @@
 }
 
 .stageCharacterWrapper.leftCharacter {
-  width: 320px;
+  width: clamp(240px, 24vw, 320px);
   margin-top: -60px; /* Overlaps cyan header strip */
   margin-bottom: -10px;
 }
 
 .stageCharacterWrapper.rightCharacter {
-  width: 350px;
+  width: clamp(250px, 26vw, 350px);
   margin-top: -55px; /* Overlaps cyan header strip */
   margin-bottom: -10px;
 }
@@ -249,6 +249,16 @@
    Space Ranger (Buzzlight) Holographic Activation Reaction
    Leans toward the prize stage, lifts 3-4px, and sweeps a glint over the visor
    -------------------------------------------------------------------------- */
+.characterReactionFrame {
+  position: relative;
+  width: 100%;
+  display: block;
+  transform-origin: bottom center;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.characterReactionFrame.is-buzz-reacting,
 .buzzIdle.is-buzz-reacting {
   animation: buzzHoloReact 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
@@ -1243,6 +1253,8 @@
     display: none !important;
   }
 
+  .characterReactionFrame,
+  .characterReactionFrame.is-buzz-reacting,
   .buzzIdle.is-buzz-reacting,
   .buzzVisorGlintFrame,
   .vrHoloRig,
