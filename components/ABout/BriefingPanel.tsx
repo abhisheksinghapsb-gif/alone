@@ -20,9 +20,11 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     height: 380,
   });
 
-  // Direct DOM refs for reading spotlight reflection (avoids React state updates on every pointer move)
+  // Direct DOM refs for reading spotlight reflection & interior mouse glow (avoids React state updates on every pointer move)
   const reflectionGradRef = useRef<SVGRadialGradientElement | null>(null);
   const reflectionPathRef = useRef<SVGPathElement | null>(null);
+  const interiorGlowGradRef = useRef<SVGRadialGradientElement | null>(null);
+  const interiorGlowRectRef = useRef<SVGRectElement | null>(null);
   const pointerRafRef = useRef<number | null>(null);
 
   // Scrolling state management
@@ -127,11 +129,18 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
       if (reflectionPathRef.current) {
         reflectionPathRef.current.style.opacity = '1';
       }
+      if (interiorGlowGradRef.current) {
+        interiorGlowGradRef.current.setAttribute('cx', String(px));
+        interiorGlowGradRef.current.setAttribute('cy', String(py));
+      }
+      if (interiorGlowRectRef.current) {
+        interiorGlowRectRef.current.style.opacity = '1';
+      }
     });
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === 'touch') return;
+    if (e.pointerType === 'touch' || motionPaused) return;
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -145,7 +154,7 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     stopAutoScroll();
     onHoverChange?.(true);
 
-    if (e.pointerType === 'touch') return;
+    if (e.pointerType === 'touch' || motionPaused) return;
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -164,6 +173,9 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     }
     if (reflectionPathRef.current) {
       reflectionPathRef.current.style.opacity = '0';
+    }
+    if (interiorGlowRectRef.current) {
+      interiorGlowRectRef.current.style.opacity = '0';
     }
 
     const el = scrollRef.current;
@@ -340,6 +352,26 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
         }}
       >
         <defs>
+          {/* Panel Interior Silhouette Clip to clip mouse interior glow */}
+          <clipPath id="briefingInteriorClip">
+            <path d={panelPath} />
+          </clipPath>
+
+          {/* Mouse Interior Reading Glow: ~85px radius soft cyan/white light under pointer */}
+          <radialGradient
+            ref={interiorGlowGradRef}
+            id="panelInteriorMouseGlow"
+            cx="0"
+            cy="0"
+            r="85"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.38" />
+            <stop offset="35%" stopColor="#cffafe" stopOpacity="0.25" />
+            <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.10" />
+            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0" />
+          </radialGradient>
+
           {/* Subtle Outer Boundary Cyan Accent Filter */}
           <filter id="panelBoundarySubtleGlow" x="-10%" y="-10%" width="120%" height="120%">
             <feGaussianBlur stdDeviation="3" result="blur" />
@@ -379,13 +411,29 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
         {/* 1B. Solid Opaque Cyan Fill Plate (#BCE6F2) - Stable background contrast */}
         <path d={panelPath} fill="#BCE6F2" />
 
-        {/* 1C. Clean Subtle Frame Definition Accent Rim */}
+        {/* 1B-2. Soft cyan/white mouse glow beneath pointer, clipped to notched interior behind text */}
+        <rect
+          ref={interiorGlowRectRef}
+          x="0"
+          y="0"
+          width={w}
+          height={h}
+          fill="url(#panelInteriorMouseGlow)"
+          clipPath="url(#briefingInteriorClip)"
+          style={{
+            opacity: 0,
+            transition: 'opacity 180ms ease',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* 1C. Clean Subtle Frame Definition Accent Rim (Crisp luminous edge) */}
         <path
           d={panelPath}
-          stroke="#38BDF8"
-          strokeWidth="1.5"
+          stroke="#00E5FF"
+          strokeWidth="1.8"
           strokeLinejoin="miter"
-          opacity="0.5"
+          opacity="0.75"
           filter="url(#panelBoundarySubtleGlow)"
           fill="none"
         />

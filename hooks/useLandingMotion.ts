@@ -27,10 +27,30 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
     const scene = sceneRef.current;
     if (!scene) return;
 
+    // The hero visibility observer and pointer normalization use #main-content
+    // while gsap.context uses scene (#page-root) to keep header entrance selectors working.
+    const heroElement =
+      (scene.id === 'main-content'
+        ? scene
+        : scene.querySelector<HTMLElement>('#main-content')) ||
+      document.getElementById('main-content') ||
+      scene;
+
     // Check media query for prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let triggerFallingComet: () => void = () => {};
+    let scheduleNextComet: (delay?: number) => void = () => {};
+
+    scheduleNextComet = (delay?: number) => {
+      if (cometTimerRef.current !== null) {
+        clearTimeout(cometTimerRef.current);
+        cometTimerRef.current = null;
+      }
+      if (motionPausedRef.current || document.hidden || !isHeroVisibleRef.current) return;
+      const interval = delay !== undefined ? delay : (3500 + Math.random() * 2000);
+      cometTimerRef.current = window.setTimeout(triggerFallingComet, interval);
+    };
 
     const ctx = gsap.context(() => {
       // 1. Reduced Motion handling: immediate appearance, no movement loops
@@ -126,14 +146,6 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       });
       idleTweens.push(bluePlanetRot);
 
-      // Small Blue Planet: continuous 2D rotation on visible axis center (75s per revolution, clockwise)
-      const bluePlanetSmallRot = gsap.to('#blue-planet-small-rot', {
-        rotation: 360,
-        duration: 75,
-        ease: 'none',
-        repeat: -1,
-      });
-      idleTweens.push(bluePlanetSmallRot);
 
       // Purple Ringed Planet: keep rings strictly held at current inclination and size
       // Surface features rotate continuously via internal spherical projection canvas
@@ -158,16 +170,7 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       });
       idleTweens.push(gunIdle);
 
-      // Ninja gentle breathing hover (restrained to keep safe bounds)
-      const ninjaIdle = gsap.to('#ninja-motion-idle', {
-        y: -3.5,
-        duration: 5.2,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        delay: 0.6,
-      });
-      idleTweens.push(ninjaIdle);
+      // Note: Right-hand character (Ninja) stays stationary at its layout anchor (no added idle animation)
 
       // Squeak balloon buoyant, asymmetrical idle loop (~6–9px vertical, ~2px horizontal, ~1° tilt, 4.5s cycle)
       const balloonIdleTl = gsap.timeline({ repeat: -1 });
@@ -234,7 +237,11 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       let cometIndex = 0;
 
       triggerFallingComet = () => {
-        if (motionPausedRef.current || document.hidden) return;
+        if (cometTimerRef.current !== null) {
+          clearTimeout(cometTimerRef.current);
+          cometTimerRef.current = null;
+        }
+        if (motionPausedRef.current || document.hidden || !isHeroVisibleRef.current) return;
 
         const cometImg = document.getElementById('falling-comet-img') as HTMLImageElement | null;
         if (!cometImg) return;
@@ -248,6 +255,10 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
 
         // Kill any previous tweens on the comet element
         gsap.killTweensOf(cometImg);
+        if (activeCometTlRef.current) {
+          activeCometTlRef.current.kill();
+          activeCometTlRef.current = null;
+        }
 
         // Position at entry boundary beyond top/upper-left
         gsap.set(cometImg, {
@@ -257,7 +268,12 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
           scale: 0.92,
         });
 
-        const cometTl = gsap.timeline();
+        const cometTl = gsap.timeline({
+          onComplete: () => {
+            activeCometTlRef.current = null;
+            scheduleNextComet();
+          },
+        });
         activeCometTlRef.current = cometTl;
 
         // Diagonal downward-right flight
@@ -280,21 +296,17 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
             duration: 0.38,
             ease: 'power2.out',
           }, path.duration - 0.38);
-
-        // Schedule next pass (interval ~3.5–5.5s between passes)
-        const nextInterval = 3500 + Math.random() * 2000;
-        cometTimerRef.current = window.setTimeout(triggerFallingComet, nextInterval);
       };
 
       // First pass starts ~1.8 seconds after landing entrance finishes
-      cometTimerRef.current = window.setTimeout(triggerFallingComet, 1800);
+      scheduleNextComet(1800);
 
       // 5. Desktop Pointer Parallax (Single unified loop, fine pointer only)
       // Note: Telescope (#cannon-layer) is deliberately excluded from parallax and remains stationary.
       if (window.matchMedia('(pointer: fine)').matches) {
-        const celestialEls = scene.querySelectorAll<HTMLElement>('.parallax-celestial');
-        const midEls = scene.querySelectorAll<HTMLElement>('.parallax-mid');
-        const foreEls = scene.querySelectorAll<HTMLElement>('.parallax-fore');
+        const celestialEls = heroElement.querySelectorAll<HTMLElement>('.parallax-celestial');
+        const midEls = heroElement.querySelectorAll<HTMLElement>('.parallax-mid');
+        const foreEls = heroElement.querySelectorAll<HTMLElement>('.parallax-fore');
 
         const setCelestialX = gsap.quickSetter(celestialEls, 'x', 'px');
         const setCelestialY = gsap.quickSetter(celestialEls, 'y', 'px');
@@ -351,7 +363,7 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
         };
 
         const handlePointerMove = (e: MouseEvent) => {
-          const rect = scene.getBoundingClientRect();
+          const rect = heroElement.getBoundingClientRect();
           if (rect.width === 0 || rect.height === 0) return;
           const rawX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
           const rawY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
@@ -371,11 +383,11 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
           requestParallaxFrame();
         }
 
-        scene.addEventListener('mousemove', handlePointerMove, { passive: true });
-        scene.addEventListener('mouseleave', handlePointerLeave, { passive: true });
+        heroElement.addEventListener('mousemove', handlePointerMove, { passive: true });
+        heroElement.addEventListener('mouseleave', handlePointerLeave, { passive: true });
         cleanupPointerListenersRef.current = () => {
-          scene.removeEventListener('mousemove', handlePointerMove);
-          scene.removeEventListener('mouseleave', handlePointerLeave);
+          heroElement.removeEventListener('mousemove', handlePointerMove);
+          heroElement.removeEventListener('mouseleave', handlePointerLeave);
         };
       }
     }, scene);
@@ -383,7 +395,7 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
     const pauseHeroWork = () => {
       idleTweensRef.current.forEach((t) => t.pause());
       if (activeCometTlRef.current) activeCometTlRef.current.pause();
-      if (cometTimerRef.current) {
+      if (cometTimerRef.current !== null) {
         clearTimeout(cometTimerRef.current);
         cometTimerRef.current = null;
       }
@@ -397,10 +409,11 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
     const resumeHeroWork = () => {
       if (motionPausedRef.current || prefersReducedMotion) return;
       idleTweensRef.current.forEach((t) => t.resume());
-      if (activeCometTlRef.current) {
+      if (activeCometTlRef.current && activeCometTlRef.current.progress() < 1) {
         activeCometTlRef.current.resume();
-      } else if (!cometTimerRef.current) {
-        cometTimerRef.current = window.setTimeout(triggerFallingComet, 1200);
+      } else {
+        activeCometTlRef.current = null;
+        scheduleNextComet(1200);
       }
       isParallaxRunningRef.current = true;
       if (parallaxRafRef.current === null) {
@@ -442,7 +455,7 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
         },
         { threshold: 0.05 }
       );
-      heroObserver.observe(scene);
+      heroObserver.observe(heroElement);
     }
 
     return () => {
@@ -454,7 +467,7 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       }
       pauseHeroWork();
       ctx.revert();
-      if (cometTimerRef.current) {
+      if (cometTimerRef.current !== null) {
         clearTimeout(cometTimerRef.current);
         cometTimerRef.current = null;
       }

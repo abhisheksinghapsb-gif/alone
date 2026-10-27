@@ -1,0 +1,649 @@
+/* ==========================================================================
+   GENESIS 6 — FAQ Section Scoped Styles
+   Theme: Galactic Brawl Stars Game Interface
+   Viewport reference: 1440 x 1024, responsive down to 320px
+   ========================================================================== */
+
+.faqSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #040414;
+  background-image: url('/assets/genesis/sponsors/bg-cosmic-pattern.webp');
+  background-repeat: repeat;
+  background-position: center top;
+  background-size: 1440px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Subtle top seam transition inside FAQ section */
+.topSeam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(5, 30, 83, 0) 0%,
+    rgba(36, 142, 246, 0.4) 25%,
+    rgba(238, 113, 35, 0.6) 50%,
+    rgba(36, 142, 246, 0.4) 75%,
+    rgba(5, 30, 83, 0) 100%
+  );
+  box-shadow: 0 2px 10px rgba(36, 142, 246, 0.3);
+  z-index: 5;
+}
+
+/* Main content wrapper containing Plaque and Blue Panel */
+.contentContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 44px 20px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Heading Plaque
+   -------------------------------------------------------------------------- */
+.plaqueWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 80px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.plaqueBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.plaqueContent {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  margin-top: 4px;
+}
+
+.plaqueWordmark {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+/* Fallback live game text if SVG wordmark is hidden */
+.plaqueText {
+  font-family: var(--font-game);
+  font-size: 36px;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow:
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000,
+    0 4px 0 #000,
+    0 6px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* --------------------------------------------------------------------------
+   Large Royal Blue FAQ Panel
+   -------------------------------------------------------------------------- */
+.panelCard {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  background-color: #105de5;
+  border: 3.5px solid #000000;
+  border-radius: 18px;
+  box-shadow:
+    0 10px 0 #00184b,
+    0 18px 40px rgba(0, 0, 0, 0.75),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Lighter Blue Category Header Bar */
+.panelHeader {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(180deg, #3aa3ff 0%, #248ef6 100%);
+  border-bottom: 3.5px solid #000000;
+  box-shadow: inset 0 -3px 0 #055cb3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.categoryTitle {
+  font-family: var(--font-game);
+  font-size: 32px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-shadow:
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000,
+    0 3px 0 #000,
+    0 5px 8px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Inline Red X Close Control */
+.closeButton {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.2s ease, filter 0.2s ease;
+  z-index: 5;
+}
+
+.closeButton:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.06);
+  filter: brightness(1.1);
+}
+
+.closeButton:active:not(:disabled) {
+  transform: translateY(calc(-50% + 2px)) scale(0.96);
+}
+
+.closeButton:disabled {
+  opacity: 0.45;
+  cursor: default;
+  filter: grayscale(40%);
+}
+
+.closeIcon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Panel Body - geometrically stabilized footprint sized for 4 questions + expanded answer */
+.panelBody {
+  position: relative;
+  width: 100%;
+  min-height: 460px;
+  padding: 32px 36px 36px 36px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Category Tab Panel */
+.tabPanel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tabPanel[hidden] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Question Row (Accordion Item)
+   -------------------------------------------------------------------------- */
+.accordionItem {
+  position: relative;
+  width: 100%;
+  background: rgba(0, 24, 75, 0.65);
+  border: 2px solid rgba(0, 18, 56, 0.9);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 0 rgba(0, 12, 40, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.accordionItem:hover {
+  background: rgba(5, 38, 105, 0.82);
+  border-color: #248ef6;
+  transform: translateY(-1.5px);
+  box-shadow:
+    0 6px 0 rgba(0, 12, 40, 0.9),
+    0 8px 18px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.accordionItemOpen {
+  background: rgba(5, 38, 115, 0.92);
+  border-color: #ff932a;
+  box-shadow:
+    0 4px 0 rgba(0, 12, 40, 0.9),
+    0 0 16px rgba(255, 147, 42, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Question Trigger Button */
+.questionTrigger {
+  width: 100%;
+  min-height: 72px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.questionHeading {
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.questionText {
+  font-family: var(--font-game);
+  font-size: 21px;
+  color: #ffffff;
+  letter-spacing: 0.6px;
+  line-height: 1.35;
+  text-transform: uppercase;
+  text-shadow:
+    -1.5px -1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+    -1.5px 1.5px 0 #000,
+    1.5px 1.5px 0 #000,
+    0 2px 0 #000,
+    0 3px 6px rgba(0, 0, 0, 0.6);
+  word-break: break-word;
+}
+
+/* Plus Icon Reserved Container */
+.plusContainer {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plusIcon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.8));
+}
+
+.plusIconRotated {
+  transform: rotate(45deg);
+}
+
+/* Answer Drawer Container */
+.answerDrawer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  transition: max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.26s ease;
+}
+
+.answerDrawerClosed {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.answerDrawerOpen {
+  max-height: 480px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.answerContent {
+  padding: 4px 24px 24px 24px;
+  box-sizing: border-box;
+}
+
+.answerText {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.65;
+  color: #f1f5f9;
+  margin: 0;
+  font-weight: 400;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   Bottom Category Bar
+   -------------------------------------------------------------------------- */
+.categoryBarContainer {
+  position: relative;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 4;
+}
+
+.categoryBar {
+  position: relative;
+  width: 100%;
+  min-height: 73px;
+  background: rgba(5, 30, 83, 0.65);
+  backdrop-filter: blur(10px);
+  border-top: 2.5px solid rgba(36, 142, 246, 0.35);
+  box-shadow:
+    0 -4px 16px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 16px;
+}
+
+.categoryList {
+  width: 100%;
+  max-width: 1280px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 12px;
+}
+
+.categoryTab {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  user-select: none;
+}
+
+.categoryTab:hover {
+  filter: brightness(1.2);
+}
+
+.categoryTab:active {
+  transform: translateY(2px);
+}
+
+.categoryLabel {
+  font-family: var(--font-game);
+  font-size: 24px;
+  color: #ffffff;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-shadow:
+    -1.5px -1.5px 0 #000,
+    1.5px -1.5px 0 #000,
+    -1.5px 1.5px 0 #000,
+    1.5px 1.5px 0 #000,
+    0 3px 0 #000,
+    0 4px 8px rgba(0, 0, 0, 0.7);
+  transition: color 0.2s ease;
+}
+
+/* Orange Underline Accent beneath Active Category */
+.activeAccent {
+  position: absolute;
+  bottom: 4px;
+  left: 20%;
+  width: 60%;
+  height: 4px;
+  background: #ee7123;
+  border-radius: 3px;
+  box-shadow:
+    0 2px 6px rgba(238, 113, 35, 0.7),
+    0 0 10px rgba(255, 147, 42, 0.5);
+  transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility Focus Visible
+   -------------------------------------------------------------------------- */
+.questionTrigger:focus-visible,
+.closeButton:focus-visible,
+.categoryTab:focus-visible {
+  outline: 3px solid #efc609;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+
+/* Tablet & Smaller Laptops (<= 1024px) */
+@media (max-width: 1024px) {
+  .contentContainer {
+    padding: 36px 16px 20px 16px;
+  }
+
+  .panelCard {
+    max-width: 860px;
+  }
+
+  .panelBody {
+    padding: 28px 28px 30px 28px;
+    min-height: 440px;
+  }
+
+  .questionText {
+    font-size: 19px;
+  }
+
+  .categoryLabel {
+    font-size: 21px;
+  }
+}
+
+/* Tablets (<= 768px) */
+@media (max-width: 768px) {
+  .plaqueWrapper {
+    max-width: 360px;
+    height: 68px;
+    margin-bottom: 24px;
+  }
+
+  .plaqueText {
+    font-size: 28px;
+  }
+
+  .panelHeader {
+    height: 68px;
+    padding: 0 16px;
+  }
+
+  .categoryTitle {
+    font-size: 24px;
+  }
+
+  .closeButton {
+    width: 44px;
+    height: 36px;
+    right: 14px;
+  }
+
+  .panelBody {
+    padding: 20px 18px 24px 18px;
+    min-height: 420px;
+  }
+
+  .questionTrigger {
+    min-height: 64px;
+    padding: 14px 18px;
+    gap: 14px;
+  }
+
+  .questionText {
+    font-size: 18px;
+  }
+
+  .answerText {
+    font-size: 16px;
+  }
+
+  .categoryList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 12px 8px;
+  }
+
+  .categoryTab {
+    padding: 10px 14px;
+    width: 100%;
+  }
+
+  .categoryLabel {
+    font-size: 18px;
+  }
+}
+
+/* Mobile Devices (<= 480px) */
+@media (max-width: 480px) {
+  .contentContainer {
+    padding: 28px 12px 16px 12px;
+  }
+
+  .plaqueWrapper {
+    max-width: 300px;
+    height: 58px;
+    margin-bottom: 20px;
+  }
+
+  .plaqueText {
+    font-size: 24px;
+  }
+
+  .panelCard {
+    border-radius: 14px;
+    border-width: 2.5px;
+  }
+
+  .panelHeader {
+    height: 60px;
+  }
+
+  .categoryTitle {
+    font-size: 20px;
+  }
+
+  .closeButton {
+    width: 38px;
+    height: 32px;
+    right: 10px;
+  }
+
+  .panelBody {
+    padding: 16px 12px 20px 12px;
+    min-height: 380px;
+  }
+
+  .questionTrigger {
+    min-height: 58px;
+    padding: 12px 14px;
+  }
+
+  .questionText {
+    font-size: 16px;
+  }
+
+  .answerContent {
+    padding: 2px 14px 18px 14px;
+  }
+
+  .answerText {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .categoryBar {
+    min-height: auto;
+  }
+
+  .categoryList {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .categoryTab {
+    padding: 8px 10px;
+  }
+
+  .categoryLabel {
+    font-size: 16px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced Motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .accordionItem,
+  .plusIcon,
+  .answerDrawer,
+  .categoryTab,
+  .closeButton,
+  .categoryTitle,
+  .activeAccent {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

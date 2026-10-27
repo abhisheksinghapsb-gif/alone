@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { SponsorSlotData } from '../../data/sponsorsData';
+import styles from './sponsors.module.css';
 
 export interface SponsorSlotCardProps {
   slot: SponsorSlotData;
@@ -33,10 +34,12 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLButtonElement>) => {
       if (motionPaused || e.pointerType === 'touch') return;
+      if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
+
       const rect = e.currentTarget.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to +0.5
       const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to +0.5
-      const rotateX = Math.max(-1.5, Math.min(1.5, -y * 3.0)); // capped at 1.5deg
+      const rotateX = Math.max(-1.5, Math.min(1.5, -y * 3.0));
       const rotateY = Math.max(-1.5, Math.min(1.5, x * 3.0));
 
       if (tiltRafRef.current !== null) {
@@ -45,7 +48,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       tiltRafRef.current = requestAnimationFrame(() => {
         tiltRafRef.current = null;
         applyVisualTransform(
-          `perspective(600px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px) scale(1.02)`
+          `perspective(600px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4.5px) scale(1.02)`
         );
       });
     },
@@ -69,7 +72,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
 
   const handleFocus = () => {
     setIsFocused(true);
-    applyVisualTransform('perspective(600px) translateY(-4px) scale(1.02)');
+    applyVisualTransform('perspective(600px) translateY(-4.5px) scale(1.02)');
   };
 
   const handleBlur = () => {
@@ -102,84 +105,83 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       role="button"
       aria-pressed={isSelected}
       aria-label={slot.ariaLabel}
-      className={`sponsorSlotHitTarget ${isSelected ? 'isSelected' : ''} ${isHovered ? 'isHovered' : ''} ${isFocused ? 'isFocused' : ''}`}
+      className={`${styles.sponsorSlotHitTarget} ${isSelected ? styles.isSelected : ''} ${
+        isHovered ? styles.isHovered : ''
+      } ${isFocused ? styles.isFocused : ''}`}
       onClick={handleClick}
       onFocus={handleFocus}
       onBlur={handleBlur}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
-      style={{
-        outline: 'none',
-        background: 'transparent',
-        border: 'none',
-        padding: 0,
-        cursor: 'pointer',
-      }}
     >
       {/* Stable Visual Motion Wrapper (transforms visual without altering hit test area) */}
       <div
         ref={visualRef}
-        className="slotVisualWrapper"
+        className={styles.slotVisualWrapper}
         style={{
           '--slot-accent': slot.accentColor,
         } as React.CSSProperties}
       >
-        {/* Main Vector Artwork Card */}
-        <div className="slotCardSurface">
+        {/* Main Vector Artwork Card Surface */}
+        <div className={styles.slotCardSurface}>
+          {/* Complete Figma Vector SVG Card with full unclipped illustration */}
           <img
             src={slot.svgPath}
             alt=""
             width={315}
             height={185}
-            className="slotSvgArtwork"
+            className={styles.slotSvgArtwork}
             loading="eager"
             decoding="async"
             draggable={false}
           />
 
-          {/* Clean Overlay Status Pill in lower illustrated portion */}
-          <div className="slotStatusOverlay">
-            <span className="slotStatusText">{slot.status}</span>
-          </div>
-
-          {/* Miniature Illustrated Window Glint (passes briefly on hover / keyboard focus) */}
+          {/* Miniature Illustrated Window Glint (sweeps briefly on hover / keyboard focus) */}
           <div
-            className={`slotWindowGlintTrack ${(isHovered || isFocused) && !motionPaused ? 'runGlint' : ''}`}
+            className={`${styles.slotWindowGlintTrack} ${
+              (isHovered || isFocused) && !motionPaused ? styles.runGlint : ''
+            }`}
             aria-hidden="true"
           >
-            <div className="slotWindowGlintBeam" />
+            <div className={styles.slotWindowGlintBeam} />
           </div>
 
           {/* Hover / Focus Border Brightening in Card's Color */}
-          <div className="slotHoverBorder" aria-hidden="true" />
+          <div className={styles.slotHoverBorder} aria-hidden="true" />
 
-          {/* Arrival Staggered Illumination Highlight */}
-          <div className="slotArrivalHighlight" aria-hidden="true" />
+          {/* Slower Settle Arrival Highlight */}
+          <div className={styles.slotArrivalHighlight} aria-hidden="true" />
 
-          {/* Refined Selection Perimeter Energy Runner */}
+          {/* Travelling Edge Highlight around the exact angled perimeter on deliberate selection */}
           {isSelected && (
             <svg
               key={pulseKey}
-              className={`slotPulseSvg ${!motionPaused ? 'runPulse' : ''}`}
-              viewBox="0 0 315 185"
+              className={`${styles.slotPulseSvg} ${!motionPaused ? styles.runPulse : ''}`}
+              viewBox={slot.viewBox}
               aria-hidden="true"
             >
-              <polygon
-                points="45,55 326,55 314,199 32,199"
-                className="slotPulsePoly"
+              <path
+                d={slot.perimeterPath}
+                className={styles.slotPulsePoly}
                 style={{ stroke: slot.accentColor }}
               />
             </svg>
           )}
 
-          {/* Persistent Clear Active Border in Card's Accent Color */}
+          {/* Settled Crisp Selected Border following exact card boundary */}
           {isSelected && (
-            <div
-              className="slotActiveGlowBorder"
-              style={{ borderColor: slot.accentColor }}
+            <svg
+              className={styles.slotSelectedOutlineSvg}
+              viewBox={slot.viewBox}
               aria-hidden="true"
-            />
+            >
+              <path
+                d={slot.perimeterPath}
+                className={styles.slotSelectedOutlinePoly}
+                style={{ stroke: slot.accentColor }}
+              />
+            </svg>
           )}
         </div>
       </div>

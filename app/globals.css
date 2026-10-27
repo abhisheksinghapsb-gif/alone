@@ -43,6 +43,14 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+html[data-motion-paused="true"] {
+  scroll-behavior: auto !important;
+}
+
 html,
 body {
   width: 100%;

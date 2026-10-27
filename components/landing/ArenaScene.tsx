@@ -68,19 +68,6 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
         </div>
       </div>
 
-      {/* Small Rotating Blue Planet (Mid Right Space) */}
-      <div className="bluePlanetSmallWrap parallax-celestial">
-        <div id="blue-planet-small-rot">
-          <img
-            src={SCENE_ASSETS.bluePlanetSmall.src}
-            alt={SCENE_ASSETS.bluePlanetSmall.alt}
-            width={SCENE_ASSETS.bluePlanetSmall.width}
-            height={SCENE_ASSETS.bluePlanetSmall.height}
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-            draggable={false}
-          />
-        </div>
-      </div>
 
       {/* Asteroids (Left & Right) */}
       <div className="asteroidLeftWrap parallax-celestial asteroid-idle">
@@ -141,8 +128,8 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
         </div>
       </div>
 
-      {/* Right Character: Ninja (Leon) — Facing inward toward the center */}
-      <div id="ninja-layer" className="ninjaWrap parallax-mid">
+      {/* Right Character: Ninja (Leon) — Facing inward toward the center (stationary) */}
+      <div id="ninja-layer" className="ninjaWrap">
         <div id="ninja-motion-idle">
           <AnimatedCharacter
             type="ninja"

@@ -1,0 +1,790 @@
+/* ==========================================================================
+   GENESIS 6 — SPONSORS SECTION STYLESHEET (Original Figma Composition)
+   Section: #sponsors
+   Design: Figma 196:546 / 193:640
+   ========================================================================== */
+
+/* Screen Reader Utility */
+.srOnly {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* 1. Main Section Container */
+.sponsorsSectionContainer {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #040414;
+  scroll-margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 0 80px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* 2. Cosmic Background Layer */
+.sponsorsBgLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sponsorsBgImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.72;
+}
+
+.sponsorsBgOverlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(4, 4, 20, 0.25) 0%, rgba(4, 4, 20, 0.85) 75%, #040414 100%),
+              linear-gradient(180deg, rgba(4, 4, 20, 0.9) 0%, transparent 15%, transparent 85%, #040414 100%);
+  pointer-events: none;
+}
+
+/* 3. Structural Border Strips */
+.sponsorsTopStrip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 18px;
+  background: linear-gradient(180deg, #02030a 0%, #07091e 100%);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  z-index: 5;
+}
+
+.sponsorsBottomStrip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 35px;
+  background: linear-gradient(180deg, #07091e 0%, #030511 100%);
+  border-top: 2px solid rgba(16, 93, 229, 0.4);
+  z-index: 5;
+}
+
+/* 4. Content Layout Wrapper */
+.sponsorsContentWrap {
+  position: relative;
+  width: 100%;
+  max-width: 1300px;
+  padding: 0 32px;
+  margin: 0 auto;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* 5. Heading Group (SPONSORS + Crown + Chest) */
+.sponsorsHeadingGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  margin-bottom: 28px;
+  padding: 6px 0;
+}
+
+.headingWordmarkWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.8));
+}
+
+.headingWordmarkImg {
+  display: block;
+  width: 327px;
+  max-width: 80vw;
+  height: auto;
+}
+
+.headingIconFlank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  flex-shrink: 0;
+}
+
+.crownFlankImg {
+  width: 65px;
+  height: auto;
+  object-fit: contain;
+}
+
+.chestFlankImg {
+  width: 110px;
+  height: auto;
+  object-fit: contain;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.chestReact .chestFlankImg {
+  transform: translateY(-4px) scale(1.04);
+}
+
+/* 6. Main Columns Grid (Past Sponsors ~28–32%, Six-Slot Board ~68–72%) */
+.sponsorsMainColumns {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(320px, 350px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.sponsorBoardColumnWrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* 7. Past Sponsors Panel (Left Archive - Strong Royal-Blue Slanted Game Panel) */
+.pastSponsorsPanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #1260ec 0%, #105de5 45%, #0d4fc7 100%);
+  border: 3.5px solid #000000;
+  border-radius: 16px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8),
+              inset 0 3px 8px rgba(255, 255, 255, 0.35),
+              inset 0 -4px 12px rgba(0, 0, 0, 0.5);
+  padding: 0 0 28px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  transform: skewX(-4.2deg);
+  width: 100%;
+}
+
+.pastPanelFrameBg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pastPanelHeader {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background: rgba(10, 26, 107, 0.94);
+  border-bottom: 3px solid #000000;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.pastPanelTitle {
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95);
+  margin: 0;
+  transform: skewX(4.2deg); /* un-skew title text upright */
+}
+
+.pastPanelOrnament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #2373ff;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  transform: skewX(4.2deg);
+}
+
+.ornamentText {
+  font-size: 0.85rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.pastPanelBody {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  padding: 44px 20px;
+  box-sizing: border-box;
+  transform: skewX(4.2deg); /* un-skew inner logo plates upright */
+}
+
+.pastLogoPlate {
+  position: relative;
+  width: 100%;
+  max-width: 290px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.55));
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              filter 220ms ease;
+  outline: none;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.pastLogoPlate:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.75));
+}
+
+.pastLogoPlate:focus-visible {
+  outline: 3px solid #38bdf8;
+  outline-offset: 4px;
+  transform: translateY(-3px) scale(1.02);
+}
+
+.plateSheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.35) 50%, transparent 80%);
+  transform: translateX(-140%);
+  opacity: 0;
+  transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 200ms ease;
+  z-index: 2;
+}
+
+.pastLogoPlate:hover .plateSheen {
+  opacity: 1;
+  transform: translateX(140%);
+}
+
+.logoPlateSurface {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pastSponsorImg {
+  width: 100%;
+  height: auto;
+  max-height: 105px;
+  object-fit: contain;
+  display: block;
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+/* 8. Six-Slot Sponsor Board (Right) */
+.sponsorBoardContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sponsorBoardBacking {
+  position: absolute;
+  inset: -14px -16px -18px -16px;
+  background: rgba(6, 12, 34, 0.78);
+  border: 2.5px solid rgba(26, 52, 130, 0.65);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85),
+              inset 0 0 30px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 1;
+  transition: border-color 300ms ease, box-shadow 300ms ease;
+}
+
+.boardAccentSeam {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--active-board-accent, #82D724) 50%, transparent 100%);
+  opacity: 0.85;
+  transition: background 300ms ease;
+}
+
+.boardHeaderLabel {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.sponsorSlotsGrid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* 9. Individual Slot Card Hit Target */
+.sponsorSlotHitTarget {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  touch-action: manipulation;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.sponsorSlotHitTarget:focus-visible {
+  outline: 2.5px solid #38bdf8;
+  outline-offset: 4px;
+}
+
+.slotVisualWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.sponsorSlotHitTarget.isHovered:not(.isSelected) .slotVisualWrapper {
+  transform: translateY(-4.5px) scale(1.02);
+}
+
+.sponsorSlotHitTarget.isSelected .slotVisualWrapper {
+  transform: translateY(-4.5px) scale(1.02);
+}
+
+.slotCardSurface {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: visible;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.7));
+}
+
+.slotSvgArtwork {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+/* Miniature Illustrated Window Glint */
+.slotWindowGlintTrack {
+  position: absolute;
+  bottom: 18px;
+  left: 10%;
+  right: 10%;
+  height: 68px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 4;
+  clip-path: polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%);
+}
+
+.slotWindowGlintBeam {
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  width: 50px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+  transform: translateX(-150%) skewX(-20deg);
+  opacity: 0;
+}
+
+.slotWindowGlintTrack.runGlint .slotWindowGlintBeam {
+  animation: slotWindowGlintSweep 550ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes slotWindowGlintSweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(450%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+/* Hover / Focus Border Brightening in Card's Color */
+.slotHoverBorder {
+  position: absolute;
+  top: 5px;
+  left: 3%;
+  width: 94%;
+  height: 88%;
+  border: 2px solid var(--slot-accent);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 16px var(--slot-accent), inset 0 0 8px var(--slot-accent);
+  transform: skewX(-4.8deg);
+  opacity: 0;
+  transition: opacity 180ms ease, box-shadow 180ms ease;
+  z-index: 5;
+}
+
+.sponsorSlotHitTarget.isHovered .slotHoverBorder,
+.sponsorSlotHitTarget.isFocused .slotHoverBorder,
+.sponsorSlotHitTarget:focus-visible .slotHoverBorder {
+  opacity: 0.95;
+}
+
+/* Slower Board Arrival Highlight */
+.slotArrivalHighlight {
+  position: absolute;
+  top: 5px;
+  left: 3%;
+  width: 94%;
+  height: 88%;
+  border: 2px solid var(--slot-accent);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 18px var(--slot-accent), inset 0 0 10px var(--slot-accent);
+  transform: skewX(-4.8deg);
+  opacity: 0;
+  z-index: 6;
+}
+
+/* Travelling Energy Highlight around exact angled perimeter on deliberate selection */
+.slotPulseSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  overflow: visible;
+}
+
+.slotPulsePoly {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 120 852;
+  stroke-dashoffset: 972;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.runPulse .slotPulsePoly {
+  animation: energyTravel 850ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes energyTravel {
+  0% {
+    stroke-dashoffset: 972;
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.85;
+  }
+}
+
+/* Clean Selected Outline following exact angled perimeter */
+.slotSelectedOutlineSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 8;
+  overflow: visible;
+}
+
+.slotSelectedOutlinePoly {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px currentColor);
+  opacity: 0.95;
+}
+
+/* 10. Board Footer: Caption Area + Mascot in Reserved Normal Flow */
+.sponsorBoardFooter {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.footerSpacer {
+  width: 140px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.sponsorBoardCaptionWrap {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sponsorCaptionBar {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 12px;
+  background: rgba(9, 17, 44, 0.94);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  border-radius: 9999px;
+  padding: 8px 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.1);
+  animation: captionQuickTransition 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes captionQuickTransition {
+  0% {
+    opacity: 0.45;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.captionAccentDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+  flex-shrink: 0;
+  transition: background-color 250ms ease;
+}
+
+.captionCategoryName {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.captionDivider {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.captionStatusText {
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
+
+/* 11. Spike Character Accent in Reserved Dock */
+.spikeCharacterDock {
+  width: 140px;
+  height: 150px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.7));
+  transform-origin: 50% 90%;
+  transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.spikeCharacterImg {
+  width: 100%;
+  max-width: 135px;
+  height: auto;
+  display: block;
+}
+
+/* Mascot leans on card selection */
+.leanLeft {
+  transform: translateY(-3.5px) rotate(-3.5deg);
+}
+
+.leanCenter {
+  transform: translateY(-3.5px) rotate(0deg);
+}
+
+.leanRight {
+  transform: translateY(-3.5px) rotate(3.5deg);
+}
+
+/* 12. Responsive Adaptation Matrix */
+@media (max-width: 1080px) {
+  .sponsorsMainColumns {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .pastSponsorsPanel {
+    order: 2;
+    transform: none;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .pastPanelTitle,
+  .pastPanelOrnament,
+  .pastPanelBody {
+    transform: none;
+  }
+
+  .pastPanelBody {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .pastLogoPlate {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .sponsorBoardColumnWrap {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .sponsorSlotsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .sponsorsHeadingGroup {
+    gap: 16px;
+  }
+
+  .headingWordmarkImg {
+    width: 240px;
+  }
+
+  .crownFlankImg {
+    width: 48px;
+  }
+
+  .chestFlankImg {
+    width: 80px;
+  }
+
+  .sponsorBoardFooter {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footerSpacer {
+    display: none;
+  }
+
+  .spikeCharacterDock {
+    height: 120px;
+    width: 110px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sponsorsContentWrap {
+    padding: 0 16px;
+  }
+
+  .sponsorSlotsGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .pastPanelBody {
+    flex-direction: column;
+  }
+
+  .pastLogoPlate {
+    min-width: 100%;
+  }
+
+  .sponsorCaptionBar {
+    padding: 6px 16px;
+    font-size: 12px;
+  }
+}

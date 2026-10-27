@@ -13,7 +13,10 @@ export interface SponsorSlotData {
   captionText: string;
   accentColor: string;
   svgPath: string;
+  viewBox: string;
+  perimeterPath: string;
   bannerSrc: string;
+  iconSrc: string;
   badgeLabel: string;
   ariaLabel: string;
 }
@@ -46,7 +49,10 @@ export const SPONSOR_SLOTS: SponsorSlotData[] = [
     captionText: 'Title Sponsor · Partner to be announced',
     accentColor: '#82D724',
     svgPath: '/assets/genesis/sponsors/slots/slot-1-title-sponsor.svg',
-    bannerSrc: '/assets/genesis/sponsors/slot-banner-1.webp',
+    viewBox: '15 20 315 185',
+    perimeterPath: 'M45.2997 54.9917H326.54L313.913 199.138H31.8008L45.2997 54.9917Z',
+    bannerSrc: '/assets/genesis/sponsors/banner-title-sponsor.webp',
+    iconSrc: '/assets/genesis/sponsors/icons/slot1_skull.svg',
     badgeLabel: 'TITLE SPONSOR',
     ariaLabel: 'Title Sponsor slot — Partner to be announced',
   },
@@ -59,7 +65,10 @@ export const SPONSOR_SLOTS: SponsorSlotData[] = [
     captionText: 'Event Partner · Partner to be announced',
     accentColor: '#9C3EF4',
     svgPath: '/assets/genesis/sponsors/slots/slot-2-event-partner.svg',
-    bannerSrc: '/assets/genesis/sponsors/slot-banner-1.webp',
+    viewBox: '325 20 315 185',
+    perimeterPath: 'M347.427 54.9917H628.667L616.04 199.138H333.928L347.427 54.9917Z',
+    bannerSrc: '/assets/genesis/sponsors/banner-event-partner.webp',
+    iconSrc: '/assets/genesis/sponsors/icons/slot2_gem.svg',
     badgeLabel: 'EVENT PARTNER',
     ariaLabel: 'Event Partner slot — Partner to be announced',
   },
@@ -72,7 +81,10 @@ export const SPONSOR_SLOTS: SponsorSlotData[] = [
     captionText: 'Platform Sponsor · Partner to be announced',
     accentColor: '#FF3838',
     svgPath: '/assets/genesis/sponsors/slots/slot-3-platform-sponsor.svg',
+    viewBox: '630 20 315 185',
+    perimeterPath: 'M649.558 54.9917H930.798L918.171 199.138H636.059L649.558 54.9917Z',
     bannerSrc: '/assets/genesis/sponsors/slot-banner-2.webp',
+    iconSrc: '/assets/genesis/sponsors/icons/slot3_target.svg',
     badgeLabel: 'PLATFORM SPONSOR',
     ariaLabel: 'Platform Sponsor slot — Partner to be announced',
   },
@@ -85,7 +97,10 @@ export const SPONSOR_SLOTS: SponsorSlotData[] = [
     captionText: 'Sponsor slot · To be announced',
     accentColor: '#2373FF',
     svgPath: '/assets/genesis/sponsors/slots/slot-4-slot-4.svg',
+    viewBox: '15 210 315 185',
+    perimeterPath: 'M30.4599 243.931H310.888L298.297 388.077H17L30.4599 243.931Z',
     bannerSrc: '/assets/genesis/sponsors/slot-banner-3.webp',
+    iconSrc: '/assets/genesis/sponsors/icons/slot4_ball.svg',
     badgeLabel: 'TO BE ANNOUNCED',
     ariaLabel: 'Sponsor slot 4 — To be announced',
   },
@@ -98,7 +113,10 @@ export const SPONSOR_SLOTS: SponsorSlotData[] = [
     captionText: 'Sponsor slot · To be announced',
     accentColor: '#FF7A00',
     svgPath: '/assets/genesis/sponsors/slots/slot-5-slot-5.svg',
+    viewBox: '325 210 315 185',
+    perimeterPath: 'M332.589 243.931H613.017L600.426 388.077H319.129L332.589 243.931Z',
     bannerSrc: '/assets/genesis/sponsors/slot-banner-3.webp',
+    iconSrc: '/assets/genesis/sponsors/icons/slot5_5v5.svg',
     badgeLabel: 'TO BE ANNOUNCED',
     ariaLabel: 'Sponsor slot 5 — To be announced',
   },
@@ -111,7 +129,10 @@ export const SPONSOR_SLOTS: SponsorSlotData[] = [
     captionText: 'Sponsor slot · To be announced',
     accentColor: '#FFB800',
     svgPath: '/assets/genesis/sponsors/slots/slot-6-slot-6.svg',
+    viewBox: '630 210 315 185',
+    perimeterPath: 'M634.716 243.931H915.144L902.553 388.077H621.256L634.716 243.931Z',
     bannerSrc: '/assets/genesis/sponsors/slot-banner-3.webp',
+    iconSrc: '/assets/genesis/sponsors/icons/slot6_knockout.svg',
     badgeLabel: 'TO BE ANNOUNCED',
     ariaLabel: 'Sponsor slot 6 — To be announced',
   },

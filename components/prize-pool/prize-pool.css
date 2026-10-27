@@ -27,7 +27,7 @@
   background-size: 1440px auto;
   color: #ffffff;
   overflow: hidden;
-  scroll-margin-top: 80px;
+  scroll-margin-top: 0;
   padding: 60px 20px 100px 20px;
   box-sizing: border-box;
 }

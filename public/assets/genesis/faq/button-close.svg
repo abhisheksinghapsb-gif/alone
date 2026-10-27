@@ -1,0 +1,38 @@
+<svg width="55" height="45" viewBox="868 19 55 45" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <filter id="filter_close_shadow" x="868.5" y="19.4" width="54.2" height="44.7" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dx="0.2" dy="2.5"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="0.6"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"/>
+      <feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
+    </filter>
+    <path id="btn_shape" d="M871.61 21.4945C871.666 20.6536 872.364 20 873.207 20H920.291C921.216 20 921.948 20.7823 921.887 21.7055L919.39 59.5055C919.334 60.3464 918.636 61 917.793 61H870.709C869.784 61 869.052 60.2177 869.113 59.2945L871.61 21.4945Z"/>
+    <mask id="btn_mask" maskUnits="userSpaceOnUse" x="868" y="19" width="55" height="43" fill="black">
+      <rect fill="white" x="868" y="19" width="55" height="43"/>
+      <use xlink:href="#btn_shape"/>
+    </mask>
+    <mask id="inner_mask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="869" y="20" width="53" height="41">
+      <use xlink:href="#btn_shape" fill="#343B50"/>
+    </mask>
+  </defs>
+  <g filter="url(#filter_close_shadow)">
+    <use xlink:href="#btn_shape" fill="#E6311F"/>
+    <path d="M870.709 61H917.793C918.636 61 919.334 60.3464 919.39 59.5055L921.887 21.7055C921.948 20.7823 921.216 20 920.291 20H873.207C872.364 20 871.666 20.6536 871.61 21.4945L869.113 59.2945C869.052 60.2177 869.784 61 870.709 61Z" stroke-width="1.2" stroke="black" mask="url(#btn_mask)"/>
+  </g>
+  <g mask="url(#inner_mask)">
+    <rect x="867.25" y="11.1406" width="59.0031" height="11.9252" fill="#FF7B7B"/>
+    <rect x="867.285" y="56.9492" width="59.0031" height="11.9252" fill="#CD0034"/>
+  </g>
+  <!-- Shadow X -->
+  <path d="M887.67 35.0293L893.476 28.5938L898.574 34.6848L904.255 29.5003L908.466 35.7957L903.649 40.7491L908.257 46.2551L901.979 52.405L897.547 47.0231L892.878 51.824L887.275 44.9961L892.187 40.5138L887.67 35.0293Z" stroke-width="1.2" stroke-linejoin="round" stroke="black" fill="black"/>
+  <!-- White X -->
+  <path d="M898.573 32.8711L904.254 27.6865L908.466 33.9824L903.648 38.9355L908.257 44.4414L901.979 50.5918L897.547 45.209L892.878 50.0107L887.275 43.1826L892.186 38.7002L887.67 33.2158L893.476 26.7803L898.573 32.8711Z" stroke-width="1.2" stroke-linejoin="round" stroke="black" fill="white"/>
+</svg>

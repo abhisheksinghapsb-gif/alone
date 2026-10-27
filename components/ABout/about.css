@@ -273,21 +273,10 @@
   max-height: 410px;
   display: flex;
   flex-direction: column;
-  /* Substantially reduced outer cyan bloom for crisp, clearly defined frame */
-  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.35))
-         drop-shadow(0 0 14px rgba(0, 180, 255, 0.18))
-         drop-shadow(0 10px 24px rgba(0, 0, 0, 0.85));
-  transition: filter 0.3s ease;
   overflow: visible;
 }
 
-.briefingBoardContainer:hover {
-  filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.5))
-         drop-shadow(0 0 20px rgba(0, 200, 255, 0.25))
-         drop-shadow(0 12px 28px rgba(0, 0, 0, 0.9));
-}
-
-/* Scalable Frame SVG */
+/* Scalable Frame SVG: Dedicated decorative frame layer carrying the strengthened notched cyan glow */
 .briefingBoardSvg {
   position: absolute;
   top: 0;
@@ -297,6 +286,20 @@
   pointer-events: none;
   z-index: 1;
   overflow: visible;
+  /* Crisp luminous edge + restrained soft outer halo (35-45% increase over previous baseline) */
+  filter: drop-shadow(0 0 3px rgba(0, 235, 255, 0.65))
+         drop-shadow(0 0 7px rgba(0, 215, 255, 0.48))
+         drop-shadow(0 0 15px rgba(0, 160, 255, 0.25))
+         drop-shadow(0 10px 24px rgba(0, 0, 0, 0.85));
+  transition: filter 0.25s ease;
+}
+
+.briefingBoardContainer:hover .briefingBoardSvg {
+  /* Slightly stronger response while pointer is inside the panel */
+  filter: drop-shadow(0 0 4.5px rgba(0, 245, 255, 0.85))
+         drop-shadow(0 0 10px rgba(0, 225, 255, 0.62))
+         drop-shadow(0 0 20px rgba(0, 180, 255, 0.35))
+         drop-shadow(0 12px 28px rgba(0, 0, 0, 0.9));
 }
 
 /* Subtle Frame Border Reflection: catches light along the border nearest to pointer */

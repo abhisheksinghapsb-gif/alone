@@ -24,8 +24,7 @@
   width: 100%;
   min-height: 100vh;
   background-color: #040414;
-  overflow: hidden;
-  scroll-margin-top: 96px;
+  scroll-margin-top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -156,6 +155,13 @@
   align-items: stretch;
 }
 
+.sponsorBoardColumn {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 /* 7. Past Sponsors Panel */
 .pastSponsorsPanel {
   position: relative;
@@ -259,6 +265,11 @@
   box-shadow: 0 8px 20px rgba(0, 229, 255, 0.2), inset 0 1px 6px rgba(56, 189, 248, 0.3);
 }
 
+.pastLogoPlate:focus-visible {
+  outline: 2.5px solid #38bdf8;
+  outline-offset: 3px;
+}
+
 .logoPlateSurface {
   width: 100%;
   display: flex;
@@ -285,7 +296,7 @@
 
 .sponsorBoardBacking {
   position: absolute;
-  inset: -12px -14px -16px -14px;
+  inset: -14px -16px -18px -16px;
   background: rgba(6, 12, 34, 0.75);
   border: 2.5px solid rgba(26, 52, 130, 0.6);
   border-radius: 20px;
@@ -327,6 +338,14 @@
   justify-content: center;
   user-select: none;
   touch-action: manipulation;
+  box-sizing: border-box;
+  border-radius: 14px;
+}
+
+.sponsorSlotHitTarget:focus-visible {
+  outline: 2.5px solid #38bdf8;
+  outline-offset: 4px;
+  border-radius: 14px;
 }
 
 .slotVisualWrapper {
@@ -335,7 +354,6 @@
   height: 100%;
   transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
   transform-style: preserve-3d;
-  will-change: transform;
 }
 
 .sponsorSlotHitTarget.isHovered:not(.isSelected) .slotVisualWrapper {
@@ -362,34 +380,35 @@
   pointer-events: none;
 }
 
-/* Status Pill in Lower Body of Slot */
+/* Status Pill in Lower Body of Slot (No ellipsis, full words visible) */
 .slotStatusOverlay {
   position: absolute;
   bottom: 12px;
-  left: 14%;
-  right: 14%;
+  left: 8%;
+  right: 8%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px 8px;
-  background: rgba(4, 8, 26, 0.88);
-  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  background: rgba(4, 8, 26, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
   border-radius: 6px;
   backdrop-filter: blur(4px);
   pointer-events: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  box-sizing: border-box;
 }
 
 .slotStatusText {
   font-family: var(--font-sans);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   color: #e2e8f0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.25;
 }
 
 /* Active Outline & Glow */
@@ -407,7 +426,7 @@
   opacity: 0.9;
 }
 
-/* Hover / Keyboard Focus Border Brightening in Card's Color (Requirement 6B) */
+/* Hover / Keyboard Focus Border Brightening in Card's Color */
 .slotHoverBorder {
   position: absolute;
   top: 5px;
@@ -430,7 +449,7 @@
   opacity: 0.95;
 }
 
-/* Staggered Board Arrival Card Border Illumination (Requirement 6A) */
+/* Staggered Board Arrival Card Border Illumination */
 .slotArrivalHighlight {
   position: absolute;
   top: 5px;
@@ -446,7 +465,7 @@
   z-index: 6;
 }
 
-/* Miniature Illustrated Window Glint (Requirement 6B) */
+/* Miniature Illustrated Window Glint */
 .slotWindowGlintTrack {
   position: absolute;
   bottom: 20px;
@@ -526,12 +545,29 @@
   }
 }
 
-/* 10. Reserved Caption Area Beneath Board */
-.sponsorBoardCaptionWrap {
+/* 10. Board Footer: Caption Area + Mascot in Normal Flow (Zero overlap with cards) */
+.sponsorBoardFooter {
   position: relative;
   z-index: 2;
   width: 100%;
-  margin-top: 24px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.footerSpacer {
+  width: 140px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.sponsorBoardCaptionWrap {
+  flex: 1;
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -540,13 +576,17 @@
 .sponsorCaptionBar {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 12px;
   background: rgba(9, 17, 44, 0.92);
   border: 1.5px solid rgba(56, 189, 248, 0.28);
   border-radius: 9999px;
   padding: 8px 24px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.1);
   animation: captionQuickTransition 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 @keyframes captionQuickTransition {
@@ -589,21 +629,21 @@
   letter-spacing: 0.4px;
 }
 
-/* 11. Spike Character Accent (Bottom Right of Board) */
+/* 11. Spike Character Accent (Positioned in footer, zero overlap with cards) */
 .spikeCharacterAccent {
-  position: absolute;
-  right: -25px;
-  bottom: -20px;
-  width: 175px;
-  height: auto;
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
   pointer-events: none;
-  z-index: 15;
+  z-index: 10;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.7));
   transform-origin: 50% 90%;
   transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Companion response (Requirement 6C): small lean + 2-4px lift and settling motion */
+/* Companion response: small lean + 2-4px lift and settling motion */
 .spikeCharacterAccent.companionReact {
   transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -622,6 +662,7 @@
 
 .spikeCharacterImg {
   width: 100%;
+  max-width: 135px;
   height: auto;
   display: block;
 }
@@ -793,21 +834,36 @@
     max-width: 360px;
   }
   
-  .sponsorBoardContainer {
+  .sponsorBoardColumn {
     order: 1;
   }
   
+  .sponsorBoardFooter {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+  }
+  
+  .footerSpacer {
+    display: none;
+  }
+  
   .spikeCharacterAccent {
-    right: -20px;
-    bottom: -35px;
-    width: 140px;
+    width: 125px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  
+  .spikeCharacterImg {
+    max-width: 120px;
   }
 }
 
 /* Tablets (max-width: 768px) */
 @media (max-width: 768px) {
   .sponsorsSectionContainer {
-    padding: 40px 0 80px 0;
+    padding: 36px 0 72px 0;
   }
   
   .sponsorsContentWrap {
@@ -816,7 +872,7 @@
   
   .sponsorsHeadingGroup {
     gap: 16px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
   
   .headingWordmarkImg {
@@ -824,11 +880,11 @@
   }
   
   .crownFlankImg {
-    width: 48px;
+    width: 46px;
   }
   
   .chestFlankImg {
-    width: 75px;
+    width: 72px;
   }
   
   .sponsorSlotsGrid {
@@ -838,14 +894,24 @@
   
   .pastPanelBody {
     flex-direction: column;
+    padding: 18px 14px;
+    gap: 16px;
   }
   
   .pastLogoPlate {
     max-width: 100%;
   }
   
+  /* Retain mascot in normal flow without overlap */
   .spikeCharacterAccent {
-    display: none; /* remove before it covers content */
+    display: flex;
+    width: 110px;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  
+  .spikeCharacterImg {
+    max-width: 105px;
   }
   
   .sponsorsDivider {
@@ -868,6 +934,10 @@
 
 /* Mobile Screens (max-width: 480px) */
 @media (max-width: 480px) {
+  .sponsorsContentWrap {
+    padding: 0 12px;
+  }
+
   .sponsorSlotsGrid {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -886,8 +956,52 @@
   }
   
   .sponsorCaptionBar {
-    padding: 6px 16px;
+    padding: 6px 14px;
     font-size: 13px;
+    gap: 6px 8px;
+    border-radius: 20px;
+  }
+
+  .captionCategoryName {
+    font-size: 13.5px;
+  }
+
+  .captionStatusText {
+    font-size: 12px;
+  }
+  
+  .spikeCharacterAccent {
+    width: 95px;
+    margin-top: 6px;
+  }
+  
+  .spikeCharacterImg {
+    max-width: 90px;
+  }
+}
+
+/* Ultra-Compact Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+  .sponsorsContentWrap {
+    padding: 0 8px;
+  }
+
+  .sponsorBoardBacking {
+    inset: -8px -8px -12px -8px;
+  }
+
+  .slotStatusOverlay {
+    left: 4%;
+    right: 4%;
+    padding: 4px 6px;
+  }
+
+  .slotStatusText {
+    font-size: 10px;
+  }
+
+  .sponsorCaptionBar {
+    padding: 6px 10px;
   }
 }
 

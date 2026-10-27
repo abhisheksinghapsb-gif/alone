@@ -54,6 +54,29 @@ export const GameButton: React.FC<GameButtonProps> = ({
     }
   };
 
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (href?.startsWith('#')) {
+      const targetId = href.slice(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        e.preventDefault();
+        const prefersReducedMotion =
+          typeof window !== 'undefined' &&
+          (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+            document.documentElement.dataset.motionPaused === 'true');
+
+        targetEl.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'start',
+        });
+
+        if (typeof window !== 'undefined' && window.history && window.history.pushState) {
+          window.history.pushState(null, '', href);
+        }
+      }
+    }
+  };
+
   const baseStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -91,6 +114,7 @@ export const GameButton: React.FC<GameButtonProps> = ({
         onMouseEnter={handleMouseEnter}
         onFocus={handleFocus}
         onMouseDown={handleMouseDown}
+        onClick={handleAnchorClick}
       >
         {image ? (
           <img
