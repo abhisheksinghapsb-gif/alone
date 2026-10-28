@@ -108,7 +108,25 @@ export const useFAQMotion = ({
     return () => {
       ctx.revert();
     };
-  }, [sectionRef, motionPaused]);
+  }, [sectionRef]);
+
+  // Handle mid-entrance pause: immediately set readable resting state without re-running entrance
+  useEffect(() => {
+    if (motionPaused) {
+      const section = sectionRef.current;
+      if (section) {
+        gsap.set(
+          [
+            section.querySelector('[data-faq-plaque]'),
+            section.querySelector('[data-faq-panel]'),
+            section.querySelector('[data-faq-category-bar]'),
+            section.querySelectorAll('[data-faq-item]'),
+          ],
+          { opacity: 1, y: 0 }
+        );
+      }
+    }
+  }, [motionPaused, sectionRef]);
 
   // 2. Tactile Category Switch Transition (Staggered row settling)
   useEffect(() => {

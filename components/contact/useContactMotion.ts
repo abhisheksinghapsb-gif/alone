@@ -106,7 +106,24 @@ export const useContactMotion = ({
     return () => {
       ctx.revert();
     };
-  }, [sectionRef, motionPaused]);
+  }, [sectionRef]);
+
+  // Handle mid-entrance pause: immediately show readable resting state
+  useEffect(() => {
+    if (motionPaused) {
+      const section = sectionRef.current;
+      if (section) {
+        gsap.set(
+          [
+            section.querySelector('[data-contact-heading]'),
+            section.querySelectorAll('[data-contact-group]'),
+            section.querySelector('[data-contact-venue]'),
+          ],
+          { opacity: 1, y: 0 }
+        );
+      }
+    }
+  }, [motionPaused, sectionRef]);
 
   // 2. Illustrated Background Pointer Parallax Depth
   useEffect(() => {

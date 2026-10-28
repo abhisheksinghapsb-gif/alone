@@ -512,6 +512,9 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
   // Handle Pause Motion state: pause or resume all idle tweens without jumping
   useEffect(() => {
     if (motionPaused) {
+      if (masterTimelineRef.current && masterTimelineRef.current.isActive()) {
+        masterTimelineRef.current.progress(1);
+      }
       pauseHeroWorkRef.current?.();
     } else if (isHeroVisibleRef.current && !document.hidden) {
       resumeHeroWorkRef.current?.();

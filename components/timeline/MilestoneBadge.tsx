@@ -12,6 +12,7 @@ export interface MilestoneBadgeProps {
   onClick?: () => void;
   className?: string;
   size?: number;
+  badgeRef?: (el: HTMLButtonElement | null) => void;
 }
 
 // Vector paths extracted directly from Group 1000012459.svg
@@ -43,6 +44,7 @@ export const MilestoneBadge: React.FC<MilestoneBadgeProps> = ({
   onClick,
   className = '',
   size = 56,
+  badgeRef,
 }) => {
   const numberInfo = NUMBER_PATHS[step];
   const isHighlighted = isActive || isHovered;
@@ -51,6 +53,7 @@ export const MilestoneBadge: React.FC<MilestoneBadgeProps> = ({
 
   return (
     <button
+      ref={badgeRef}
       type="button"
       onClick={onClick}
       className={`relative rounded-full select-none cursor-pointer group focus:outline-none transition-transform duration-200 ease-out flex items-center justify-center ${

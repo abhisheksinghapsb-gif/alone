@@ -18,6 +18,9 @@ export const usePrizeMotion = ({
   motionPaused = false,
 }: UsePrizeMotionOptions) => {
   const idleTweensRef = useRef<gsap.core.Tween[]>([]);
+  const motionPausedRef = useRef<boolean>(motionPaused);
+  motionPausedRef.current = motionPaused;
+  const isSectionActiveRef = useRef<boolean>(false);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -215,17 +218,27 @@ export const usePrizeMotion = ({
         start: 'top bottom',
         end: 'bottom top',
         onEnter: () => {
-          if (!motionPaused && !document.hidden) {
+          isSectionActiveRef.current = true;
+          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (!motionPausedRef.current && !document.hidden && !isReduced) {
             idleTweensRef.current.forEach((t) => t.play());
           }
         },
-        onLeave: () => idleTweensRef.current.forEach((t) => t.pause()),
+        onLeave: () => {
+          isSectionActiveRef.current = false;
+          idleTweensRef.current.forEach((t) => t.pause());
+        },
         onEnterBack: () => {
-          if (!motionPaused && !document.hidden) {
+          isSectionActiveRef.current = true;
+          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (!motionPausedRef.current && !document.hidden && !isReduced) {
             idleTweensRef.current.forEach((t) => t.play());
           }
         },
-        onLeaveBack: () => idleTweensRef.current.forEach((t) => t.pause()),
+        onLeaveBack: () => {
+          isSectionActiveRef.current = false;
+          idleTweensRef.current.forEach((t) => t.pause());
+        },
       });
     }, section);
 
@@ -233,8 +246,11 @@ export const usePrizeMotion = ({
     const handleVisibilityChange = () => {
       if (document.hidden) {
         idleTweensRef.current.forEach((t) => t.pause());
-      } else if (!motionPaused && !prefersReducedMotion) {
-        idleTweensRef.current.forEach((t) => t.resume());
+      } else {
+        const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!motionPausedRef.current && !isReduced && isSectionActiveRef.current) {
+          idleTweensRef.current.forEach((t) => t.resume());
+        }
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -252,7 +268,10 @@ export const usePrizeMotion = ({
     if (motionPaused) {
       idleTweensRef.current.forEach((t) => t.pause());
     } else {
-      idleTweensRef.current.forEach((t) => t.resume());
+      const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (isSectionActiveRef.current && !document.hidden && !isReduced) {
+        idleTweensRef.current.forEach((t) => t.resume());
+      }
     }
   }, [motionPaused]);
 };

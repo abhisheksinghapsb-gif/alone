@@ -523,62 +523,36 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
 
   // ==========================================================================
   // 2. NINJA (LEON) — Right Hero Character
-  // Responsive Cursor Hover Pop-Out:
-  // - On hover: lifts -14px with spring scale 1.05 and deep drop-shadow
-  // - Plays soft audio hover tick via uiAudio.playHoverTick()
-  // - Smooth transition returning to baseline rest on pointer leave
-  // - Preserves clean character art without circular aura, reticle, or idle loops
+  // Kept plain and stationary per specification (no hover popups, reticles, or idle loops)
   // ==========================================================================
   if (type === 'ninja') {
     return (
       <div
         id="leon-character-wrap"
-        className={`ninjaCharacterWrap characterInteractionTarget ${className}`}
-        aria-label="Leon the Chameleon Hood Ninja Brawler. Hover to inspect."
-        onPointerEnter={() => {
-          setIsHovered(true);
-          uiAudio.playHoverTick();
-        }}
-        onPointerLeave={() => setIsHovered(false)}
+        className={`ninjaCharacterWrap ${className}`}
+        aria-label="Leon the Chameleon Hood Ninja Brawler."
         style={{
           position: 'relative',
           display: 'block',
-          cursor: 'pointer',
           userSelect: 'none',
           outline: 'none',
         }}
       >
-        <div
-          id="leon-hover-popup"
+        <img
+          src={SCENE_ASSETS.ninja.src}
+          alt={SCENE_ASSETS.ninja.alt}
+          width={SCENE_ASSETS.ninja.width}
+          height={SCENE_ASSETS.ninja.height}
           style={{
-            transform: isHovered
-              ? 'translateY(-14px) scale(1.05)'
-              : 'translateY(0px) scale(1)',
-            filter: isHovered
-              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
-              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
-            transformOrigin: '50% 92%',
-            transition: motionPaused
-              ? 'none'
-              : 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
-            willChange: 'transform, filter',
+            width: '100%',
+            height: 'auto',
+            display: 'block',
+            userSelect: 'none',
+            pointerEvents: 'none',
+            filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
           }}
-        >
-          <img
-            src={SCENE_ASSETS.ninja.src}
-            alt={SCENE_ASSETS.ninja.alt}
-            width={SCENE_ASSETS.ninja.width}
-            height={SCENE_ASSETS.ninja.height}
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              userSelect: 'none',
-              pointerEvents: 'none',
-            }}
-            draggable={false}
-          />
-        </div>
+          draggable={false}
+        />
       </div>
     );
   }

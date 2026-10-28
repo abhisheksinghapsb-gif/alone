@@ -72,8 +72,10 @@ export const FAQAccordionItem: React.FC<FAQAccordionItemProps> = ({
           transitionDuration: motionPaused ? '0.01ms' : undefined,
         }}
       >
-        <div className={styles.answerContent}>
-          <p className={styles.answerText}>{item.answer}</p>
+        <div className={styles.answerDrawerInner}>
+          <div className={styles.answerContent}>
+            <p className={styles.answerText}>{item.answer}</p>
+          </div>
         </div>
       </div>
     </div>

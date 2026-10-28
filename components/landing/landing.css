@@ -198,10 +198,10 @@
 
 .moonWrap {
   position: absolute;
-  top: 28%;
+  top: clamp(190px, 26%, 235px);
   left: 50%;
   transform: translateX(-50%);
-  width: 660px;
+  width: clamp(720px, 52vw, 840px);
   z-index: var(--z-moon);
   pointer-events: none;
 }
@@ -222,18 +222,18 @@
 /* Left Gunslinger (Colt) — Large hero framing the central arena */
 .gunslingerWrap {
   position: absolute;
-  top: 32.5%;
-  left: 8.5%;
-  width: 370px;
+  top: clamp(200px, 28%, 240px);
+  left: clamp(2%, 5vw, 8.5%);
+  width: clamp(310px, 25vw, 370px);
   z-index: var(--z-characters);
 }
 
 /* Right Ninja (Leon) — Inward-facing, framing the central arena */
 .ninjaWrap {
   position: absolute;
-  top: 30.5%;
-  right: 8.5%;
-  width: 350px;
+  top: clamp(190px, 27%, 230px);
+  right: clamp(2%, 5vw, 8.5%);
+  width: clamp(290px, 24vw, 350px);
   z-index: var(--z-characters);
 }
 
@@ -805,8 +805,8 @@
   }
 
   .moonWrap {
-    top: clamp(180px, 26vh, 220px);
-    width: clamp(500px, 42vw, 640px);
+    top: clamp(190px, 26vh, 230px);
+    width: clamp(680px, 52vw, 760px);
   }
 
   .ringedPlanetWrap {
@@ -855,22 +855,22 @@
 
   .gunslingerWrap {
     top: auto;
-    bottom: 12%;
+    bottom: calc(100vw * 0.217 - 35px);
     left: 4%;
     width: clamp(270px, 32vw, 360px);
   }
 
   .ninjaWrap {
     top: auto;
-    bottom: 12%;
+    bottom: calc(100vw * 0.217 - 35px);
     right: 4%;
     width: clamp(260px, 30vw, 340px);
   }
 
   .moonWrap {
     top: auto;
-    bottom: 14%;
-    width: clamp(460px, 52vw, 560px);
+    bottom: calc(100vw * 0.179 - 45px);
+    width: clamp(480px, 52vw, 580px);
   }
 
   .barrierLayer {
@@ -969,22 +969,22 @@
 
   .gunslingerWrap {
     top: auto;
-    bottom: clamp(70px, 9vh, 105px);
+    bottom: calc(100vw * 0.217 - 35px);
     left: clamp(1%, 2.5vw, 4%);
     width: clamp(250px, 32vw, 320px);
   }
 
   .ninjaWrap {
     top: auto;
-    bottom: clamp(70px, 9vh, 105px);
+    bottom: calc(100vw * 0.217 - 35px);
     right: clamp(1%, 2.5vw, 4%);
     width: clamp(240px, 30vw, 310px);
   }
 
   .moonWrap {
     top: auto;
-    bottom: clamp(110px, 13vh, 160px);
-    width: clamp(420px, 54vw, 540px);
+    bottom: calc(100vw * 0.179 - 45px);
+    width: clamp(440px, 58vw, 580px);
   }
 
   .ringedPlanetWrap {
@@ -1140,24 +1140,24 @@
     width: 20px;
   }
 
-  /* Midground characters grounded and framing center without overlapping */
+  /* Midground characters and moon anchored to shared bottom rail reference */
   .gunslingerWrap {
     top: auto;
-    bottom: clamp(60px, 9vh, 85px);
+    bottom: calc(100vw * 0.217 - 18px);
     left: -2%;
     width: clamp(155px, 44vw, 195px);
   }
 
   .ninjaWrap {
     top: auto;
-    bottom: clamp(60px, 9vh, 85px);
+    bottom: calc(100vw * 0.217 - 18px);
     right: -2%;
     width: clamp(145px, 41vw, 185px);
   }
 
   .moonWrap {
     top: auto;
-    bottom: clamp(75px, 11vh, 105px);
+    bottom: calc(100vw * 0.179 - 35px);
     width: clamp(260px, 82vw, 340px);
   }
 
@@ -1208,23 +1208,29 @@
   }
 }
 
-/* 6. Short Landscape Mobile Screens (e.g. 844x390, 740x360) */
-@media (max-height: 500px) and (orientation: landscape) {
+/* 6. Short Screens & Mobile Landscape (e.g. 844x390, 1280x450):
+   Permits a taller scrollable scene (min-height: 580px) so content breathes naturally
+   without submerging characters under the barrier rail. */
+@media (max-height: 540px) and (orientation: landscape) {
   .sceneContainer {
-    height: 100vh;
-    min-height: 360px;
-    max-height: 500px;
+    height: auto;
+    min-height: 580px;
+    max-height: none;
+    overflow: visible;
   }
 
   .landingHeader {
-    padding: 4px 16px;
+    padding: 6px 16px;
     flex-wrap: nowrap;
+    position: absolute;
+    top: 0;
   }
 
   .primaryNavControls {
     width: auto;
     order: 2;
     margin: 0;
+    gap: 8px;
   }
 
   #utility-controls {
@@ -1232,41 +1238,21 @@
   }
 
   .centerHeroWrap {
-    top: 72px;
-    width: 280px;
+    top: 76px;
+    width: clamp(280px, 34vw, 360px);
   }
 
   .genesisLogoWrap {
-    max-width: 170px;
+    max-width: 190px;
   }
 
   .editionBadge {
-    font-size: 9.5px;
-    padding: 1px 6px;
+    font-size: 10px;
+    padding: 1.5px 8px;
   }
 
   .registerBtnWrap {
-    width: 125px;
-  }
-
-  .gunslingerWrap {
-    top: auto;
-    bottom: 8px;
-    left: 2%;
     width: 140px;
-  }
-
-  .ninjaWrap {
-    top: auto;
-    bottom: 8px;
-    right: 2%;
-    width: 130px;
-  }
-
-  .moonWrap {
-    top: auto;
-    bottom: 12px;
-    width: 240px;
   }
 
   .barrierLayer {
@@ -1274,30 +1260,52 @@
     bottom: 0;
   }
 
+  /* Ground reference on short landscape: rail height = 100vw * 368 / 1440.
+     Characters and moon sit on the shared rail ledge, keeping faces and weapons fully visible. */
+  .gunslingerWrap {
+    top: auto;
+    bottom: calc(100vw * 0.217 - 28px);
+    left: 2%;
+    width: clamp(165px, 20vw, 220px);
+  }
+
+  .ninjaWrap {
+    top: auto;
+    bottom: calc(100vw * 0.217 - 28px);
+    right: 2%;
+    width: clamp(155px, 19vw, 210px);
+  }
+
+  .moonWrap {
+    top: auto;
+    bottom: calc(100vw * 0.179 - 35px);
+    width: clamp(320px, 42vw, 440px);
+  }
+
   .cannonWrap {
     bottom: 0;
     left: 4px;
-    width: 80px;
+    width: 95px;
   }
 
   .balloonWrap {
-    bottom: 4px;
-    left: 100px;
+    bottom: 6px;
+    left: 115px;
     right: auto;
-    transform: scale(0.55);
+    transform: scale(0.65);
     pointer-events: none;
   }
 
   .ringedPlanetWrap {
-    top: 44px;
+    top: 48px;
     right: 2%;
-    width: 70px;
+    width: 85px;
   }
 
   .bluePlanetLeftWrap {
-    top: 46px;
+    top: 50px;
     left: 2%;
-    width: 32px;
+    width: 40px;
   }
 }
 

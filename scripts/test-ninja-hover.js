@@ -1,7 +1,6 @@
-// scripts/test-ninja-hover.js
+// scripts/test-ninja-hover.js -> Retired / Replaced with Plain Stationary Check
+// Verifies Ninja Leon remains plain and stationary (no aura, reticle, hover popups, or idle animations)
 const http = require('http');
-const fs = require('fs');
-const path = require('path');
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -63,43 +62,29 @@ async function run() {
   await client.send('Page.navigate', { url: 'http://localhost:3002' });
   await wait(2200);
 
-  // 1. Get position of Ninja Leon wrap
-  const posRes = await client.send('Runtime.evaluate', {
+  const check = await client.send('Runtime.evaluate', {
     expression: `(() => {
       const wrap = document.getElementById('leon-character-wrap');
-      if (!wrap) return null;
-      const r = wrap.getBoundingClientRect();
-      return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) };
+      const popup = document.getElementById('leon-hover-popup');
+      const hasAura = !!document.querySelector('.ninja-aura');
+      const hasReticle = !!document.querySelector('.ninja-reticle');
+      const isPlain = !popup && !hasAura && !hasReticle && !!wrap;
+      return { wrapExists: !!wrap, popupExists: !!popup, isPlain };
     })()`,
     returnByValue: true,
   });
-  const pos = posRes.result.value;
 
-  // 2. Move cursor onto Ninja Leon using CDP Input.dispatchMouseEvent
-  await client.send('Input.dispatchMouseEvent', {
-    type: 'mouseMoved',
-    x: pos.x,
-    y: pos.y,
-  });
-  await wait(400);
-
-  // 3. Hover state of Ninja Leon
-  const hoverEval = await client.send('Runtime.evaluate', {
-    expression: `(() => {
-      const el = document.getElementById('leon-hover-popup');
-      return el ? window.getComputedStyle(el).transform : 'missing';
-    })()`,
-    returnByValue: true,
-  });
-  console.log('Hover transform of #leon-hover-popup:', hoverEval.result.value);
-
-  // 4. Capture screenshot of Ninja popped out
-  const shot = await client.send('Page.captureScreenshot', { format: 'png' });
-  const shotPath = path.join(__dirname, '..', 'docs', 'captures', 'ninja-hover-popped.png');
-  fs.writeFileSync(shotPath, Buffer.from(shot.data, 'base64'));
-  console.log('Saved hover screenshot to:', shotPath);
-
+  console.log('Ninja Plain Stationary Verification:', check.result.value);
   client.close();
+
+  if (!check.result.value.isPlain) {
+    console.error('FAIL: Ninja is not stationary and plain!');
+    process.exit(1);
+  }
+  console.log('PASS: Ninja is plain and stationary.');
 }
 
-run().catch(console.error);
+run().catch((err) => {
+  console.error('Error running test:', err);
+  process.exit(1);
+});

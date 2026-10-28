@@ -18,6 +18,9 @@ export const useSponsorsMotion = ({
   motionPaused,
 }: UseSponsorsMotionProps) => {
   const idleTweensRef = useRef<gsap.core.Tween[]>([]);
+  const motionPausedRef = useRef<boolean>(motionPaused);
+  motionPausedRef.current = motionPaused;
+  const isSectionActiveRef = useRef<boolean>(false);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -27,7 +30,7 @@ export const useSponsorsMotion = ({
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (prefersReducedMotion || motionPaused) {
+    if (prefersReducedMotion) {
       gsap.set(
         [
           '#sponsors-heading-group',
@@ -59,81 +62,96 @@ export const useSponsorsMotion = ({
         0
       );
 
-      // 2. Past Sponsors panel settles from slight left offset (0.2s – 0.9s)
+      // 2. Main Sponsor Board Panel emerges (0.25s – 1.05s)
       mainTl.fromTo(
         '#past-sponsors-panel',
-        { x: -18, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' },
-        0.2
+        { y: 24, opacity: 0, scale: 0.98 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' },
+        0.25
       );
 
-      // 3. Six-card sponsor board enters with a restrained card stagger (0.35s – 1.3s)
-      mainTl.fromTo(
-        'button[id^="sponsor-slot-"]',
-        { y: 16, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          stagger: 0.08,
-          ease: 'power2.out',
-        },
-        0.35
-      );
+      // 3. Grid of Sponsor Slots cascades gently (0.5s – 1.4s)
+      const slotCards = section.querySelectorAll('.sponsorSlotHitTarget');
+      if (slotCards.length > 0) {
+        mainTl.fromTo(
+          slotCards,
+          { opacity: 0, y: 16, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.55,
+            stagger: 0.08,
+            ease: 'back.out(1.2)',
+          },
+          0.5
+        );
+      }
 
-      // 4. Caption bar settles (0.65s – 1.2s)
+      // 4. Floating dynamic caption below board (0.9s – 1.5s)
       mainTl.fromTo(
         '#sponsor-board-caption',
-        { y: 12, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' },
-        0.65
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+        0.9
       );
 
-      // 5. Mascot settles smoothly into its reserved lower-right corner (0.8s – 1.4s)
+      // 5. Spike character slides in from bottom-right (1.0s – 1.85s)
       mainTl.fromTo(
         '#sponsor-spike-character',
-        { y: 18, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' },
-        0.8
+        { opacity: 0, x: 28, y: 18, scale: 0.94 },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 0.85,
+          ease: 'power2.out',
+        },
+        1.0
       );
 
-      // ── 2. Restrained Asynchronous Idle Motion (Crown, Chest, Mascot) ──
-      // ~2–3px displacement, 6–9 seconds per cycle, no synchronized bouncing
-      const crownIdle = gsap.to('[class*="crownIdleWrap"]', {
-        y: -2.5,
-        duration: 6.5,
-        ease: 'sine.inOut',
-        repeat: -1,
-        yoyo: true,
-      });
+      // ── 2. Idle Character Animation (Dedicated Idle Wrapper, ~3px bounce) ──
+      const spikeIdle = section.querySelector('#spike-idle-wrap');
+      if (spikeIdle) {
+        const t = gsap.to(spikeIdle, {
+          y: -4,
+          duration: 2.4,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+        });
+        if (motionPausedRef.current) t.pause();
+        idleTweensRef.current.push(t);
+      }
 
-      const chestIdle = gsap.to('[class*="chestIdleWrap"]', {
-        y: -3,
-        duration: 8.2,
-        ease: 'sine.inOut',
-        repeat: -1,
-        yoyo: true,
-      });
-
-      const mascotIdle = gsap.to('[class*="spikeIdleWrap"]', {
-        y: -2.5,
-        duration: 7.4,
-        ease: 'sine.inOut',
-        repeat: -1,
-        yoyo: true,
-      });
-
-      idleTweensRef.current = [crownIdle, chestIdle, mascotIdle];
-
-      // Pause ambient idle loop when section is offscreen
+      // Suspend idle loops when section is offscreen
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom',
         end: 'bottom top',
-        onEnter: () => idleTweensRef.current.forEach((t) => t.play()),
-        onLeave: () => idleTweensRef.current.forEach((t) => t.pause()),
-        onEnterBack: () => idleTweensRef.current.forEach((t) => t.play()),
-        onLeaveBack: () => idleTweensRef.current.forEach((t) => t.pause()),
+        onEnter: () => {
+          isSectionActiveRef.current = true;
+          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (!motionPausedRef.current && !document.hidden && !isReduced) {
+            idleTweensRef.current.forEach((t) => t.play());
+          }
+        },
+        onLeave: () => {
+          isSectionActiveRef.current = false;
+          idleTweensRef.current.forEach((t) => t.pause());
+        },
+        onEnterBack: () => {
+          isSectionActiveRef.current = true;
+          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (!motionPausedRef.current && !document.hidden && !isReduced) {
+            idleTweensRef.current.forEach((t) => t.play());
+          }
+        },
+        onLeaveBack: () => {
+          isSectionActiveRef.current = false;
+          idleTweensRef.current.forEach((t) => t.pause());
+        },
       });
     }, sectionRef);
 
@@ -141,8 +159,11 @@ export const useSponsorsMotion = ({
     const handleVisibilityChange = () => {
       if (document.hidden) {
         idleTweensRef.current.forEach((t) => t.pause());
-      } else if (!motionPaused && !prefersReducedMotion) {
-        idleTweensRef.current.forEach((t) => t.resume());
+      } else {
+        const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!motionPausedRef.current && !isReduced && isSectionActiveRef.current) {
+          idleTweensRef.current.forEach((t) => t.resume());
+        }
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -153,5 +174,17 @@ export const useSponsorsMotion = ({
       idleTweensRef.current.forEach((t) => t.kill());
       idleTweensRef.current = [];
     };
-  }, [motionPaused, sectionRef]);
+  }, [sectionRef]);
+
+  // Handle runtime pause toggle without re-triggering entrance sequence
+  useEffect(() => {
+    if (motionPaused) {
+      idleTweensRef.current.forEach((t) => t.pause());
+    } else {
+      const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (isSectionActiveRef.current && !document.hidden && !isReduced) {
+        idleTweensRef.current.forEach((t) => t.resume());
+      }
+    }
+  }, [motionPaused]);
 };

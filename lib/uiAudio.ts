@@ -48,18 +48,22 @@ class UIAudioEngine {
 
   private initContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
-    if (!this.ctx) {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (AudioCtx) {
-        this.ctx = new AudioCtx();
+    try {
+      if (!this.ctx) {
+        const AudioCtx =
+          window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        if (AudioCtx) {
+          this.ctx = new AudioCtx();
+        }
       }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+      return this.ctx;
+    } catch {
+      return null;
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => {});
-    }
-    return this.ctx;
   }
 
   public setSoundEnabled(enabled: boolean): boolean {
@@ -184,6 +188,7 @@ class UIAudioEngine {
    * Dual-tone toggle chime when sound is enabled or disabled
    */
   public playToggleChime(enabling: boolean): void {
+    if (this.activeVoices >= this.maxVoices) return;
     if (!this.ctx) return;
     const ctx = this.ctx;
     if (ctx.state === 'suspended') {
@@ -191,6 +196,7 @@ class UIAudioEngine {
     }
 
     try {
+      this.activeVoices++;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
@@ -219,9 +225,10 @@ class UIAudioEngine {
       osc.onended = () => {
         osc.disconnect();
         gain.disconnect();
+        this.activeVoices = Math.max(0, this.activeVoices - 1);
       };
     } catch {
-      // Audio context might be restricted
+      this.activeVoices = Math.max(0, this.activeVoices - 1);
     }
   }
 
@@ -232,6 +239,7 @@ class UIAudioEngine {
     if (!this.isEnabled) return;
     const now = performance.now();
     if (now - this.lastActionTime < this.actionThrottleMs) return;
+    if (this.activeVoices >= this.maxVoices) return;
     this.lastActionTime = now;
 
     const ctx = this.initContext();
@@ -278,6 +286,7 @@ class UIAudioEngine {
     if (!this.isEnabled) return;
     const now = performance.now();
     if (now - this.lastActionTime < this.actionThrottleMs) return;
+    if (this.activeVoices >= this.maxVoices) return;
     this.lastActionTime = now;
 
     const ctx = this.initContext();

@@ -350,9 +350,12 @@
   pointer-events: auto;
 }
 
-.answerContent {
+.answerDrawerInner {
   overflow: hidden;
   min-height: 0;
+}
+
+.answerContent {
   padding: 4px 24px 24px 24px;
   box-sizing: border-box;
 }
@@ -501,6 +504,15 @@
 
 /* Tablets (<= 768px) */
 @media (max-width: 768px) {
+  .faqSection {
+    min-height: auto;
+    justify-content: flex-start;
+  }
+
+  .contentContainer {
+    padding: 32px 16px 20px 16px;
+  }
+
   .plaqueWrapper {
     max-width: 360px;
     height: 68px;
@@ -528,7 +540,11 @@
 
   .panelBody {
     padding: 20px 18px 24px 18px;
-    min-height: 420px;
+    min-height: auto;
+  }
+
+  .categoryBarContainer {
+    margin-top: 24px;
   }
 
   .questionTrigger {
@@ -564,8 +580,13 @@
 
 /* Mobile Devices (<= 480px) */
 @media (max-width: 480px) {
+  .faqSection {
+    min-height: auto;
+    justify-content: flex-start;
+  }
+
   .contentContainer {
-    padding: 28px 12px 16px 12px;
+    padding: 24px 12px 16px 12px;
   }
 
   .plaqueWrapper {
@@ -599,7 +620,11 @@
 
   .panelBody {
     padding: 16px 12px 20px 12px;
-    min-height: 380px;
+    min-height: auto;
+  }
+
+  .categoryBarContainer {
+    margin-top: 18px;
   }
 
   .questionTrigger {

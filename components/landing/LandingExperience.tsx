@@ -20,17 +20,18 @@ import { uiAudio } from '../../lib/uiAudio';
 
 export const LandingExperience: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
-  const [motionPaused, setMotionPaused] = useState<boolean>(false);
+  const [userMotionPaused, setUserMotionPaused] = useState<boolean>(false);
+  const [osReducedMotion, setOsReducedMotion] = useState<boolean>(false);
   const pageRef = useRef<HTMLDivElement | null>(null);
+
+  const effectiveMotionPaused = userMotionPaused || osReducedMotion;
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if (mql.matches) {
-        setMotionPaused(true);
-      }
+      setOsReducedMotion(mql.matches);
       const handleMotionPreference = (e: MediaQueryListEvent) => {
-        setMotionPaused(e.matches);
+        setOsReducedMotion(e.matches);
       };
       mql.addEventListener('change', handleMotionPreference);
       return () => mql.removeEventListener('change', handleMotionPreference);
@@ -39,9 +40,9 @@ export const LandingExperience: React.FC = () => {
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      document.documentElement.dataset.motionPaused = motionPaused ? 'true' : 'false';
+      document.documentElement.dataset.motionPaused = effectiveMotionPaused ? 'true' : 'false';
     }
-  }, [motionPaused]);
+  }, [effectiveMotionPaused]);
 
   const handleToggleSound = (enabled: boolean) => {
     setSoundEnabled(enabled);
@@ -49,10 +50,7 @@ export const LandingExperience: React.FC = () => {
   };
 
   const handleToggleMotion = (paused: boolean) => {
-    setMotionPaused(paused);
-    if (typeof document !== 'undefined') {
-      document.documentElement.dataset.motionPaused = paused ? 'true' : 'false';
-    }
+    setUserMotionPaused(paused);
   };
 
   return (
@@ -71,64 +69,64 @@ export const LandingExperience: React.FC = () => {
       <LandingHeader
         soundEnabled={soundEnabled}
         onToggleSound={handleToggleSound}
-        motionPaused={motionPaused}
+        motionPaused={effectiveMotionPaused}
         onToggleMotion={handleToggleMotion}
       />
 
       {/* Primary Layered Arena Scene */}
-      <ArenaScene motionPaused={motionPaused} pageRef={pageRef} />
+      <ArenaScene motionPaused={effectiveMotionPaused} pageRef={pageRef} />
 
       {/* 1. Compact Arena Structural Divider (Hero -> About) */}
-      <SectionDivider motionPaused={motionPaused} />
+      <SectionDivider motionPaused={effectiveMotionPaused} />
 
       {/* About Genesis Section (Arena Briefing Board) */}
       <AboutGenesisSection
-        motionPaused={motionPaused}
+        motionPaused={effectiveMotionPaused}
         soundEnabled={soundEnabled}
       />
 
       {/* 2. Chrono Milestone Roadmap Divider (About -> Timeline) */}
-      <AboutToTimelineDivider motionPaused={motionPaused} />
+      <AboutToTimelineDivider motionPaused={effectiveMotionPaused} />
 
       {/* Genesis Tournament Timeline Roadmap */}
       <TimelineSection
-        motionPaused={motionPaused}
+        motionPaused={effectiveMotionPaused}
         soundEnabled={soundEnabled}
       />
 
       {/* 3. Royal Crown Structural Divider (Timeline -> Sponsors) */}
-      <SponsorsDivider motionPaused={motionPaused} />
+      <SponsorsDivider motionPaused={effectiveMotionPaused} />
 
       {/* Sponsors Section (Interactive Sponsor Shop) */}
       <SponsorsSection
-        motionPaused={motionPaused}
+        motionPaused={effectiveMotionPaused}
         soundEnabled={soundEnabled}
       />
 
       {/* 4. Purple Gem Structural Divider (Sponsors -> Prize Pool) */}
-      <SponsorsToPrizeDivider motionPaused={motionPaused} />
+      <SponsorsToPrizeDivider motionPaused={effectiveMotionPaused} />
 
       {/* Prize Pool Section (Two Illustrated Trophy Stages) */}
       <PrizePoolSection
-        motionPaused={motionPaused}
+        motionPaused={effectiveMotionPaused}
         soundEnabled={soundEnabled}
       />
 
       {/* 5. Cyber Intel Crystal Structural Divider (Prize Pool -> FAQ) */}
-      <PrizeToFAQDivider motionPaused={motionPaused} />
+      <PrizeToFAQDivider motionPaused={effectiveMotionPaused} />
 
       {/* Genesis 6 Frequently Asked Questions Section */}
       <FAQSection
-        motionPaused={motionPaused}
+        motionPaused={effectiveMotionPaused}
         soundEnabled={soundEnabled}
       />
 
       {/* 6. Radar Beacon & Tactical Stadium Divider (FAQ -> Contact Us) */}
-      <FAQToContactDivider motionPaused={motionPaused} />
+      <FAQToContactDivider motionPaused={effectiveMotionPaused} />
 
       {/* Genesis 6 Contact Us & Venue Section */}
       <ContactSection
-        motionPaused={motionPaused}
+        motionPaused={effectiveMotionPaused}
         soundEnabled={soundEnabled}
       />
     </div>

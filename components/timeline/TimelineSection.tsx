@@ -34,7 +34,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
   const railContainerRef = useRef<HTMLDivElement | null>(null);
   const progressLineRef = useRef<HTMLDivElement | null>(null);
   const markerRef = useRef<HTMLDivElement | null>(null);
-  const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const milestoneRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const rowRefs = useRef<(HTMLLIElement | null)[]>([]);
   const revealRefs = useRef<(HTMLDivElement | null)[]>([]);
   const illustrationRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -43,24 +43,37 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
   // State for active checkpoint
   const [activeStageIndex, setActiveStageIndex] = useState<number>(0);
   const [hoveredStageIndex, setHoveredStageIndex] = useState<number | null>(null);
-  const [pulsingStageIndex, setPulsingStageIndex] = useState<number | null>(null);
   const [railBounds, setRailBounds] = useState<{ top: number; height: number }>({ top: 36, height: 1200 });
 
   const currentActiveIndexRef = useRef<number>(0);
   const railBoundsRef = useRef<{ top: number; height: number }>({ top: 36, height: 1200 });
   const nodeCentersRef = useRef<number[]>([]);
-  const pulseTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Recalculate rail geometry between first and last node centers & cache document-space milestone centers
+  // Single transform owner helper for progress rail fill and traveling marker
+  const updateMarkerAndProgress = useCallback((progress: number) => {
+    const clampedProgress = Math.max(0, Math.min(1, progress));
+    const currentHeight = railBoundsRef.current.height;
+    if (markerRef.current) {
+      const markerY = clampedProgress * currentHeight;
+      markerRef.current.style.transform = `translate3d(-50%, calc(-50% + ${markerY}px), 0)`;
+    }
+    if (progressLineRef.current) {
+      progressLineRef.current.style.transform = `scaleY(${Math.max(0.04, clampedProgress)})`;
+    }
+  }, []);
+
+  // Recalculate rail geometry directly between first and last milestone badge button centers
   const measureRailGeometry = useCallback(() => {
-    const firstNode = nodeRefs.current[0];
-    const lastNode = nodeRefs.current[nodeRefs.current.length - 1];
+    const milestoneEls = milestoneRefs.current.filter(Boolean) as HTMLButtonElement[];
     const listEl = journeyListRef.current;
-    if (!firstNode || !lastNode || !listEl) return;
+    if (milestoneEls.length < 2 || !listEl) return;
+
+    const firstBadge = milestoneEls[0];
+    const lastBadge = milestoneEls[milestoneEls.length - 1];
 
     const listRect = listEl.getBoundingClientRect();
-    const firstRect = firstNode.getBoundingClientRect();
-    const lastRect = lastNode.getBoundingClientRect();
+    const firstRect = firstBadge.getBoundingClientRect();
+    const lastRect = lastBadge.getBoundingClientRect();
 
     const startCenterY = firstRect.top + firstRect.height / 2 - listRect.top;
     const endCenterY = lastRect.top + lastRect.height / 2 - listRect.top;
@@ -75,21 +88,40 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
       prev.top === bounds.top && prev.height === bounds.height ? prev : bounds
     );
 
-    // Pre-calculate and cache node center Y offsets relative to listEl (avoids layout thrashing on scroll)
-    nodeCentersRef.current = nodeRefs.current.map((node) => {
-      if (!node) return 0;
-      const r = node.getBoundingClientRect();
+    // Pre-calculate and cache badge center Y offsets relative to listEl
+    nodeCentersRef.current = milestoneEls.map((badge) => {
+      const r = badge.getBoundingClientRect();
       return r.top + r.height / 2 - listRect.top;
     });
-  }, []);
+
+    // Refresh marker position with current active stage
+    updateMarkerAndProgress(currentActiveIndexRef.current / 3);
+  }, [updateMarkerAndProgress]);
 
   useEffect(() => {
     measureRailGeometry();
     window.addEventListener('resize', measureRailGeometry, { passive: true });
+
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        measureRailGeometry();
+      }).catch(() => {});
+    }
+
+    const listEl = journeyListRef.current;
+    let ro: ResizeObserver | null = null;
+    if (listEl && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        measureRailGeometry();
+      });
+      ro.observe(listEl);
+    }
+
     const timer = setTimeout(measureRailGeometry, 300);
 
     return () => {
       window.removeEventListener('resize', measureRailGeometry);
+      if (ro) ro.disconnect();
       clearTimeout(timer);
     };
   }, [measureRailGeometry]);
@@ -122,6 +154,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
     const isMotionDisabled = motionPaused || prefersReduced;
 
     if (isMotionDisabled) {
+      updateMarkerAndProgress(currentActiveIndexRef.current / 3);
       // Reduced motion: ensure all chapters and elements are displayed statically at final layout
       revealRefs.current.forEach((revealEl) => {
         if (revealEl) gsap.set(revealEl, { y: 0, opacity: 1 });
@@ -207,14 +240,8 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
           const progress = Math.max(0, Math.min(1, self.progress));
           const currentHeight = railBoundsRef.current.height;
 
-          // Continuous rail progress via GPU transform scaleY & unified marker translation
-          if (markerRef.current) {
-            const markerY = progress * currentHeight;
-            markerRef.current.style.transform = `translate3d(-50%, calc(-50% + ${markerY}px), 0)`;
-          }
-          if (progressLineRef.current) {
-            progressLineRef.current.style.transform = `scaleY(${Math.max(0.04, progress)})`;
-          }
+          // Single owner GPU transform update
+          updateMarkerAndProgress(progress);
 
           // Discrete Reading Position using pre-cached milestone geometry (zero layout thrashing)
           const markerOffsetFromList = railBoundsRef.current.top + progress * currentHeight;
@@ -243,7 +270,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
     return () => {
       ctx.revert();
     };
-  }, [motionPaused, railBounds.height]);
+  }, [motionPaused, railBounds.height, updateMarkerAndProgress]);
 
   // Handle stage selection
   const handleStageSelect = useCallback((index: number) => {
@@ -252,12 +279,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
     }
     currentActiveIndexRef.current = index;
     setActiveStageIndex(index);
-    setPulsingStageIndex(index);
-
-    if (pulseTimerRef.current) clearTimeout(pulseTimerRef.current);
-    pulseTimerRef.current = setTimeout(() => {
-      setPulsingStageIndex(null);
-    }, 400);
+    updateMarkerAndProgress(index / 3);
 
     const targetRow = rowRefs.current[index];
     if (targetRow) {
@@ -269,7 +291,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
         block: 'center',
       });
     }
-  }, [motionPaused, soundEnabled]);
+  }, [motionPaused, soundEnabled, updateMarkerAndProgress]);
 
   const handleStageHover = useCallback((index: number, hovered: boolean) => {
     if (hovered) {
@@ -407,9 +429,6 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
               ref={progressLineRef}
               data-timeline-progress="true"
               className={styles.railProgressFill}
-              style={{
-                transform: `scaleY(${Math.min(1, Math.max(0.04, activeStageIndex / 3))})`,
-              }}
             />
 
             {/* Traveling Progress Marker (Single Coordinate System via translate3d) */}
@@ -417,9 +436,6 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
               ref={markerRef}
               data-timeline-marker="true"
               className={styles.travellingMarker}
-              style={{
-                transform: `translate3d(-50%, calc(-50% + ${(activeStageIndex / 3) * railBounds.height}px), 0)`,
-              }}
             />
           </div>
 
@@ -432,7 +448,6 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
               const isActive = activeStageIndex === index;
               const isReached = index <= activeStageIndex;
               const isHovered = hoveredStageIndex === index;
-              const isPulsing = pulsingStageIndex === index;
 
               return (
                 <li
@@ -444,20 +459,18 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                   aria-label={`Chapter ${stage.step} — ${stage.title}`}
                 >
                   {/* Left Rail Node with Numbered Milestone */}
-                  <div
-                    ref={(el) => {
-                      nodeRefs.current[index] = el;
-                    }}
-                    className={styles.nodeWrapper}
-                  >
+                  <div className={styles.nodeWrapper}>
                     <MilestoneBadge
+                      badgeRef={(el) => {
+                        milestoneRefs.current[index] = el;
+                      }}
                       step={stage.step}
                       isActive={isActive}
                       isReached={isReached}
                       isHovered={isHovered}
                       theme={stage.theme}
                       onClick={() => handleStageSelect(index)}
-                      size={58}
+                      size={56}
                     />
 
                     {/* Horizontal Connector to Chapter Scene */}
@@ -478,8 +491,6 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                     stage={stage}
                     isActive={isActive}
                     isHovered={isHovered}
-                    isPulsing={isPulsing}
-                    motionPaused={motionPaused}
                     onSelect={() => handleStageSelect(index)}
                     onHover={(h) => handleStageHover(index, h)}
                     revealRef={(el) => {

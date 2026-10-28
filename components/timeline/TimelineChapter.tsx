@@ -8,8 +8,6 @@ export interface TimelineChapterProps {
   stage: TimelineStageData;
   isActive: boolean;
   isHovered: boolean;
-  isPulsing: boolean;
-  motionPaused?: boolean;
   onSelect: () => void;
   onHover: (hovered: boolean) => void;
   revealRef?: (el: HTMLDivElement | null) => void;
@@ -21,8 +19,6 @@ export const TimelineChapter: React.FC<TimelineChapterProps> = ({
   stage,
   isActive,
   isHovered,
-  isPulsing,
-  motionPaused = false,
   onSelect,
   onHover,
   revealRef,
@@ -30,7 +26,6 @@ export const TimelineChapter: React.FC<TimelineChapterProps> = ({
   titlePlateRef,
 }) => {
   const [localHover, setLocalHover] = useState(false);
-  const isHighlighted = isActive || isHovered || localHover;
 
   const handlePointerEnter = () => {
     if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
