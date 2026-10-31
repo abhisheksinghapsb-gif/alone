@@ -144,16 +144,16 @@ export const PAST_SPONSORS: PastSponsorData[] = [
     name: 'GameCloud Technologies Private Limited',
     logo: '/assets/genesis/sponsors/logo-gamecloud.webp',
     alt: 'GameCloud Technologies Private Limited — Past Sponsor',
-    width: 370,
-    height: 167,
+    width: 1598,
+    height: 372,
   },
   {
     id: 'gamedoora',
     name: 'GAMEDOORA',
     logo: '/assets/genesis/sponsors/logo-gamedoora.webp',
     alt: 'GAMEDOORA — Past Sponsor',
-    width: 355,
-    height: 154,
+    width: 1599,
+    height: 376,
   },
 ];
 
@@ -167,7 +167,7 @@ export const SPONSORS_ASSETS = {
   wordmark: {
     src: '/assets/genesis/sponsors/sponsors-heading.svg',
     width: 327,
-    height: 50,
+    height: 66,
     alt: 'SPONSORS',
   },
   crownedIcon: {

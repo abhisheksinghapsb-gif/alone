@@ -170,7 +170,16 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       });
       idleTweens.push(gunIdle);
 
-      // Note: Right-hand character (Ninja) stays stationary at its layout anchor (no added idle animation)
+      // Ninja (Leon) gentle breathing hover and natural mouse responsiveness
+      const ninjaIdle = gsap.to('#ninja-motion-idle', {
+        y: -3.5,
+        duration: 5.2,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: 0.45,
+      });
+      idleTweens.push(ninjaIdle);
 
       // Squeak balloon buoyant, asymmetrical idle loop (~6–9px vertical, ~2px horizontal, ~1° tilt, 4.5s cycle)
       const balloonIdleTl = gsap.timeline({ repeat: -1 });

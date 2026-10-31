@@ -136,8 +136,8 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
         </div>
       </div>
 
-      {/* Right Character: Ninja (Leon) — Facing inward toward the center (stationary) */}
-      <div id="ninja-layer" className="ninjaWrap">
+      {/* Right Character: Ninja (Leon) — Facing inward toward the center (with midground mouse parallax) */}
+      <div id="ninja-layer" className="ninjaWrap parallax-mid">
         <div id="ninja-motion-idle">
           <AnimatedCharacter
             type="ninja"
@@ -200,7 +200,7 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
           <span className="editionBadge">{EVENT_COPY.edition}</span>
         </div>
 
-        {/* Primary REGISTER CTA Button */}
+        {/* Primary REGISTER CTA Button — Dual gun fire & smooth scroll on click */}
         <div id="register-layer" className="ctaContainer">
           <GameButton
             id="primary-register-btn"
@@ -208,6 +208,28 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
             actionId="register"
             isCta={true}
             className="registerBtnWrap"
+            onClick={() => {
+              // 1. Trigger Colt's dual blaster fire
+              const coltBtn = document.getElementById('colt-blaster-btn');
+              if (coltBtn) {
+                coltBtn.click();
+              }
+              // 2. Smooth-scroll down to the next section (Brawl Stats Countdown Timer / About)
+              const target =
+                document.getElementById('brawl-stats-timer') ||
+                document.getElementById('brawler-stats-table') ||
+                document.getElementById('about');
+              if (target) {
+                const prefersReducedMotion =
+                  typeof window !== 'undefined' &&
+                  (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+                    document.documentElement.dataset.motionPaused === 'true');
+                target.scrollIntoView({
+                  behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                  block: 'start',
+                });
+              }
+            }}
           >
             <img
               src={SCENE_ASSETS.registerBtn.src}

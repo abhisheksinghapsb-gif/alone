@@ -161,11 +161,13 @@ export const useSponsorsMotion = ({
 
       if (crownEl) {
         const crownIdle = gsap.to(crownEl, {
-          y: -2.5,
-          duration: 6.5,
+          y: -3,
+          rotation: -1.2,
+          duration: 6.2,
           ease: 'sine.inOut',
           repeat: -1,
           yoyo: true,
+          transformOrigin: '50% 90%',
           paused: true,
         });
         tweens.push(crownIdle);
@@ -173,11 +175,13 @@ export const useSponsorsMotion = ({
 
       if (chestEl) {
         const chestIdle = gsap.to(chestEl, {
-          y: -3,
-          duration: 8.2,
+          y: -3.5,
+          rotation: 1.5,
+          duration: 7.6,
           ease: 'sine.inOut',
           repeat: -1,
           yoyo: true,
+          transformOrigin: '50% 90%',
           paused: true,
         });
         tweens.push(chestIdle);

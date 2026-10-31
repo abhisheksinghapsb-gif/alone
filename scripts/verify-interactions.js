@@ -5,7 +5,7 @@ const { spawn } = require('child_process');
 
 const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const PORT = 9222;
-const TARGET_URL = 'http://localhost:3002';
+const TARGET_URL = process.env.TARGET_URL || 'http://localhost:3005';
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {

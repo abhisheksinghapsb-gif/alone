@@ -1,0 +1,301 @@
+/* ==========================================================================
+   BRAWL STATS COUNTDOWN TIMER WIDGET (brawler-stats-table)
+   Faithfully replicating Figma widget at 160s
+   ========================================================================== */
+
+.timerSectionWrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 16px 24px 16px;
+  z-index: 30;
+  pointer-events: auto;
+}
+
+.tableCard {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(8, 12, 28, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 3.5px solid #000000;
+  outline: 2px solid rgba(229, 27, 130, 0.45);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85),
+              0 0 24px rgba(229, 27, 130, 0.25),
+              inset 0 2px 0 rgba(255, 255, 255, 0.15);
+  padding: 24px 18px 16px 18px;
+  margin-top: 18px;
+  user-select: none;
+  transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 240ms ease;
+}
+
+.tableCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.9),
+              0 0 32px rgba(229, 27, 130, 0.35);
+}
+
+/* 1. Top Circular Pink Badge with Down Chevron */
+.topChevronBadge {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff2a9d 0%, #d8006b 70%, #990047 100%);
+  border: 3px solid #000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75), 0 0 16px rgba(255, 42, 157, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  animation: chevronBounce 2.4s ease-in-out infinite;
+  transition: transform 200ms ease;
+}
+
+.topChevronBadge:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+@keyframes chevronBounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+.chevronSvg {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+}
+
+/* 2. Header Area */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skullBadgeWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timerLabel {
+  font-family: var(--font-game, 'Lilita One', 'Impact', sans-serif);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.yellowSkullPlate {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(180deg, #ffea47 0%, #ffcc00 60%, #e6a800 100%);
+  border: 2.5px solid #000000;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.65), inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.skullIconSvg {
+  width: 26px;
+  height: 26px;
+}
+
+.titleLines {
+  display: flex;
+  flex-direction: column;
+}
+
+.brawlText {
+  font-family: var(--font-game, 'Lilita One', 'Impact', cursive, sans-serif);
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffea47;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 0 #000000, 0 3px 6px rgba(0, 0, 0, 0.9);
+}
+
+.startsInText {
+  font-family: var(--font-game, 'Lilita One', 'Impact', cursive, sans-serif);
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 0 #000000, 0 3px 6px rgba(0, 0, 0, 0.9);
+}
+
+.headerRight {
+  display: flex;
+  align-items: flex-start;
+}
+
+.max11Badge {
+  font-family: var(--font-game, 'Lilita One', 'Impact', cursive, sans-serif);
+  font-size: 14px;
+  font-weight: 900;
+  color: #ff2a9d;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1.5px 0 #000000, 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* 3. Segmented Health Bar */
+.healthBar {
+  display: flex;
+  gap: 3px;
+  width: 100%;
+  height: 9px;
+  margin: 10px 0 12px 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  padding: 1px;
+}
+
+.healthSegment {
+  flex: 1;
+  height: 100%;
+  background: linear-gradient(180deg, #ff4db8 0%, #e51b82 60%, #b8005b 100%);
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* 4. Stat Rows (Date & Starts In) */
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(4, 8, 22, 0.75);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.statRow:last-child {
+  margin-bottom: 0;
+}
+
+.statBadgeGreen {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(180deg, #38ef7d 0%, #11998e 100%);
+  border: 2px solid #000000;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.statBadgeRed {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(180deg, #ff416c 0%, #ff4b2b 100%);
+  border: 2px solid #000000;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.statBadgeIcon {
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+}
+
+.statTextCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.statLabelGreen {
+  font-family: var(--font-game, 'Lilita One', 'Impact', sans-serif);
+  font-size: 11px;
+  font-weight: 900;
+  color: #38ef7d;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.statLabelRed {
+  font-family: var(--font-game, 'Lilita One', 'Impact', sans-serif);
+  font-size: 11px;
+  font-weight: 900;
+  color: #ff6584;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.statValue {
+  font-family: var(--font-game, 'Lilita One', 'Impact', cursive, sans-serif);
+  font-size: 15px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
+}
+
+.countdownValue {
+  font-family: 'Courier New', Courier, monospace, var(--font-game, sans-serif);
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 10px rgba(255, 65, 108, 0.5), 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+@media (max-width: 480px) {
+  .tableCard {
+    max-width: 100%;
+    padding: 20px 14px 14px 14px;
+  }
+  .brawlText, .startsInText {
+    font-size: 18px;
+  }
+  .statValue {
+    font-size: 13.5px;
+  }
+  .countdownValue {
+    font-size: 14.5px;
+  }
+}
+

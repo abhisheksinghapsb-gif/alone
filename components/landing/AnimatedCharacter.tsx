@@ -37,6 +37,7 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
 
   // --- Hover States ---
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isLeonHovered, setIsLeonHovered] = useState<boolean>(false);
   const [isBalloonHovered, setIsBalloonHovered] = useState<boolean>(false);
 
   // Track unmount lifecycle
@@ -221,13 +222,13 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
       }, 160);
       projectileTimersRef.current.set(pId, pTimer);
 
-      // 3. Restart or blend local recoil from current pose immediately
+      // 3. Restart or blend local recoil from current pose immediately (both guns dual recoil)
       if (recoilRef.current && typeof recoilRef.current.animate === 'function') {
         recoilRef.current.getAnimations().forEach((anim) => anim.cancel());
         recoilRef.current.animate(
           [
-            { transform: 'translate(-3.2px, -1.8px) rotate(-0.8deg)' },
-            { transform: 'translate(0px, 0px) rotate(0deg)' },
+            { transform: 'translate(0px, 3.2px) scale(0.985)' },
+            { transform: 'translate(0px, 0px) scale(1)' },
           ],
           {
             duration: 220,
@@ -349,148 +350,261 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
               draggable={false}
             />
 
-            {/* Part 2: Local Weapon Glow Response (Near firing hand/weapon) */}
+            {/* Part 2: Local Weapon Glow Response (Right Weapon: 88%, 52.5% | Left Weapon: 12%, 57.5%) */}
             {showLocalGlow && (
-              <div
-                key={`colt-glow-${muzzleKey}`}
-                aria-hidden="true"
-                className="coltLocalGlow"
-                style={{
-                  position: 'absolute',
-                  left: '88%',
-                  top: '52.5%',
-                  width: '130px',
-                  height: '130px',
-                  transform: 'translate(-50%, -50%)',
-                  background:
-                    'radial-gradient(circle, rgba(0, 245, 255, 0.42) 0%, rgba(0, 160, 255, 0.16) 45%, transparent 70%)',
-                  borderRadius: '50%',
-                  pointerEvents: 'none',
-                  animation: 'localWeaponGlow 110ms ease-out forwards',
-                  zIndex: 5,
-                }}
-              />
+              <>
+                <div
+                  key={`colt-glow-${muzzleKey}`}
+                  aria-hidden="true"
+                  className="coltLocalGlow"
+                  style={{
+                    position: 'absolute',
+                    left: '88%',
+                    top: '52.5%',
+                    width: '130px',
+                    height: '130px',
+                    transform: 'translate(-50%, -50%)',
+                    background:
+                      'radial-gradient(circle, rgba(0, 245, 255, 0.42) 0%, rgba(0, 160, 255, 0.16) 45%, transparent 70%)',
+                    borderRadius: '50%',
+                    pointerEvents: 'none',
+                    animation: 'localWeaponGlow 110ms ease-out forwards',
+                    zIndex: 5,
+                  }}
+                />
+                <div
+                  key={`colt-glow-left-${muzzleKey}`}
+                  aria-hidden="true"
+                  className="coltLocalGlowLeft"
+                  style={{
+                    position: 'absolute',
+                    left: '21.2%',
+                    top: '19.0%',
+                    width: '130px',
+                    height: '130px',
+                    transform: 'translate(-50%, -50%)',
+                    background:
+                      'radial-gradient(circle, rgba(0, 245, 255, 0.45) 0%, rgba(0, 160, 255, 0.18) 45%, transparent 70%)',
+                    borderRadius: '50%',
+                    pointerEvents: 'none',
+                    animation: 'localWeaponGlow 110ms ease-out forwards',
+                    zIndex: 5,
+                  }}
+                />
+              </>
             )}
 
-            {/* Part 2: Aligned Directional Muzzle Flash at Barrel Opening (98.24%, 52.33%) */}
+            {/* Part 2: Dual Aligned Muzzle Flashes (Right Gun: 98.24%, 52.33% | Left Gun: 4.11%, 57.42%) */}
             {showMuzzleFx && (
-              <div
-                key={`colt-flash-${muzzleKey}`}
-                aria-hidden="true"
-                className="coltBlasterMuzzleFlash"
-                style={{
-                  position: 'absolute',
-                  left: '98.24%',
-                  top: '52.33%',
-                  width: '135px',
-                  height: '80px',
-                  transform: 'translate(-8px, -50%) rotate(3deg)',
-                  transformOrigin: '8px 50%',
-                  pointerEvents: 'none',
-                  animation: 'directionalMuzzleFlash 75ms ease-out forwards',
-                  zIndex: 8,
-                }}
-              >
-                <svg
-                  viewBox="-10 -40 140 80"
-                  style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+              <>
+                {/* Right Gun Muzzle Flash */}
+                <div
+                  key={`colt-flash-${muzzleKey}`}
+                  aria-hidden="true"
+                  className="coltBlasterMuzzleFlash"
+                  style={{
+                    position: 'absolute',
+                    left: '98.24%',
+                    top: '52.33%',
+                    width: '135px',
+                    height: '80px',
+                    transform: 'translate(-8px, -50%) rotate(3deg)',
+                    transformOrigin: '8px 50%',
+                    pointerEvents: 'none',
+                    animation: 'directionalMuzzleFlash 75ms ease-out forwards',
+                    zIndex: 8,
+                  }}
                 >
-                  <defs>
-                    <radialGradient id="coltFlashCore" cx="15%" cy="50%" r="70%">
-                      <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
-                      <stop offset="35%" stopColor="#80FFFF" stopOpacity="0.95" />
-                      <stop offset="70%" stopColor="#00F5FF" stopOpacity="0.8" />
-                      <stop offset="100%" stopColor="#0066FF" stopOpacity="0" />
-                    </radialGradient>
-                    <filter id="coltFlashGlow" x="-20%" y="-40%" width="150%" height="180%">
-                      <feGaussianBlur stdDeviation="3.5" result="blur" />
-                      <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                      </feMerge>
-                    </filter>
-                  </defs>
+                  <svg
+                    viewBox="-10 -40 140 80"
+                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+                  >
+                    <defs>
+                      <radialGradient id="coltFlashCore" cx="15%" cy="50%" r="70%">
+                        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                        <stop offset="35%" stopColor="#80FFFF" stopOpacity="0.95" />
+                        <stop offset="70%" stopColor="#00F5FF" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#0066FF" stopOpacity="0" />
+                      </radialGradient>
+                      <filter id="coltFlashGlow" x="-20%" y="-40%" width="150%" height="180%">
+                        <feGaussianBlur stdDeviation="3.5" result="blur" />
+                        <feMerge>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
 
-                  {/* Transverse compensator venting spikes (vertical blast) */}
-                  <polygon
-                    points="6,-32 14,-8 20,-26"
-                    fill="#00F5FF"
-                    opacity="0.85"
-                    filter="url(#coltFlashGlow)"
-                  />
-                  <polygon
-                    points="6,32 14,8 20,26"
-                    fill="#00F5FF"
-                    opacity="0.85"
-                    filter="url(#coltFlashGlow)"
-                  />
+                    {/* Transverse compensator venting spikes (vertical blast) */}
+                    <polygon
+                      points="6,-32 14,-8 20,-26"
+                      fill="#00F5FF"
+                      opacity="0.85"
+                      filter="url(#coltFlashGlow)"
+                    />
+                    <polygon
+                      points="6,32 14,8 20,26"
+                      fill="#00F5FF"
+                      opacity="0.85"
+                      filter="url(#coltFlashGlow)"
+                    />
 
-                  {/* Main forward blast cone & spikes */}
-                  <polygon
-                    points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7"
-                    fill="url(#coltFlashCore)"
-                    filter="url(#coltFlashGlow)"
-                  />
+                    {/* Main forward blast cone & spikes */}
+                    <polygon
+                      points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7"
+                      fill="url(#coltFlashCore)"
+                      filter="url(#coltFlashGlow)"
+                    />
 
-                  {/* High-intensity pure white core */}
-                  <ellipse cx="14" cy="0" rx="12" ry="6" fill="#FFFFFF" />
-                </svg>
-              </div>
+                    {/* High-intensity pure white core */}
+                    <ellipse cx="14" cy="0" rx="12" ry="6" fill="#FFFFFF" />
+                  </svg>
+                </div>
+
+                {/* Left Gun Muzzle Flash (Aligned to left gun muzzle at 21.2%, 19.0% pointing upwards at -42deg) */}
+                <div
+                  key={`colt-flash-left-${muzzleKey}`}
+                  aria-hidden="true"
+                  className="coltBlasterMuzzleFlashLeft"
+                  style={{
+                    position: 'absolute',
+                    left: '21.2%',
+                    top: '19.0%',
+                    width: '135px',
+                    height: '80px',
+                    transform: 'translate(-8px, -50%) rotate(-42deg)',
+                    transformOrigin: '8px 50%',
+                    pointerEvents: 'none',
+                    animation: 'directionalMuzzleFlash 75ms ease-out forwards',
+                    zIndex: 8,
+                  }}
+                >
+                  <svg
+                    viewBox="-10 -40 140 80"
+                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+                  >
+                    <polygon
+                      points="6,-32 14,-8 20,-26"
+                      fill="#00F5FF"
+                      opacity="0.85"
+                      filter="url(#coltFlashGlow)"
+                    />
+                    <polygon
+                      points="6,32 14,8 20,26"
+                      fill="#00F5FF"
+                      opacity="0.85"
+                      filter="url(#coltFlashGlow)"
+                    />
+                    <polygon
+                      points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7"
+                      fill="url(#coltFlashCore)"
+                      filter="url(#coltFlashGlow)"
+                    />
+                    <ellipse cx="14" cy="0" rx="12" ry="6" fill="#FFFFFF" />
+                  </svg>
+                </div>
+              </>
             )}
 
-            {/* Part 2: Projectile Energy Trail Streaks (Bounded Pool) */}
+            {/* Part 2: Dual Projectile Energy Trail Streaks (Bounded Pool) */}
             {projectiles.map((p) => (
-              <div
-                key={`colt-proj-${p.id}`}
-                aria-hidden="true"
-                className="coltProjectileStreak"
-                style={{
-                  position: 'absolute',
-                  left: '98.24%',
-                  top: '52.33%',
-                  width: '120px',
-                  height: '18px',
-                  transform: 'translate(0, -50%) rotate(3deg)',
-                  transformOrigin: '0% 50%',
-                  pointerEvents: 'none',
-                  animation: 'projectileStreak 150ms ease-out forwards',
-                  zIndex: 7,
-                }}
-              >
-                <svg
-                  viewBox="0 0 120 18"
-                  style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+              <React.Fragment key={`colt-proj-pair-${p.id}`}>
+                {/* Right Gun Projectile */}
+                <div
+                  key={`colt-proj-${p.id}`}
+                  aria-hidden="true"
+                  className="coltProjectileStreak"
+                  style={{
+                    position: 'absolute',
+                    left: '98.24%',
+                    top: '52.33%',
+                    width: '120px',
+                    height: '18px',
+                    transform: 'translate(0, -50%) rotate(3deg)',
+                    transformOrigin: '0% 50%',
+                    pointerEvents: 'none',
+                    animation: 'projectileStreak 150ms ease-out forwards',
+                    zIndex: 7,
+                  }}
                 >
-                  <defs>
-                    <linearGradient id={`coltStreakGrad-${p.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#00F5FF" stopOpacity="0.2" />
-                      <stop offset="40%" stopColor="#00F5FF" stopOpacity="0.9" />
-                      <stop offset="85%" stopColor="#FFFFFF" stopOpacity="1" />
-                      <stop offset="100%" stopColor="#80FFFF" stopOpacity="0.9" />
-                    </linearGradient>
-                  </defs>
-                  {/* Outer neon cyan glow beam */}
-                  <line
-                    x1="0"
-                    y1="9"
-                    x2="85"
-                    y2="9"
-                    stroke={`url(#coltStreakGrad-${p.id})`}
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                  />
-                  {/* Intense inner white core line */}
-                  <line
-                    x1="25"
-                    y1="9"
-                    x2="82"
-                    y2="9"
-                    stroke="#FFFFFF"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
+                  <svg
+                    viewBox="0 0 120 18"
+                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+                  >
+                    <defs>
+                      <linearGradient id={`coltStreakGrad-${p.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#00F5FF" stopOpacity="0.2" />
+                        <stop offset="40%" stopColor="#00F5FF" stopOpacity="0.9" />
+                        <stop offset="85%" stopColor="#FFFFFF" stopOpacity="1" />
+                        <stop offset="100%" stopColor="#80FFFF" stopOpacity="0.9" />
+                      </linearGradient>
+                    </defs>
+                    {/* Outer neon cyan glow beam */}
+                    <line
+                      x1="0"
+                      y1="9"
+                      x2="85"
+                      y2="9"
+                      stroke={`url(#coltStreakGrad-${p.id})`}
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                    />
+                    {/* Intense inner white core line */}
+                    <line
+                      x1="25"
+                      y1="9"
+                      x2="82"
+                      y2="9"
+                      stroke="#FFFFFF"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+
+                {/* Left Gun Projectile (Aligned to left gun muzzle at 21.2%, 19.0% firing upward at -42deg) */}
+                <div
+                  key={`colt-proj-left-${p.id}`}
+                  aria-hidden="true"
+                  className="coltProjectileStreakLeft"
+                  style={{
+                    position: 'absolute',
+                    left: '21.2%',
+                    top: '19.0%',
+                    width: '120px',
+                    height: '18px',
+                    transform: 'translate(0, -50%) rotate(-42deg)',
+                    transformOrigin: '0% 50%',
+                    pointerEvents: 'none',
+                    animation: 'projectileStreakLeftGun 150ms ease-out forwards',
+                    zIndex: 7,
+                  }}
+                >
+                  <svg
+                    viewBox="0 0 120 18"
+                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+                  >
+                    <line
+                      x1="0"
+                      y1="9"
+                      x2="85"
+                      y2="9"
+                      stroke={`url(#coltStreakGrad-${p.id})`}
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="25"
+                      y1="9"
+                      x2="82"
+                      y2="9"
+                      stroke="#FFFFFF"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </React.Fragment>
             ))}
 
             {/* Semantic Accessible Button Over Gunslinger Hit Target */}
@@ -523,36 +637,67 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
 
   // ==========================================================================
   // 2. NINJA (LEON) — Right Hero Character
-  // Kept plain and stationary per specification (no hover popups, reticles, or idle loops)
+  // Responsive hover popout & natural idle sway animation (no longer stationary)
   // ==========================================================================
   if (type === 'ninja') {
     return (
       <div
         id="leon-character-wrap"
         className={`ninjaCharacterWrap ${className}`}
-        aria-label="Leon the Chameleon Hood Ninja Brawler."
+        aria-label="Leon the Chameleon Hood Ninja Brawler. Hover to inspect."
+        onPointerEnter={() => {
+          setIsLeonHovered(true);
+          uiAudio.playHoverTick();
+        }}
+        onPointerLeave={() => setIsLeonHovered(false)}
         style={{
           position: 'relative',
           display: 'block',
           userSelect: 'none',
           outline: 'none',
+          cursor: 'pointer',
         }}
       >
-        <img
-          src={SCENE_ASSETS.ninja.src}
-          alt={SCENE_ASSETS.ninja.alt}
-          width={SCENE_ASSETS.ninja.width}
-          height={SCENE_ASSETS.ninja.height}
+        {/* Character Hover Enlargement Wrapper matching Colt */}
+        <div
+          id="leon-hover-popup"
           style={{
-            width: '100%',
-            height: 'auto',
-            display: 'block',
-            userSelect: 'none',
-            pointerEvents: 'none',
-            filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
+            transform: isLeonHovered
+              ? 'translateY(-14px) scale(1.05)'
+              : 'translateY(0px) scale(1)',
+            filter: isLeonHovered
+              ? 'drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) brightness(1.06)'
+              : 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.75))',
+            transformOrigin: '50% 92%',
+            transition: 'transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 280ms ease',
+            willChange: 'transform',
           }}
-          draggable={false}
-        />
+        >
+          {/* Natural Idle Sway Wrapper */}
+          <div
+            id="leon-idle-sway"
+            className="leonIdleSwayWrapper"
+            style={{
+              animation: motionPaused ? 'none' : 'leonIdleSway 3.6s ease-in-out infinite alternate',
+              transformOrigin: '50% 90%',
+            }}
+          >
+            <img
+              src={SCENE_ASSETS.ninja.src}
+              alt={SCENE_ASSETS.ninja.alt}
+              width={SCENE_ASSETS.ninja.width}
+              height={SCENE_ASSETS.ninja.height}
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+              draggable={false}
+            />
+          </div>
+        </div>
       </div>
     );
   }

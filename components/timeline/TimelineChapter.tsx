@@ -148,13 +148,21 @@ export const TimelineChapter: React.FC<TimelineChapterProps> = ({
                 className={styles.artworkContainer}
               >
                 {stage.step === '01' && (
-                  <img
-                    src={stage.characterAsset}
-                    alt={stage.alt}
-                    loading="lazy"
-                    decoding="async"
-                    className={styles.charImgStage1}
-                  />
+                  <div className={styles.stage1ArtWrapper}>
+                    <img
+                      src={stage.characterAsset}
+                      alt={stage.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className={styles.charImgStage1}
+                    />
+                    {/* Realistic Multi-Wisp Steam Effect Rising from the Teapot */}
+                    <div className={styles.teaSteamGroup} aria-label="Rising teapot steam" aria-hidden="true">
+                      <span className={`${styles.steamWisp} ${styles.steamWisp1}`} />
+                      <span className={`${styles.steamWisp} ${styles.steamWisp2}`} />
+                      <span className={`${styles.steamWisp} ${styles.steamWisp3}`} />
+                    </div>
+                  </div>
                 )}
 
                 {stage.step === '02' && (
@@ -171,13 +179,15 @@ export const TimelineChapter: React.FC<TimelineChapterProps> = ({
                 )}
 
                 {stage.step === '03' && (
-                  <img
-                    src={stage.characterAsset}
-                    alt={stage.alt}
-                    loading="lazy"
-                    decoding="async"
-                    className={styles.charImgStage3}
-                  />
+                  <div className={styles.stage3ArtWrapper}>
+                    <img
+                      src={stage.characterAsset}
+                      alt={stage.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className={styles.charImgStage3}
+                    />
+                  </div>
                 )}
 
                 {stage.step === '04' && (

@@ -46,7 +46,7 @@ export const AboutToTimelineDivider: React.FC<AboutToTimelineDividerProps> = ({
           },
           onComplete: () => {
             gsap.to(pulse, {
-              opacity: 0.75,
+              opacity: 0.8,
               duration: 0.6,
               ease: 'power1.out',
             });
@@ -66,63 +66,48 @@ export const AboutToTimelineDivider: React.FC<AboutToTimelineDividerProps> = ({
       role="separator"
       aria-hidden="true"
     >
-      {/* Top Bulkhead Upper Edge with Amber-Gold Gradient */}
+      {/* Heavy Gold Bulkhead Upper Edge */}
       <div className={styles.bulkheadTop} />
 
-      {/* Energy Seam Track */}
+      {/* Central Electric Energy Seam Track */}
       <div className={styles.energyTrack}>
         <div ref={pulseRef} className={styles.energySeam} />
       </div>
 
-      {/* Directional Chevron Runway Left (>>>) */}
-      <div className={`${styles.sideChevrons} ${styles.leftChevrons}`}>
-        <span className={`${styles.chevron} ${styles.ch1}`} />
-        <span className={`${styles.chevron} ${styles.ch2}`} />
-        <span className={`${styles.chevron} ${styles.ch3}`} />
+      {/* Brawl Stars Arena Side Details Left */}
+      <div className={`${styles.sideDetails} ${styles.leftSide}`}>
+        <div className={styles.starBracket}>
+          <span className={styles.bracketDot} />
+        </div>
+        <span className={`${styles.brawlNotch} ${styles.notch1}`} />
+        <span className={`${styles.brawlNotch} ${styles.notch2}`} />
+        <span className={`${styles.brawlNotch} ${styles.notch3}`} />
       </div>
 
-      {/* Central Decorative Chrono Milestone Bezel */}
+      {/* Central Authentic Brawl Stars Skull-Star Bezel */}
       <div className={styles.centerBezel}>
         <div className={styles.emblemGlow} />
-        {/* Custom Chrono Compass Milestone Star SVG */}
-        <svg
-          viewBox="0 0 48 48"
-          fill="none"
-          className={styles.chronoStarSvg}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Outer tech chrono dial */}
-          <circle cx="24" cy="24" r="21" stroke="#ffb703" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.8" />
-          <circle cx="24" cy="24" r="17" stroke="#fb8500" strokeWidth="1.2" opacity="0.6" />
-          
-          {/* Compass 4-point golden star */}
-          <path
-            d="M24 4L27.5 19.5L42 24L27.5 28.5L24 44L20.5 28.5L6 24L20.5 19.5L24 4Z"
-            fill="url(#chronoStarGrad)"
-            stroke="#000000"
-            strokeWidth="1.5"
-          />
-          {/* Center core jewel */}
-          <circle cx="24" cy="24" r="4.5" fill="#ffffff" stroke="#ffb703" strokeWidth="1.5" />
-
-          <defs>
-            <linearGradient id="chronoStarGrad" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#fff275" />
-              <stop offset="0.45" stopColor="#ffb703" />
-              <stop offset="1" stopColor="#fb8500" />
-            </linearGradient>
-          </defs>
-        </svg>
+        <img
+          src="/assets/genesis/about/skull-star-emblem.svg"
+          alt=""
+          width={44}
+          height={44}
+          className={styles.brawlEmblemImg}
+          draggable={false}
+        />
       </div>
 
-      {/* Directional Chevron Runway Right (<<<) */}
-      <div className={`${styles.sideChevrons} ${styles.rightChevrons}`}>
-        <span className={`${styles.chevron} ${styles.ch3}`} />
-        <span className={`${styles.chevron} ${styles.ch2}`} />
-        <span className={`${styles.chevron} ${styles.ch1}`} />
+      {/* Brawl Stars Arena Side Details Right */}
+      <div className={`${styles.sideDetails} ${styles.rightSide}`}>
+        <span className={`${styles.brawlNotch} ${styles.notch3}`} />
+        <span className={`${styles.brawlNotch} ${styles.notch2}`} />
+        <span className={`${styles.brawlNotch} ${styles.notch1}`} />
+        <div className={styles.starBracket}>
+          <span className={styles.bracketDot} />
+        </div>
       </div>
 
-      {/* Bottom Bulkhead Lower Edge */}
+      {/* Heavy Gold Bulkhead Lower Edge */}
       <div className={styles.bulkheadBottom} />
     </div>
   );

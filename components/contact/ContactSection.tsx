@@ -151,6 +151,59 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Social Links Footer (Adapted from vaman-dev/Genesis commit a83d690326868542116792f193aa06780b675be1) */}
+        <footer className={styles.socialFooterContainer} aria-label="Social media links">
+          <div className={styles.socialLinksGroup}>
+            <a
+              href="https://www.instagram.com/gdxr_ait/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialLinkAnchor}
+              aria-label="Follow Genesis on Instagram (opens in a new tab)"
+            >
+              <svg
+                className={styles.socialIcon}
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+              <span className={styles.socialLabel}>INSTAGRAM</span>
+              <span className={styles.srOnly}>(opens in a new tab)</span>
+            </a>
+
+            <a
+              href="https://www.linkedin.com/company/87215024/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialLinkAnchor}
+              aria-label="Connect with Genesis on LinkedIn (opens in a new tab)"
+            >
+              <svg
+                className={styles.socialIcon}
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.65 1.65 0 1 0 0 3.3 1.65 1.65 0 0 0 0-3.3Z" />
+              </svg>
+              <span className={styles.socialLabel}>LINKEDIN</span>
+              <span className={styles.srOnly}>(opens in a new tab)</span>
+            </a>
+          </div>
+        </footer>
       </div>
 
       {/* 7. Restrained Dark-Blue Bottom Closing Strip */}

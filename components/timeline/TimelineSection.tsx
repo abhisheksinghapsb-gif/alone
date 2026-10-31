@@ -347,43 +347,31 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
 
       {/* ── 2. Section Header & Intentional Guide Introduction ── */}
       <header className={styles.sectionHeader}>
-        {/* Parallelogram Banner Plate + TIMELINE Title */}
-        <div className={styles.bannerContainer}>
-          <div
-            className={`${styles.bannerGlowLayer} ${motionPaused ? styles.bannerGlowPaused : ''}`}
-            aria-hidden="true"
-          >
-            <img
-              src={TIMELINE_ASSETS.headingBanner}
-              alt=""
-              width={459}
-              height={82}
-              draggable={false}
-              className={styles.bannerGlowImg}
-              loading="lazy"
-              decoding="async"
-            />
+        {/* Completely Redesigned Championship Plaque Header Box */}
+        <div className={styles.headerPlaqueWrap}>
+          {/* Outer Pulsing Ambient Halo */}
+          <div className={styles.headerPlaqueGlowRing} aria-hidden="true" />
+
+          {/* Main Tournament Championship Box Frame */}
+          <div className={styles.headerPlaqueFrame}>
+            {/* Top Micro-Tag */}
+            <div className={styles.headerTopTag}>
+              <span className={styles.headerTopTagDot} />
+              <span>ARENA ROADMAP · 2027</span>
+              <span className={styles.headerTopTagDot} />
+            </div>
+
+            {/* Dimensional Main Title Plate */}
+            <div className={styles.headerTitleBox}>
+              <h2 className={styles.headerTitleWordmark}>TIMELINE</h2>
+            </div>
+
+            {/* Cyber Corner Notches */}
+            <div className={`${styles.cornerBracket} ${styles.cornerTL}`} aria-hidden="true" />
+            <div className={`${styles.cornerBracket} ${styles.cornerTR}`} aria-hidden="true" />
+            <div className={`${styles.cornerBracket} ${styles.cornerBL}`} aria-hidden="true" />
+            <div className={`${styles.cornerBracket} ${styles.cornerBR}`} aria-hidden="true" />
           </div>
-          <img
-            src={TIMELINE_ASSETS.headingBanner}
-            alt="Tournament Timeline"
-            width={459}
-            height={82}
-            draggable={false}
-            className={styles.bannerImg}
-            loading="lazy"
-            decoding="async"
-          />
-          <img
-            src={TIMELINE_ASSETS.headingText}
-            alt={TIMELINE_COPY.sectionTitle}
-            width={171}
-            height={34}
-            draggable={false}
-            className={styles.titleWordmark}
-            loading="lazy"
-            decoding="async"
-          />
         </div>
 
         {/* Dedicated Guide Area (Buzz Mascot & Speech Bubble) */}
@@ -420,6 +408,26 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
           <span>
             CHECKPOINT {TIMELINE_STAGES[activeStageIndex].step} — {TIMELINE_STAGES[activeStageIndex].title} ({TIMELINE_STAGES[activeStageIndex].badgeLabel})
           </span>
+        </div>
+
+        {/* Interactive Phase Navigation Switcher */}
+        <div className={styles.stageNavRow} role="tablist" aria-label="Timeline Phases">
+          {TIMELINE_STAGES.map((stg, i) => (
+            <button
+              key={stg.id}
+              type="button"
+              role="tab"
+              aria-selected={activeStageIndex === i}
+              className={`${styles.stageNavBtn} ${activeStageIndex === i ? styles.stageNavBtnActive : ''}`}
+              onClick={() => handleStageSelect(i)}
+              style={{
+                '--btn-theme': stg.theme.primaryColor,
+              } as React.CSSProperties}
+            >
+              <span className={styles.stageNavStep}>{stg.step}</span>
+              <span className={styles.stageNavTitle}>{stg.title}</span>
+            </button>
+          ))}
         </div>
 
         {/* Scroll Journey Prompt */}

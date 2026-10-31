@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { LandingHeader } from './LandingHeader';
 import { ArenaScene } from './ArenaScene';
+import { BrawlStatsTimer } from './BrawlStatsTimer';
 import { SectionDivider } from './SectionDivider';
 import { AboutGenesisSection } from '../ABout/AboutGenesisSection';
 import { TimelineSection } from '../timeline';
@@ -72,6 +73,9 @@ export const LandingExperience: React.FC = () => {
 
       {/* Primary Layered Arena Scene */}
       <ArenaScene motionPaused={effectiveMotionPaused} pageRef={pageRef} />
+
+      {/* Brawl Stars Countdown Timer & Match Dates (Figma brawler-stats-table) */}
+      <BrawlStatsTimer motionPaused={effectiveMotionPaused} />
 
       {/* 1. Compact Arena Structural Divider (Hero -> About) */}
       <SectionDivider motionPaused={effectiveMotionPaused} />

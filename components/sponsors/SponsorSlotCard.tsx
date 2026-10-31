@@ -20,6 +20,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
   const cardRef = useRef<HTMLButtonElement | null>(null);
   const visualRef = useRef<HTMLDivElement | null>(null);
   const tiltRafRef = useRef<number | null>(null);
+  const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [pulseKey, setPulseKey] = useState<number>(0);
@@ -30,17 +31,19 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
     }
   }, []);
 
-  // Pointer move tilt calculation (restrained to <= 1.5 degrees, coalesced into 1 pending RAF)
+  // Pointer move tilt calculation (restrained to <= 1.0 degrees, coalesced into 1 pending RAF)
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLButtonElement>) => {
+      lastPointerRef.current = { x: e.clientX, y: e.clientY };
+      setIsHovered(true);
       if (motionPaused || e.pointerType === 'touch') return;
       if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
 
       const rect = e.currentTarget.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to +0.5
       const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to +0.5
-      const rotateX = Math.max(-1.5, Math.min(1.5, -y * 3.0));
-      const rotateY = Math.max(-1.5, Math.min(1.5, x * 3.0));
+      const rotateX = Math.max(-1.0, Math.min(1.0, -y * 2.0));
+      const rotateY = Math.max(-1.0, Math.min(1.0, x * 2.0));
 
       if (tiltRafRef.current !== null) {
         cancelAnimationFrame(tiltRafRef.current);
@@ -48,18 +51,23 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       tiltRafRef.current = requestAnimationFrame(() => {
         tiltRafRef.current = null;
         applyVisualTransform(
-          `perspective(600px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4.5px) scale(1.02)`
+          `perspective(600px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-3px) scale(1.015)`
         );
       });
     },
     [motionPaused, applyVisualTransform]
   );
 
-  const handlePointerEnter = () => {
+  const handlePointerEnter = (e: React.PointerEvent<HTMLButtonElement>) => {
+    lastPointerRef.current = { x: e.clientX, y: e.clientY };
     setIsHovered(true);
+    if (!motionPaused) {
+      applyVisualTransform('perspective(600px) translateY(-3px) scale(1.015)');
+    }
   };
 
   const handlePointerLeave = () => {
+    lastPointerRef.current = null;
     setIsHovered(false);
     if (tiltRafRef.current !== null) {
       cancelAnimationFrame(tiltRafRef.current);
@@ -72,7 +80,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
 
   const handleFocus = () => {
     setIsFocused(true);
-    applyVisualTransform('perspective(600px) translateY(-4.5px) scale(1.02)');
+    applyVisualTransform('perspective(600px) translateY(-3px) scale(1.015)');
   };
 
   const handleBlur = () => {
@@ -86,6 +94,39 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
     setPulseKey((prev) => prev + 1);
     onSelect(slot.id);
   };
+
+  // Clear hover state and transform if user scrolls while pointer is stationary
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!cardRef.current) return;
+      if (lastPointerRef.current) {
+        const rect = cardRef.current.getBoundingClientRect();
+        const { x, y } = lastPointerRef.current;
+        // If card scrolled out from under the pointer, clear hover state immediately
+        if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+          setIsHovered(false);
+          lastPointerRef.current = null;
+          if (tiltRafRef.current !== null) {
+            cancelAnimationFrame(tiltRafRef.current);
+            tiltRafRef.current = null;
+          }
+          if (!isFocused) {
+            applyVisualTransform('');
+          }
+        }
+      } else if (!isFocused) {
+        setIsHovered(false);
+        applyVisualTransform('');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+    document.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll, { capture: true });
+      document.removeEventListener('scroll', handleScroll, { capture: true });
+    };
+  }, [isFocused, applyVisualTransform]);
 
   // Clear inline tilt when motion is paused or on unmount
   useEffect(() => {
@@ -113,6 +154,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       ref={cardRef}
       id={`sponsor-slot-${slot.id}`}
       data-sponsor-card
+      data-is-hovered={isHovered ? 'true' : 'false'}
       type="button"
       role="button"
       aria-pressed={isSelected}
@@ -126,6 +168,10 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
+      onPointerCancel={handlePointerLeave}
+      onMouseEnter={handlePointerEnter}
+      onMouseLeave={handlePointerLeave}
+      onMouseMove={handlePointerMove}
     >
       {/* Stable Visual Motion Wrapper (transforms visual without altering hit test area) */}
       <div
@@ -149,21 +195,20 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
             draggable={false}
           />
 
-          {/* Miniature Illustrated Window Glint (sweeps briefly on hover / keyboard focus) */}
-          <div
-            className={`${styles.slotWindowGlintTrack} ${
-              (isHovered || isFocused) && !motionPaused ? styles.runGlint : ''
+          {/* Soft luminous halo outline following exact angled perimeter on hover / focus */}
+          <svg
+            className={`${styles.slotHoverOutlineSvg} ${
+              (isHovered || isFocused) && !isSelected ? styles.showHoverOutline : ''
             }`}
+            viewBox={slot.viewBox}
             aria-hidden="true"
           >
-            <div className={styles.slotWindowGlintBeam} />
-          </div>
-
-          {/* Hover / Focus Border Brightening in Card's Color */}
-          <div className={styles.slotHoverBorder} aria-hidden="true" />
-
-          {/* Slower Settle Arrival Highlight */}
-          <div className={styles.slotArrivalHighlight} aria-hidden="true" />
+            <path
+              d={slot.perimeterPath}
+              className={styles.slotHoverOutlinePoly}
+              style={{ stroke: slot.accentColor }}
+            />
+          </svg>
 
           {/* Travelling Edge Highlight around the exact angled perimeter on deliberate selection */}
           {isSelected && (

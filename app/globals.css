@@ -73,7 +73,7 @@ html[data-motion-paused="true"] *::after {
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {

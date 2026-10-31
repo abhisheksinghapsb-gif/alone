@@ -38,8 +38,6 @@ export const PastSponsorsPanel: React.FC<PastSponsorsPanelProps> = () => {
             role="region"
             aria-label={sponsor.name}
           >
-            {/* Subtle pointer-entry sheen effect on plate backing */}
-            <div className={styles.plateSheen} aria-hidden="true" />
             <div className={styles.logoPlateSurface}>
               <img
                 src={sponsor.logo}

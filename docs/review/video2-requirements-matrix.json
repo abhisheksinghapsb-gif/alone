@@ -1,0 +1,221 @@
+[
+  {
+    "id": 1,
+    "name": "GDAI Ribbon Logo Link",
+    "ok": true,
+    "href": "https://www.instagram.com/gdxr_ait/",
+    "target": "_blank",
+    "rel": "noopener noreferrer",
+    "hasImg": true
+  },
+  {
+    "id": 2,
+    "name": "Leon Hover & Idle Movement",
+    "ok": true,
+    "swayAnim": "leonIdleSway",
+    "hoveredTransform": "translateY(-14px) scale(1.05)",
+    "hoveredFilter": "drop-shadow(rgba(0, 0, 0, 0.95) 0px 16px 36px) brightness(1.06)"
+  },
+  {
+    "id": 3,
+    "name": "Colt Dual Gunfire Both Guns",
+    "ok": true,
+    "hasRightFlash": true,
+    "hasLeftFlash": true,
+    "hasRightGlow": true,
+    "hasLeftGlow": true,
+    "hasRightProj": true,
+    "hasLeftProj": true,
+    "hasRecoil": true
+  },
+  {
+    "id": 4,
+    "name": "Register CTA Dual Fire & Scroll",
+    "ok": true,
+    "dualFireTriggered": true,
+    "targetTimerExists": true
+  },
+  {
+    "id": 5,
+    "name": "Brawl Stats Countdown Timer Widget",
+    "ok": true,
+    "hasTopChevronBadge": true,
+    "title": "BRAWL STARTS IN",
+    "max11Badge": "MAX 11",
+    "healthSegmentsCount": 12,
+    "dateRowText": "5 MARCH – 6 MARCH, 2027",
+    "countdownText": "124d : 11h : 56m : 28s",
+    "countdownValid": true
+  },
+  {
+    "id": 6,
+    "name": "About Card Intensity & Reddish Glow",
+    "ok": true,
+    "hasReddishGlow": true,
+    "mouseGlowColors": [
+      "#ffffff",
+      "#ff7b90",
+      "#ee1b39",
+      "#ee1b39"
+    ],
+    "reflGlowColors": [
+      "#ffffff",
+      "#ffa0b0",
+      "#ee1b39",
+      "#b30021",
+      "#b30021"
+    ],
+    "svgFilter": "drop-shadow(rgba(255, 42, 77, 0.75) 0px 0px 4px) drop-shadow(rgba(238, 27, 57, 0.55) 0px 0px 10px) drop-shadow(rgba(255, 60, 90, 0.32) 0px 0px 20px) drop-shadow(rgba(0, 0, 0, 0.88) 0px 10px 24px)"
+  },
+  {
+    "id": 7,
+    "name": "About to Timeline Divider Redesign",
+    "ok": true,
+    "hasSkullStarEmblem": true,
+    "hasEnergySeam": true,
+    "starBracketsCount": 2,
+    "brawlNotchesCount": 6
+  },
+  {
+    "id": 8,
+    "name": "Timeline Buzz Left-Right Sway",
+    "ok": true,
+    "animName": "lkUJpG_buzzGuideTurnSway",
+    "transformOrigin": "65px 90.3516px"
+  },
+  {
+    "id": 9,
+    "name": "Timeline Piper Blinking & Steam",
+    "ok": true,
+    "hasLeftEye": true,
+    "hasRightEye": true,
+    "eyeAnim": "lkUJpG_piperBlink",
+    "steamStreamsCount": 3,
+    "steamAnim": "lkUJpG_steamRise"
+  },
+  {
+    "id": 10,
+    "name": "Timeline Clashing Angry Cubes",
+    "ok": true,
+    "hasCubesImg": true,
+    "hasClashSparks": true,
+    "hasClashStar": true,
+    "cubesAnim": "lkUJpG_angryCubesClash",
+    "starAnim": "lkUJpG_clashStarPulse"
+  },
+  {
+    "id": 11,
+    "name": "Responsive 12 Viewports Zero Overflow",
+    "ok": true,
+    "details": [
+      {
+        "name": "iPhone SE",
+        "w": 320,
+        "h": 568,
+        "sw": 320,
+        "cw": 320,
+        "iw": 320,
+        "overflow": false
+      },
+      {
+        "name": "Android Small",
+        "w": 360,
+        "h": 800,
+        "sw": 360,
+        "cw": 360,
+        "iw": 360,
+        "overflow": false
+      },
+      {
+        "name": "iPhone 8",
+        "w": 375,
+        "h": 667,
+        "sw": 375,
+        "cw": 375,
+        "iw": 375,
+        "overflow": false
+      },
+      {
+        "name": "iPhone 14",
+        "w": 390,
+        "h": 844,
+        "sw": 390,
+        "cw": 390,
+        "iw": 390,
+        "overflow": false
+      },
+      {
+        "name": "iPhone 15 Pro",
+        "w": 393,
+        "h": 852,
+        "sw": 393,
+        "cw": 393,
+        "iw": 393,
+        "overflow": false
+      },
+      {
+        "name": "Pixel 7",
+        "w": 412,
+        "h": 915,
+        "sw": 412,
+        "cw": 412,
+        "iw": 412,
+        "overflow": false
+      },
+      {
+        "name": "iPad Mini",
+        "w": 768,
+        "h": 1024,
+        "sw": 758,
+        "cw": 758,
+        "iw": 768,
+        "overflow": false
+      },
+      {
+        "name": "iPad Air",
+        "w": 820,
+        "h": 1180,
+        "sw": 810,
+        "cw": 810,
+        "iw": 820,
+        "overflow": false
+      },
+      {
+        "name": "iPad Landscape",
+        "w": 1024,
+        "h": 768,
+        "sw": 1014,
+        "cw": 1014,
+        "iw": 1024,
+        "overflow": false
+      },
+      {
+        "name": "Laptop Standard",
+        "w": 1366,
+        "h": 768,
+        "sw": 1356,
+        "cw": 1356,
+        "iw": 1366,
+        "overflow": false
+      },
+      {
+        "name": "Laptop Review",
+        "w": 1536,
+        "h": 730,
+        "sw": 1526,
+        "cw": 1526,
+        "iw": 1536,
+        "overflow": false
+      },
+      {
+        "name": "Desktop FHD",
+        "w": 1920,
+        "h": 1080,
+        "sw": 1910,
+        "cw": 1910,
+        "iw": 1920,
+        "overflow": false
+      }
+    ]
+  }
+]

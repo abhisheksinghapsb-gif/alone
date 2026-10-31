@@ -20,11 +20,9 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     height: 380,
   });
 
-  // Direct DOM refs for reading spotlight reflection & interior mouse glow (avoids React state updates on every pointer move)
+  // Direct DOM refs for reading border spotlight reflection (avoids React state updates on every pointer move)
   const reflectionGradRef = useRef<SVGRadialGradientElement | null>(null);
   const reflectionPathRef = useRef<SVGPathElement | null>(null);
-  const interiorGlowGradRef = useRef<SVGRadialGradientElement | null>(null);
-  const interiorGlowRectRef = useRef<SVGRectElement | null>(null);
   const pointerRafRef = useRef<number | null>(null);
 
   // Scrolling state management
@@ -139,13 +137,6 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
       if (reflectionPathRef.current) {
         reflectionPathRef.current.style.opacity = '1';
       }
-      if (interiorGlowGradRef.current) {
-        interiorGlowGradRef.current.setAttribute('cx', String(px));
-        interiorGlowGradRef.current.setAttribute('cy', String(py));
-      }
-      if (interiorGlowRectRef.current) {
-        interiorGlowRectRef.current.style.opacity = '1';
-      }
     });
   };
 
@@ -183,9 +174,6 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
     }
     if (reflectionPathRef.current) {
       reflectionPathRef.current.style.opacity = '0';
-    }
-    if (interiorGlowRectRef.current) {
-      interiorGlowRectRef.current.style.opacity = '0';
     }
 
     const el = scrollRef.current;
@@ -403,31 +391,16 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
             <path d={panelPath} />
           </clipPath>
 
-          {/* Mouse Interior Reading Glow: ~85px radius soft cyan/white light under pointer */}
-          <radialGradient
-            ref={interiorGlowGradRef}
-            id="panelInteriorMouseGlow"
-            cx="0"
-            cy="0"
-            r="85"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.38" />
-            <stop offset="35%" stopColor="#cffafe" stopOpacity="0.25" />
-            <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.10" />
-            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0" />
-          </radialGradient>
-
-          {/* Subtle Outer Boundary Cyan Accent Filter */}
+          {/* Subtle Outer Boundary Reddish Accent Filter */}
           <filter id="panelBoundarySubtleGlow" x="-10%" y="-10%" width="120%" height="120%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
 
-          {/* Dynamic Border Reflection Gradient: catches cyan-white light at the nearest panel border */}
+          {/* Dynamic Border Reflection Gradient: catches warm reddish-ruby light along nearest border */}
           <radialGradient
             ref={reflectionGradRef}
             id="panelReflectionGrad"
@@ -436,11 +409,11 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
             r="160"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-            <stop offset="25%" stopColor="#cffafe" stopOpacity="0.7" />
-            <stop offset="55%" stopColor="#38bdf8" stopOpacity="0.3" />
-            <stop offset="85%" stopColor="#0284c7" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
+            <stop offset="25%" stopColor="#ffa0b0" stopOpacity="0.85" />
+            <stop offset="55%" stopColor="#ee1b39" stopOpacity="0.6" />
+            <stop offset="85%" stopColor="#b30021" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#b30021" stopOpacity="0" />
           </radialGradient>
 
           {/* Stationary Focus Border Gradient */}
@@ -454,32 +427,16 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
         {/* 1A. Physical Thickness Offset Shadow */}
         <path d={shadowPath} fill="#050814" opacity="0.95" />
 
-        {/* 1B. Solid Opaque Cyan Fill Plate (#BCE6F2) - Stable background contrast */}
-        <path d={panelPath} fill="#BCE6F2" />
+        {/* 1B. Solid Opaque Fill Plate (#CBEFF9) - High contrast resting brightness */}
+        <path d={panelPath} fill="#CBEFF9" />
 
-        {/* 1B-2. Soft cyan/white mouse glow beneath pointer, clipped to notched interior behind text */}
-        <rect
-          ref={interiorGlowRectRef}
-          x="0"
-          y="0"
-          width={w}
-          height={h}
-          fill="url(#panelInteriorMouseGlow)"
-          clipPath="url(#briefingInteriorClip)"
-          style={{
-            opacity: 0,
-            transition: 'opacity 180ms ease',
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* 1C. Clean Subtle Frame Definition Accent Rim (Crisp luminous edge) */}
+        {/* 1C. Clean Subtle Frame Definition Accent Rim (Crisp luminous reddish edge) */}
         <path
           d={panelPath}
-          stroke="#00E5FF"
-          strokeWidth="1.8"
+          stroke="#FF2A4D"
+          strokeWidth="2.2"
           strokeLinejoin="miter"
-          opacity="0.75"
+          opacity="0.85"
           filter="url(#panelBoundarySubtleGlow)"
           fill="none"
         />

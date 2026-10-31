@@ -143,6 +143,19 @@
   will-change: transform;
 }
 
+.crownPopWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1);
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: default;
+}
+
+.crownPopWrap:hover {
+  transform: scale(1.04);
+}
+
 .crownFlankImg {
   width: 65px;
   height: auto;
@@ -154,6 +167,19 @@
   align-items: center;
   justify-content: center;
   will-change: transform;
+}
+
+.chestPopWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1);
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: default;
+}
+
+.chestPopWrap:hover {
+  transform: scale(1.04);
 }
 
 .chestReactWrap {
@@ -178,7 +204,7 @@
   position: relative;
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(320px, 350px) minmax(0, 1fr);
+  grid-template-columns: minmax(330px, 365px) minmax(0, 1fr);
   gap: 28px;
   align-items: stretch;
   box-sizing: border-box;
@@ -270,76 +296,97 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 36px;
-  padding: 44px 20px;
+  gap: 52px; /* Generous breathing room between sponsor plates */
+  padding: 38px 14px;
   box-sizing: border-box;
   transform: skewX(4.2deg); /* un-skew inner logo plates upright */
 }
 
 .pastLogoPlate {
   position: relative;
-  width: 100%;
-  max-width: 290px;
-  background: transparent;
-  border: none;
-  padding: 0;
+  width: 96%;
+  max-width: 345px;
+  height: 110px;
+  min-height: 110px;
+  background: radial-gradient(ellipse at center, rgba(16, 24, 56, 0.96) 0%, rgba(6, 10, 28, 0.98) 100%);
+  border: 2.5px solid #ff2a4d;
+  border-radius: 20px;
+  padding: 10px 18px;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.55));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.78),
+              0 0 20px rgba(255, 42, 77, 0.85),
+              0 0 38px rgba(255, 60, 90, 0.48),
+              inset 0 0 16px rgba(255, 42, 77, 0.32);
+  animation: sponsorPlateGlow 3.2s ease-in-out infinite alternate;
   transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-              filter 220ms ease;
+              border-color 220ms ease,
+              box-shadow 220ms ease;
   outline: none;
   box-sizing: border-box;
   cursor: pointer;
+  overflow: hidden;
+}
+
+@keyframes sponsorPlateGlow {
+  0% {
+    border-color: rgba(255, 42, 77, 0.85);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.75),
+                0 0 18px rgba(255, 42, 77, 0.75),
+                0 0 34px rgba(255, 60, 90, 0.42),
+                inset 0 0 14px rgba(255, 42, 77, 0.28);
+  }
+  100% {
+    border-color: #ff5e7e;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.82),
+                0 0 28px rgba(255, 66, 102, 1),
+                0 0 48px rgba(255, 42, 77, 0.65),
+                inset 0 0 20px rgba(255, 77, 109, 0.45);
+  }
 }
 
 .pastLogoPlate:hover {
-  transform: translateY(-3px) scale(1.02);
-  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.75));
+  transform: translateY(-4px) scale(1.035);
+  border-color: #ffa3b5;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.88),
+              0 0 32px rgba(255, 42, 77, 1),
+              0 0 58px rgba(255, 77, 109, 0.8),
+              inset 0 0 24px rgba(255, 120, 150, 0.55);
 }
 
 .pastLogoPlate:focus-visible {
-  outline: 3px solid #38bdf8;
+  outline: 3px solid #ff7b95;
   outline-offset: 4px;
-  transform: translateY(-3px) scale(1.02);
-}
-
-.plateSheen {
-  position: absolute;
-  inset: 0;
-  border-radius: 14px;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.35) 50%, transparent 80%);
-  transform: translateX(-140%);
-  opacity: 0;
-  transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 200ms ease;
-  z-index: 2;
-}
-
-.pastLogoPlate:hover .plateSheen {
-  opacity: 1;
-  transform: translateX(140%);
+  transform: translateY(-4px) scale(1.035);
+  border-color: #ffa3b5;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.88),
+              0 0 32px rgba(255, 42, 77, 1),
+              0 0 58px rgba(255, 77, 109, 0.8),
+              inset 0 0 24px rgba(255, 120, 150, 0.55);
 }
 
 .logoPlateSurface {
   position: relative;
   width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .pastSponsorImg {
   width: 100%;
+  max-width: 100%;
   height: auto;
-  max-height: 105px;
+  max-height: 84px;
+  margin: 0;
   object-fit: contain;
   display: block;
-  border-radius: 14px;
   pointer-events: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.65));
 }
 
 /* 8. Six-Slot Sponsor Board (Right) */
@@ -429,11 +476,11 @@
 }
 
 .sponsorSlotHitTarget.isHovered:not(.isSelected) .slotVisualWrapper {
-  transform: translateY(-4.5px) scale(1.02);
+  transform: translateY(-3px) scale(1.015);
 }
 
 .sponsorSlotHitTarget.isSelected .slotVisualWrapper {
-  transform: translateY(-4.5px) scale(1.02);
+  transform: translateY(-3px) scale(1.015);
 }
 
 .slotCardSurface {
@@ -451,84 +498,29 @@
   pointer-events: none;
 }
 
-/* Miniature Illustrated Window Glint */
-.slotWindowGlintTrack {
+/* Soft luminous halo outline following exact angled perimeter on hover / focus */
+.slotHoverOutlineSvg {
   position: absolute;
-  bottom: 18px;
-  left: 10%;
-  right: 10%;
-  height: 68px;
-  overflow: hidden;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 4;
-  clip-path: polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%);
-}
-
-.slotWindowGlintBeam {
-  position: absolute;
-  top: -10px;
-  bottom: -10px;
-  width: 50px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
-  transform: translateX(-150%) skewX(-20deg);
+  z-index: 7;
+  overflow: visible;
   opacity: 0;
+  transition: opacity 180ms ease;
 }
 
-.slotWindowGlintTrack.runGlint .slotWindowGlintBeam {
-  animation: slotWindowGlintSweep 550ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes slotWindowGlintSweep {
-  0% {
-    transform: translateX(-150%) skewX(-20deg);
-    opacity: 0;
-  }
-  25% {
-    opacity: 0.9;
-  }
-  100% {
-    transform: translateX(450%) skewX(-20deg);
-    opacity: 0;
-  }
-}
-
-/* Hover / Focus Border Brightening in Card's Color */
-.slotHoverBorder {
-  position: absolute;
-  top: 5px;
-  left: 3%;
-  width: 94%;
-  height: 88%;
-  border: 2px solid var(--slot-accent);
-  border-radius: 8px;
-  pointer-events: none;
-  box-shadow: 0 0 16px var(--slot-accent), inset 0 0 8px var(--slot-accent);
-  transform: skewX(-4.8deg);
-  opacity: 0;
-  transition: opacity 180ms ease, box-shadow 180ms ease;
-  z-index: 5;
-}
-
-.sponsorSlotHitTarget.isHovered .slotHoverBorder,
-.sponsorSlotHitTarget.isFocused .slotHoverBorder,
-.sponsorSlotHitTarget:focus-visible .slotHoverBorder {
+.showHoverOutline {
   opacity: 0.95;
 }
 
-/* Slower Board Arrival Highlight */
-.slotArrivalHighlight {
-  position: absolute;
-  top: 5px;
-  left: 3%;
-  width: 94%;
-  height: 88%;
-  border: 2px solid var(--slot-accent);
-  border-radius: 8px;
-  pointer-events: none;
-  box-shadow: 0 0 18px var(--slot-accent), inset 0 0 10px var(--slot-accent);
-  transform: skewX(-4.8deg);
-  opacity: 0;
-  z-index: 6;
+.slotHoverOutlinePoly {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 8px currentColor);
 }
 
 /* Travelling Energy Highlight around exact angled perimeter on deliberate selection */

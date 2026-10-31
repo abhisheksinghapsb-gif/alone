@@ -1,0 +1,465 @@
+{
+  "results": {
+    "req1": {
+      "title": "Section Order & Unique IDs",
+      "passed": true,
+      "found": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "offsetTop": 0,
+          "tagName": "main"
+        },
+        {
+          "id": "about",
+          "exists": true,
+          "offsetTop": 0,
+          "tagName": "div"
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "offsetTop": 1970,
+          "tagName": "section"
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "offsetTop": 4576,
+          "tagName": "section"
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "offsetTop": 6158,
+          "tagName": "section"
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "offsetTop": 10342,
+          "tagName": "section"
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "offsetTop": 11228,
+          "tagName": "section"
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "offsetTop": 12161,
+          "tagName": "section"
+        }
+      ],
+      "duplicates": [],
+      "inOrder": true,
+      "scroller": "html"
+    },
+    "req2": {
+      "title": "Smooth Nav, Brochure New-Tab, Approved Preserved Sections",
+      "passed": true,
+      "brochureOpensNewTab": true,
+      "hasPrizeNav": true,
+      "hasSponsorsNav": true,
+      "registerHasApprovedAction": true,
+      "about": true,
+      "timeline": true,
+      "faq": true,
+      "contact": true,
+      "dividers": true
+    },
+    "req3": {
+      "title": "Memories Sticky Viewport & Overflow Rules",
+      "passed": true,
+      "isSticky": true,
+      "stickyTop": "0px",
+      "htmlOverflowX": "clip",
+      "bodyOverflowX": "clip"
+    },
+    "req4": {
+      "title": "8 Polaroids, Tilts, Captions, 560svh Journey",
+      "passed": true,
+      "photoCount": 8,
+      "captionsMatch": true,
+      "tiltsMatch": true,
+      "minHeight": "560svh"
+    },
+    "req5": {
+      "title": "Camera Journey & Reverse Scroll Retracing",
+      "passed": true,
+      "cameraAtStart": "translate(-50%, -50%) translate(533.12px, 516.46px) rotate(1.26deg) scale(1.19, 1.19)",
+      "cameraAtMid": "translate(-50%, -50%) translate3d(340.236px, -433.522px, 0px) rotate(1.0774deg) scale(1.19, 1.19)",
+      "cameraAtEnd": "translate(-50%, -50%) translate(-190.4px, -616.42px) rotate(0.7deg) scale(1.19, 1.19)",
+      "cameraAfterReverse": "translate(-50%, -50%) translate(533.12px, 516.46px) rotate(1.26deg) scale(1.19, 1.19)",
+      "journeyWorked": true,
+      "reverseWorked": true
+    },
+    "req6": {
+      "title": "Static Gallery Mode When Paused/Reduced",
+      "passed": true,
+      "isGrid": true,
+      "isAutoHeight": true,
+      "photoCount": 8
+    },
+    "req7": {
+      "title": "Planet Surface Rotation with Fixed Rings",
+      "passed": true,
+      "surfacePixelsChanged": true,
+      "ringsStationary": true,
+      "hasCanvas": true
+    },
+    "req8": {
+      "title": "Falling Foreground Stars and Dynamic Comet",
+      "passed": true,
+      "hasCanvas": true,
+      "hasComet": true,
+      "canvasWidth": 1526
+    },
+    "req9": {
+      "title": "Telescope Stationary, Ninja Plain, Colt Blinking & Blaster",
+      "passed": true,
+      "telescopeHasNoClick": true,
+      "ninjaIsPlain": true,
+      "hasColtBlaster": true,
+      "hasColtEyelids": true
+    },
+    "req10": {
+      "title": "Balloon Non-Clickable, Dialogue Bubble, Centered Moon, Register CTA",
+      "passed": true,
+      "balloonHasNoButton": true,
+      "hasDialog": true,
+      "moonCentered": true,
+      "registerVisible": true
+    },
+    "req11": {
+      "title": "Sponsors Heading Silhouette Unclipped (Height 66)",
+      "passed": true,
+      "heightAttr": "66",
+      "renderedWidth": 327,
+      "renderedHeight": 66,
+      "aspectRatio": "4.95"
+    },
+    "req12": {
+      "title": "6 Illustrated Cards, Spike, Past Sponsors Panel",
+      "passed": true,
+      "cardCount": 6,
+      "hasPastPanel": true,
+      "hasSpike": true
+    },
+    "req13": {
+      "title": "Enlarged GameCloud & Gamedoora (75-85% Usable Width)",
+      "passed": true,
+      "usableRatio": 0.82,
+      "inRange": true,
+      "logosPresent": true
+    },
+    "req14": {
+      "title": "Sheen Wipe Removed & 2px Cyan Border Glow",
+      "passed": true,
+      "sheenCount": 0,
+      "hasCyanBorder": true,
+      "border": "2px solid rgba(0, 229, 255, 0.65)",
+      "boxShadow": "rgba(0, 0, 0, 0.7) 0px 4px 16px 0px, rgba(0, 229, 255, 0.35) 0px 0px 10px 0px, rgba(0, 229, 255, 0.12) 0px 0px 10px 0px inset"
+    },
+    "req15": {
+      "title": "Hover Glow Cleared on Scroll Away (No Detached Glow)",
+      "passed": true,
+      "hoveredBefore": true,
+      "hoveredAfter": false
+    },
+    "req16": {
+      "title": "Crown and Chest Pop & Sway Wrappers",
+      "passed": true,
+      "hasCrownPop": true,
+      "hasChestPop": true
+    },
+    "req17": {
+      "title": "Prize Pool Scroll-Driven Entrance & Reverse Reversal",
+      "passed": true,
+      "opacityAtView": "1",
+      "opacityOnReverse": "0.1287"
+    },
+    "req18": {
+      "title": "Both Character Blink Rigs Active",
+      "passed": true,
+      "cowboyBlinkLayers": 2,
+      "buzzBlinkLayers": 2
+    },
+    "req19": {
+      "title": "Medal Pop & Paired Gunfire (Gold/Silver/Bronze)",
+      "passed": true,
+      "medalCount": 3,
+      "goldRankTriggered": true
+    },
+    "req20": {
+      "title": "Buzz Hop Motion & Contact Shadow Sync",
+      "passed": true,
+      "hasBuzzIdle": true,
+      "hasShadow": true
+    },
+    "req21": {
+      "title": "Cowboy Grounded Lean Motion",
+      "passed": true,
+      "hasCowboyIdle": true
+    },
+    "req22": {
+      "title": "VR Prize Interactions & Buzz Reaction",
+      "passed": true,
+      "vrMedalCount": 2,
+      "hasVrBuzz": true
+    },
+    "req23": {
+      "title": "Exact Reference Social URLs (Instagram & LinkedIn)",
+      "passed": true,
+      "igUrl": "https://www.instagram.com/gdxr_ait/",
+      "liUrl": "https://www.linkedin.com/company/87215024/"
+    },
+    "req24": {
+      "title": "Social Footer Real Anchors, New-Tab, >=44px Tap Target",
+      "passed": true,
+      "igTapHeight": 44,
+      "liTapHeight": 44,
+      "singleCopies": true
+    },
+    "req25": {
+      "title": "12-Viewport Responsive Matrix (Zero Horizontal Overflow)",
+      "passed": true,
+      "matrix": [
+        {
+          "viewport": "laptop-1536x730",
+          "width": 1536,
+          "height": 730,
+          "scrollWidth": 1526,
+          "clientWidth": 1526,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "laptop-1366x768",
+          "width": 1366,
+          "height": 768,
+          "scrollWidth": 1356,
+          "clientWidth": 1356,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "phone-320x568",
+          "width": 320,
+          "height": 568,
+          "scrollWidth": 320,
+          "clientWidth": 320,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "phone-393x852",
+          "width": 393,
+          "height": 852,
+          "scrollWidth": 393,
+          "clientWidth": 393,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "phone-412x924",
+          "width": 412,
+          "height": 924,
+          "scrollWidth": 412,
+          "clientWidth": 412,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "tablet-768x1024",
+          "width": 768,
+          "height": 1024,
+          "scrollWidth": 758,
+          "clientWidth": 758,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "tablet-960x1440",
+          "width": 960,
+          "height": 1440,
+          "scrollWidth": 950,
+          "clientWidth": 950,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "desktop-1024x768",
+          "width": 1024,
+          "height": 768,
+          "scrollWidth": 1014,
+          "clientWidth": 1014,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "mobile-landscape-844x390",
+          "width": 844,
+          "height": 390,
+          "scrollWidth": 834,
+          "clientWidth": 834,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "desktop-short-1280x450",
+          "width": 1280,
+          "height": 450,
+          "scrollWidth": 1270,
+          "clientWidth": 1270,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "full-hd-1920x1080",
+          "width": 1920,
+          "height": 1080,
+          "scrollWidth": 1910,
+          "clientWidth": 1910,
+          "overflow": false,
+          "passed": true
+        },
+        {
+          "viewport": "qhd-2560x1440",
+          "width": 2560,
+          "height": 1440,
+          "scrollWidth": 2550,
+          "clientWidth": 2550,
+          "overflow": false,
+          "passed": true
+        }
+      ]
+    },
+    "req26": {
+      "title": "User-Pause Control & Reduced Motion Scoped Handling",
+      "passed": true,
+      "hasMotionToggle": true,
+      "hasSoundToggle": true,
+      "hasPauseDataset": true
+    },
+    "req27": {
+      "title": "Type Check, Production Build & Browser Preview Verification",
+      "passed": true,
+      "previewUrl": "http://localhost:3006",
+      "typeCheck": "PASSED (0 errors)",
+      "build": "PASSED (Static optimization complete)"
+    }
+  },
+  "matrix": [
+    {
+      "viewport": "laptop-1536x730",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1526,
+      "clientWidth": 1526,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "laptop-1366x768",
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1356,
+      "clientWidth": 1356,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "phone-320x568",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "phone-393x852",
+      "width": 393,
+      "height": 852,
+      "scrollWidth": 393,
+      "clientWidth": 393,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "phone-412x924",
+      "width": 412,
+      "height": 924,
+      "scrollWidth": 412,
+      "clientWidth": 412,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "tablet-768x1024",
+      "width": 768,
+      "height": 1024,
+      "scrollWidth": 758,
+      "clientWidth": 758,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "tablet-960x1440",
+      "width": 960,
+      "height": 1440,
+      "scrollWidth": 950,
+      "clientWidth": 950,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "desktop-1024x768",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1014,
+      "clientWidth": 1014,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "mobile-landscape-844x390",
+      "width": 844,
+      "height": 390,
+      "scrollWidth": 834,
+      "clientWidth": 834,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "desktop-short-1280x450",
+      "width": 1280,
+      "height": 450,
+      "scrollWidth": 1270,
+      "clientWidth": 1270,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "full-hd-1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1910,
+      "clientWidth": 1910,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "qhd-2560x1440",
+      "width": 2560,
+      "height": 1440,
+      "scrollWidth": 2550,
+      "clientWidth": 2550,
+      "overflow": false,
+      "passed": true
+    }
+  ]
+}

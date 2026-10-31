@@ -52,18 +52,6 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
     }));
   };
 
-  // Red X Inline Action: Collapses the currently open answer in the active category
-  const handleCollapseActiveCategory = () => {
-    if (!currentOpenQuestionId) return;
-    if (soundEnabled) {
-      uiAudio.playPressClack();
-    }
-    setOpenQuestions((prev) => ({
-      ...prev,
-      [activeCategoryId]: null,
-    }));
-  };
-
   return (
     <section
       ref={sectionRef}
@@ -107,24 +95,6 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
             <h2 data-faq-title className={styles.categoryTitle}>
               {activeCategory.headingText}
             </h2>
-
-            {/* Red X Control: collapses open answer in the current category */}
-            <button
-              type="button"
-              disabled={!currentOpenQuestionId}
-              onClick={handleCollapseActiveCategory}
-              className={styles.closeButton}
-              aria-label={`Collapse answers in ${activeCategory.headingText}`}
-              title={`Collapse answers in ${activeCategory.headingText}`}
-            >
-              <Image
-                src="/assets/genesis/faq/button-close.svg"
-                alt=""
-                width={55}
-                height={45}
-                className={styles.closeIcon}
-              />
-            </button>
           </div>
 
           {/* Panel Body: Geometrically stabilized across all 4 categories */}

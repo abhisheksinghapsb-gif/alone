@@ -176,6 +176,7 @@
   display: flex;
   align-items: flex-end;
   pointer-events: auto;
+  perspective: 900px;
 }
 
 .stageCharacterWrapper.leftCharacter {
@@ -211,6 +212,7 @@
   position: relative;
   width: 100%;
   display: block;
+  transform-style: preserve-3d;
 }
 
 /* Character Recoil Frame: kick opposite the -66deg barrel angle (-3px, +4px) and smooth recovery */
@@ -347,19 +349,7 @@
 
 /* Blinking Expression Overlay Layers (pixel-matched frames) */
 .characterBlinkLayer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  opacity: 0;
-  pointer-events: none;
-  user-select: none;
-  transition: opacity 25ms linear;
-}
-
-.characterBlinkLayer.is-visible {
-  opacity: 1;
+  display: none !important;
 }
 
 .characterShadowBase {

@@ -1,0 +1,146 @@
+{
+  "checks": [
+    {
+      "title": "Sponsors Heading Silhouette Unclipped",
+      "passed": true,
+      "details": "attrHeight: 66 (expected 66), rendered: 327.0x66.0 (aspect ratio ~4.95)"
+    },
+    {
+      "title": "Heading Icons Wrappers and Pop Layers",
+      "passed": true,
+      "details": "crownPop: true, chestPop: true"
+    },
+    {
+      "title": "Past Sponsors Wipe/Sheen Removed",
+      "passed": true,
+      "details": "Found 0 sheen elements (expected 0)"
+    },
+    {
+      "title": "Past Sponsors Plates Border Glow & Usable Width Ratio (75–88%)",
+      "passed": true,
+      "details": "past-sponsor-plate-gamecloud: usableRatio=0.83, outerRatio=0.73, border=2px solid rgba(0, 229, 255, 0.65); past-sponsor-plate-gamedoora: usableRatio=0.83, outerRatio=0.73, border=2px solid rgba(0, 229, 255, 0.65)"
+    },
+    {
+      "title": "Sponsor Cards Glint Wipe & Rect Hover Borders Removed",
+      "passed": true,
+      "details": "glints: 0, rectBorders: 0"
+    },
+    {
+      "title": "Sponsor Cards SVG Perimeter Hover Outlines Present",
+      "passed": true,
+      "details": "cards: 6, hoverOutlines: 6"
+    },
+    {
+      "title": "Hover State Cleared on Scroll Away (No Detached/Drifting Glow)",
+      "passed": true,
+      "details": "before: hovered=true, after: hovered=false, transform=\"\""
+    },
+    {
+      "title": "Prize Pool Characters Motion Wrappers & Blink Integrity",
+      "passed": true,
+      "details": "cowboy: true, buzz: true, shadow: true, blinks: 2/2"
+    },
+    {
+      "title": "Instagram Footer Link Configured Correctly",
+      "passed": true,
+      "details": "url: gdxr_ait, label: \"INSTAGRAM (opens in a new tab)\", height: 44px, icon: 22px"
+    },
+    {
+      "title": "LinkedIn Footer Link Configured Correctly",
+      "passed": true,
+      "details": "url: 87215024, label: \"LINKEDIN (opens in a new tab)\", height: 44px"
+    }
+  ],
+  "matrix": [
+    {
+      "viewport": "laptop-1536x730",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1526,
+      "clientWidth": 1536,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "laptop-1366x768",
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1356,
+      "clientWidth": 1366,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "desktop-1024x768",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1014,
+      "clientWidth": 1024,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "tablet-960x1440",
+      "width": 960,
+      "height": 1440,
+      "scrollWidth": 950,
+      "clientWidth": 960,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "tablet-768x1024",
+      "width": 768,
+      "height": 1024,
+      "scrollWidth": 758,
+      "clientWidth": 768,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "phone-412x924",
+      "width": 412,
+      "height": 924,
+      "scrollWidth": 412,
+      "clientWidth": 412,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "phone-393x852",
+      "width": 393,
+      "height": 852,
+      "scrollWidth": 393,
+      "clientWidth": 393,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "phone-320x568",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "mobile-landscape-844x390",
+      "width": 844,
+      "height": 390,
+      "scrollWidth": 834,
+      "clientWidth": 844,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "viewport": "desktop-short-1280x450",
+      "width": 1280,
+      "height": 450,
+      "scrollWidth": 1270,
+      "clientWidth": 1280,
+      "overflow": false,
+      "passed": true
+    }
+  ]
+}

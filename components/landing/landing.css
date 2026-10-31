@@ -526,6 +526,48 @@
   }
 }
 
+@keyframes projectileStreakLeft {
+  0% {
+    opacity: 1;
+    transform: translate(0, -50%) scaleX(-1) rotate(-3deg) scaleX(0.25);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-35px, -50%) scaleX(-1) rotate(-3deg) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-95px, -50%) scaleX(-1) rotate(-3deg) scaleX(0.6);
+  }
+}
+
+@keyframes projectileStreakLeftGun {
+  0% {
+    opacity: 1;
+    transform: translate(0, -50%) rotate(-42deg) scaleX(0.25);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(35px, -50%) rotate(-42deg) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(115px, -50%) rotate(-42deg) scaleX(0.6);
+  }
+}
+
+@keyframes leonIdleSway {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1.2deg);
+  }
+  100% {
+    transform: translateY(-2px) rotate(-1.2deg);
+  }
+}
+
 @keyframes localWeaponGlow {
   0% {
     opacity: 0;
@@ -543,10 +585,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .coltBlasterMuzzleFlash,
+  .coltBlasterMuzzleFlashLeft,
   .coltProjectileStreak,
-  .coltLocalGlow {
+  .coltProjectileStreakLeft,
+  .coltLocalGlow,
+  .coltLocalGlowLeft {
     animation: none !important;
     display: none !important;
+  }
+  .leonIdleSwayWrapper {
+    animation: none !important;
   }
 }
 
@@ -576,7 +624,18 @@
   flex-shrink: 0;
   position: absolute;
   left: clamp(36px, calc(11% - 26px), 210px);
-  top: 16px;
+  top: 0;
+}
+
+.gdaiBadgeLink {
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 200ms ease;
+}
+
+.gdaiBadgeLink:hover {
+  transform: translateY(-2px) scale(1.05);
+  filter: drop-shadow(0 6px 16px rgba(238, 27, 57, 0.55));
 }
 
 .gdaiBadgeImg {

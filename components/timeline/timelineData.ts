@@ -18,7 +18,7 @@ export interface TimelineStageData {
   title: string;
   sub: string;
   badgeLabel: string;
-  asset: string; // fallback legacy card asset
+  asset: string; // Brawl Stars event card
   envAsset: string;
   characterAsset: string;
   emblemType: 'character' | 'star' | 'emblem';
@@ -26,6 +26,9 @@ export interface TimelineStageData {
   mode: string;
   description: string;
   alt: string;
+  tags?: string[];
+  statusText?: string;
+  ctaText?: string;
   theme: TimelineStageTheme;
 }
 
@@ -64,6 +67,9 @@ export const TIMELINE_STAGES: TimelineStageData[] = [
     mode: 'Online Registration',
     description: 'Assemble your squad and register for Genesis on Unstop & IndieConnect to secure your entry slot.',
     alt: 'Stage 01 Registration - Warm pink and gold tournament environment with stacked champion silhouette',
+    tags: ['Squad 1–4', 'Free Entry', 'Unstop & IndieConnect'],
+    statusText: 'REGISTRATION LIVE',
+    ctaText: 'REGISTER SQUAD',
     theme: {
       primaryColor: '#FF4D6D',
       glowColor: 'rgba(255, 77, 109, 0.45)',
@@ -87,6 +93,9 @@ export const TIMELINE_STAGES: TimelineStageData[] = [
     mode: 'Online Qualifier',
     description: 'Theme drop, rapid game prototyping, and preliminary online review under high-speed tournament conditions.',
     alt: 'Stage 02 Round 1 - Deep blue arena rays environment with central gold star emblem',
+    tags: ['24-Hour Sprint', 'Theme Reveal', 'Playable Build'],
+    statusText: 'QUALIFIER SPRINT',
+    ctaText: 'VIEW CRITERIA',
     theme: {
       primaryColor: '#00C2FF',
       glowColor: 'rgba(0, 194, 255, 0.45)',
@@ -110,6 +119,9 @@ export const TIMELINE_STAGES: TimelineStageData[] = [
     mode: 'Offline Showdown',
     description: 'Shortlisted finalists present playable builds live to industry judges and the live audience at AIT Pune.',
     alt: 'Stage 03 Round 2 - Lime explosion background with Spike throwing cactus bomb',
+    tags: ['AIT Pune Campus', 'Live Pitch', 'Industry Jury'],
+    statusText: 'ON-CAMPUS FINALS',
+    ctaText: 'VENUE DETAILS',
     theme: {
       primaryColor: '#80FF00',
       glowColor: 'rgba(128, 255, 0, 0.45)',
@@ -133,6 +145,9 @@ export const TIMELINE_STAGES: TimelineStageData[] = [
     mode: 'Awards & Cash Prizes',
     description: 'Winner announcement, cash prize disbursement, trophy ceremony, and sponsor honours for top developers.',
     alt: 'Stage 04 Result - Red and blue clash battlefield with dual-faced brawl emblem',
+    tags: ['Cash Prizes', 'Genesis Trophies', 'Sponsor Honors'],
+    statusText: 'AWARDS CEREMONY',
+    ctaText: 'PRIZE POOL',
     theme: {
       primaryColor: '#FF2A4D',
       glowColor: 'rgba(255, 42, 77, 0.5)',

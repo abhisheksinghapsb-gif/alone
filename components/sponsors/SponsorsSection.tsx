@@ -112,16 +112,18 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
           {/* Crowned Green Character Icon (Left flank) */}
           <div className={styles.headingIconFlank} aria-hidden="true">
             <div id="crown-idle-wrap" className={styles.crownIdleWrap}>
-              <img
-                src={SPONSORS_ASSETS.crownedIcon.src}
-                alt=""
-                width={SPONSORS_ASSETS.crownedIcon.width}
-                height={SPONSORS_ASSETS.crownedIcon.height}
-                className={styles.crownFlankImg}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-              />
+              <div className={styles.crownPopWrap}>
+                <img
+                  src={SPONSORS_ASSETS.crownedIcon.src}
+                  alt=""
+                  width={SPONSORS_ASSETS.crownedIcon.width}
+                  height={SPONSORS_ASSETS.crownedIcon.height}
+                  className={styles.crownFlankImg}
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
+              </div>
             </div>
           </div>
 
@@ -142,17 +144,19 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
           {/* Credits Chest Icon (Right flank with dedicated idle & reaction wrappers) */}
           <div className={styles.headingIconFlank} aria-hidden="true">
             <div id="chest-idle-wrap" className={styles.chestIdleWrap}>
-              <div className={`${styles.chestReactWrap} ${chestSettle ? styles.chestReact : ''}`}>
-                <img
-                  src={SPONSORS_ASSETS.creditsChest.src}
-                  alt=""
-                  width={SPONSORS_ASSETS.creditsChest.width}
-                  height={SPONSORS_ASSETS.creditsChest.height}
-                  className={styles.chestFlankImg}
-                  loading="lazy"
-                  decoding="async"
-                  draggable={false}
-                />
+              <div className={styles.chestPopWrap}>
+                <div className={`${styles.chestReactWrap} ${chestSettle ? styles.chestReact : ''}`}>
+                  <img
+                    src={SPONSORS_ASSETS.creditsChest.src}
+                    alt=""
+                    width={SPONSORS_ASSETS.creditsChest.width}
+                    height={SPONSORS_ASSETS.creditsChest.height}
+                    className={styles.chestFlankImg}
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                  />
+                </div>
               </div>
             </div>
           </div>
