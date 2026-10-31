@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { TimelineStageData } from './timelineData';
 import styles from './timeline.module.css';
 
 export interface TimelineChapterProps {
   stage: TimelineStageData;
   isActive: boolean;
-  isHovered: boolean;
   onSelect: () => void;
   onHover: (hovered: boolean) => void;
   revealRef?: (el: HTMLDivElement | null) => void;
@@ -18,23 +17,18 @@ export interface TimelineChapterProps {
 export const TimelineChapter: React.FC<TimelineChapterProps> = ({
   stage,
   isActive,
-  isHovered,
   onSelect,
   onHover,
   revealRef,
   illustrationRef,
   titlePlateRef,
 }) => {
-  const [localHover, setLocalHover] = useState(false);
-
   const handlePointerEnter = () => {
     if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
-    setLocalHover(true);
     onHover(true);
   };
 
   const handlePointerLeave = () => {
-    setLocalHover(false);
     onHover(false);
   };
 

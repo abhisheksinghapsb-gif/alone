@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -18,69 +18,107 @@ export const usePrizeMotion = ({
   motionPaused = false,
 }: UsePrizeMotionOptions) => {
   const idleTweensRef = useRef<gsap.core.Tween[]>([]);
+  const entranceTimelinesRef = useRef<gsap.core.Timeline[]>([]);
   const motionPausedRef = useRef<boolean>(motionPaused);
   motionPausedRef.current = motionPaused;
   const isSectionActiveRef = useRef<boolean>(false);
+  const hasEnteredRef = useRef<boolean>(false);
+
+  const isReducedMotion = useCallback(() => {
+    return (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  }, []);
+
+  const setRestingStyles = useCallback(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const elements = section.querySelectorAll(
+      '.prizePoolBannerWrapper, .prizeStage, .stageHeaderStrip, .stageSurfaceBody, .stageCharacterWrapper, .prizeMedalItem, .gemAccentWrapper'
+    );
+    gsap.set(elements, { opacity: 1, y: 0, scale: 1, clearProps: 'transform,opacity' });
+  }, [sectionRef]);
+
+  const reconcileIdles = useCallback(() => {
+    const shouldPlay =
+      isSectionActiveRef.current &&
+      !document.hidden &&
+      !motionPausedRef.current &&
+      !isReducedMotion();
+
+    if (shouldPlay) {
+      idleTweensRef.current.forEach((t) => t.play());
+    } else {
+      idleTweensRef.current.forEach((t) => t.pause());
+    }
+  }, [isReducedMotion]);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion) {
-      // With reduced motion, ensure everything is fully visible immediately
-      gsap.set(
-        section.querySelectorAll(
-          '.prizePoolBannerWrapper, .prizeStage, .stageHeaderStrip, .stageSurfaceBody, .stageCharacterWrapper, .prizeMedalItem, .gemAccentWrapper'
-        ),
-        { opacity: 1, y: 0, scale: 1, clearProps: 'all' }
-      );
-      return;
+    if (isReducedMotion() || motionPausedRef.current) {
+      setRestingStyles();
     }
 
     const ctx = gsap.context(() => {
-      // 1. Title Banner Entrance & Reverse
-      const banner = section.querySelector('.prizePoolBannerWrapper');
+      // 1. Title Banner Entrance
+      const banner = section.querySelector<HTMLElement>('.prizePoolBannerWrapper');
       if (banner) {
-        gsap.fromTo(
+        const bannerTl = gsap.timeline({
+          paused: true,
+          scrollTrigger: {
+            trigger: banner,
+            start: 'top 85%',
+            once: true,
+            onEnter: () => {
+              hasEnteredRef.current = true;
+              if (!motionPausedRef.current && !isReducedMotion()) {
+                bannerTl.play();
+              } else {
+                bannerTl.progress(1);
+                gsap.set(banner, { opacity: 1, y: 0 });
+              }
+            },
+          },
+        });
+        bannerTl.fromTo(
           banner,
           { opacity: 0, y: -24 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: banner,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
         );
+        entranceTimelinesRef.current.push(bannerTl);
       }
 
-      // 2. Stage 1: Main Prizes Stage Entrance & Reverse
-      // Use static stage wrapper as trigger, animate its inner artwork
-      const mainStage = section.querySelector('#prize-stage-main');
+      // 2. Stage 1: Main Prizes Stage Entrance
+      const mainStage = section.querySelector<HTMLElement>('#prize-stage-main');
       if (mainStage) {
-        const header = mainStage.querySelector('.stageHeaderStrip');
-        const body = mainStage.querySelector('.stageSurfaceBody');
-        const cowboy = mainStage.querySelector('.stageCharacterWrapper');
-        const medals = mainStage.querySelectorAll('.prizeMedalItem');
+        const header = mainStage.querySelector<HTMLElement>('.stageHeaderStrip');
+        const body = mainStage.querySelector<HTMLElement>('.stageSurfaceBody');
+        const cowboy = mainStage.querySelector<HTMLElement>('.stageCharacterWrapper');
+        const medals = mainStage.querySelectorAll<HTMLElement>('.prizeMedalItem');
 
-        const tl = gsap.timeline({
+        const mainTl = gsap.timeline({
+          paused: true,
           scrollTrigger: {
             trigger: mainStage,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            once: true,
+            onEnter: () => {
+              hasEnteredRef.current = true;
+              if (!motionPausedRef.current && !isReducedMotion()) {
+                mainTl.play();
+              } else {
+                mainTl.progress(1);
+                setRestingStyles();
+              }
+            },
           },
         });
 
         if (header && body) {
-          tl.fromTo(
+          mainTl.fromTo(
             [header, body],
             { opacity: 0, y: 28 },
             { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
@@ -88,7 +126,7 @@ export const usePrizeMotion = ({
         }
 
         if (cowboy) {
-          tl.fromTo(
+          mainTl.fromTo(
             cowboy,
             { opacity: 0, y: 25, scale: 0.96 },
             { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.2)' },
@@ -97,7 +135,7 @@ export const usePrizeMotion = ({
         }
 
         if (medals.length > 0) {
-          tl.fromTo(
+          mainTl.fromTo(
             medals,
             { opacity: 0, y: 20 },
             {
@@ -110,47 +148,65 @@ export const usePrizeMotion = ({
             '-=0.4'
           );
         }
+
+        entranceTimelinesRef.current.push(mainTl);
       }
 
-      // 3. Intermediate Purple Gem Accent Entrance & Reverse
-      const gem = section.querySelector('.gemAccentWrapper');
+      // 3. Intermediate Purple Gem Accent Entrance
+      const gem = section.querySelector<HTMLElement>('.gemAccentWrapper');
       if (gem) {
-        gsap.fromTo(
+        const gemTl = gsap.timeline({
+          paused: true,
+          scrollTrigger: {
+            trigger: gem,
+            start: 'top 85%',
+            once: true,
+            onEnter: () => {
+              if (!motionPausedRef.current && !isReducedMotion()) {
+                gemTl.play();
+              } else {
+                gemTl.progress(1);
+                gsap.set(gem, { opacity: 1, scale: 1 });
+              }
+            },
+          },
+        });
+        gemTl.fromTo(
           gem,
           { opacity: 0, scale: 0.8 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.6,
-            ease: 'back.out(1.4)',
-            scrollTrigger: {
-              trigger: gem,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
+          { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.4)' }
         );
+        entranceTimelinesRef.current.push(gemTl);
       }
 
-      // 4. Stage 2: VR Track Stage Entrance & Reverse
-      // Use static stage wrapper as trigger, animate its inner artwork
-      const vrStage = section.querySelector('#prize-stage-vr');
+      // 4. Stage 2: VR Track Stage Entrance
+      const vrStage = section.querySelector<HTMLElement>('#prize-stage-vr');
       if (vrStage) {
-        const header = vrStage.querySelector('.stageHeaderStrip');
-        const body = vrStage.querySelector('.stageSurfaceBody');
-        const buzz = vrStage.querySelector('.stageCharacterWrapper');
-        const vrMedals = vrStage.querySelectorAll('.prizeMedalItem');
+        const header = vrStage.querySelector<HTMLElement>('.stageHeaderStrip');
+        const body = vrStage.querySelector<HTMLElement>('.stageSurfaceBody');
+        const buzz = vrStage.querySelector<HTMLElement>('.stageCharacterWrapper');
+        const vrMedals = vrStage.querySelectorAll<HTMLElement>('.prizeMedalItem');
 
-        const tl = gsap.timeline({
+        const vrTl = gsap.timeline({
+          paused: true,
           scrollTrigger: {
             trigger: vrStage,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            once: true,
+            onEnter: () => {
+              hasEnteredRef.current = true;
+              if (!motionPausedRef.current && !isReducedMotion()) {
+                vrTl.play();
+              } else {
+                vrTl.progress(1);
+                setRestingStyles();
+              }
+            },
           },
         });
 
         if (header && body) {
-          tl.fromTo(
+          vrTl.fromTo(
             [header, body],
             { opacity: 0, y: 28 },
             { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
@@ -158,7 +214,7 @@ export const usePrizeMotion = ({
         }
 
         if (vrMedals.length > 0) {
-          tl.fromTo(
+          vrTl.fromTo(
             vrMedals,
             { opacity: 0, y: 20 },
             {
@@ -173,19 +229,21 @@ export const usePrizeMotion = ({
         }
 
         if (buzz) {
-          tl.fromTo(
+          vrTl.fromTo(
             buzz,
             { opacity: 0, y: 25, scale: 0.96 },
             { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.2)' },
             '-=0.4'
           );
         }
+
+        entranceTimelinesRef.current.push(vrTl);
       }
 
-      // 5. Restrained Character Idle Animation on Dedicated Idle Frame (2-3px)
-      // Dedicated idle frame prevents overriding hover enlargement or recoil transforms
-      const cowboyIdle = section.querySelector('.characterIdleFrame.cowboyIdle');
-      const buzzIdle = section.querySelector('.characterIdleFrame.buzzIdle');
+      // 5. Restrained Character Idle Animation (Created PAUSED)
+      const cowboyIdle = section.querySelector<HTMLElement>('.characterIdleFrame.cowboyIdle');
+      const buzzIdle = section.querySelector<HTMLElement>('.characterIdleFrame.buzzIdle');
+      const tweens: gsap.core.Tween[] = [];
 
       if (cowboyIdle) {
         const t1 = gsap.to(cowboyIdle, {
@@ -194,9 +252,9 @@ export const usePrizeMotion = ({
           repeat: -1,
           yoyo: true,
           ease: 'sine.inOut',
+          paused: true,
         });
-        if (motionPaused) t1.pause();
-        idleTweensRef.current.push(t1);
+        tweens.push(t1);
       }
 
       if (buzzIdle) {
@@ -207,71 +265,78 @@ export const usePrizeMotion = ({
           yoyo: true,
           ease: 'sine.inOut',
           delay: 0.5,
+          paused: true,
         });
-        if (motionPaused) t2.pause();
-        idleTweensRef.current.push(t2);
+        tweens.push(t2);
       }
 
-      // Suspend repeated character idle loops when section is offscreen
+      idleTweensRef.current = tweens;
+
+      // Suspend idle loops when section is offscreen
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom',
         end: 'bottom top',
         onEnter: () => {
           isSectionActiveRef.current = true;
-          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          if (!motionPausedRef.current && !document.hidden && !isReduced) {
-            idleTweensRef.current.forEach((t) => t.play());
-          }
+          reconcileIdles();
         },
         onLeave: () => {
           isSectionActiveRef.current = false;
-          idleTweensRef.current.forEach((t) => t.pause());
+          reconcileIdles();
         },
         onEnterBack: () => {
           isSectionActiveRef.current = true;
-          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          if (!motionPausedRef.current && !document.hidden && !isReduced) {
-            idleTweensRef.current.forEach((t) => t.play());
-          }
+          reconcileIdles();
         },
         onLeaveBack: () => {
           isSectionActiveRef.current = false;
-          idleTweensRef.current.forEach((t) => t.pause());
+          reconcileIdles();
         },
       });
+
+      // Initial reconciliation
+      reconcileIdles();
     }, section);
 
     // Pause idle loops when tab is hidden
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        idleTweensRef.current.forEach((t) => t.pause());
-      } else {
-        const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!motionPausedRef.current && !isReduced && isSectionActiveRef.current) {
-          idleTweensRef.current.forEach((t) => t.resume());
-        }
-      }
+      reconcileIdles();
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Live OS reduced motion listener
+    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const handleMotionPreferenceChange = () => {
+      if (isReducedMotion()) {
+        entranceTimelinesRef.current.forEach((tl) => tl.progress(1));
+        setRestingStyles();
+      }
+      reconcileIdles();
+    };
+    mql?.addEventListener('change', handleMotionPreferenceChange);
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      mql?.removeEventListener('change', handleMotionPreferenceChange);
       idleTweensRef.current.forEach((t) => t.kill());
       idleTweensRef.current = [];
+      entranceTimelinesRef.current = [];
       ctx.revert();
     };
-  }, [sectionRef]);
+  }, [sectionRef, isReducedMotion, reconcileIdles, setRestingStyles]);
 
-  // Handle runtime pause toggle
+  // Handle runtime pause toggle without replaying completed entrances
   useEffect(() => {
     if (motionPaused) {
-      idleTweensRef.current.forEach((t) => t.pause());
+      // Pause mid-entrance: jump all pending entrance timelines to completed resting state
+      entranceTimelinesRef.current.forEach((tl) => {
+        tl.progress(1);
+      });
+      setRestingStyles();
+      reconcileIdles();
     } else {
-      const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (isSectionActiveRef.current && !document.hidden && !isReduced) {
-        idleTweensRef.current.forEach((t) => t.resume());
-      }
+      reconcileIdles();
     }
-  }, [motionPaused]);
+  }, [motionPaused, setRestingStyles, reconcileIdles]);
 };

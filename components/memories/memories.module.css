@@ -1,0 +1,238 @@
+/* Scoped GENESIS Memories styles. Preserves reference Polaroid layout and responsive camera. */
+
+.genesisMemories {
+  position: relative;
+  width: 100%;
+  background: #030015;
+  isolation: isolate;
+}
+
+.memoriesViewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  min-height: 450px;
+  overflow: hidden;
+  background: #030015;
+}
+
+.memoriesBackground {
+  position: absolute;
+  inset: 0;
+  background: #08062f url('/landing-pages/memories/backgrounds/memories-background.webp') center center / cover no-repeat;
+  pointer-events: none;
+}
+
+.memoriesBackground::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(3,0,21,.25), rgba(3,0,21,.08) 40%, rgba(3,0,21,.4));
+}
+
+.memoriesCamera {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: 1600px;
+  height: 1400px;
+  will-change: auto;
+  pointer-events: none;
+}
+
+.memoriesCamera.isAnimating {
+  will-change: transform;
+}
+
+.memoriesPhoto {
+  position: absolute;
+  width: 330px;
+  padding: 11px 11px 0;
+  transform: translate(-50%, -50%) rotate(var(--memory-tilt, 0deg));
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  background: #fff9ea;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 0 25px rgba(52, 180, 255, 0.12);
+  overflow: hidden;
+}
+
+.memoriesPhotoImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 960 / 700;
+  object-fit: cover;
+}
+
+.memoriesPhotoCaption {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 38px;
+  font-family: var(--font-game, 'Lilita One', 'Impact', sans-serif);
+  font-size: 18px;
+  letter-spacing: 0.045em;
+  font-weight: 800;
+  color: #241533;
+  text-align: center;
+}
+
+.memoriesHeader {
+  position: absolute;
+  z-index: 5;
+  inset: 0 0 auto;
+  height: clamp(70px, 10vh, 112px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  pointer-events: none;
+  padding: clamp(5px, 1.4vw, 16px) clamp(10px, 2vw, 26px);
+}
+
+.memoriesTitle {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  translate: -50% 0;
+  display: block;
+  width: clamp(230px, 35vw, 490px);
+  height: auto;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .memoriesViewport {
+    min-height: 0;
+  }
+  .memoriesCamera {
+    width: 1120px;
+    height: 1180px;
+  }
+  .memoriesPhoto {
+    width: clamp(248px, 74vw, 320px);
+    padding: 8px 8px 0;
+  }
+  .memoriesPhotoCaption {
+    min-height: 31px;
+    font-size: 15px;
+  }
+  .memoriesHeader {
+    height: 80px;
+    padding: 4px 6px;
+  }
+  .memoriesTitle {
+    top: 3px;
+    width: min(52vw, 290px);
+  }
+}
+
+/* Short screens optimization (e.g., 1280x450, 844x390 landscape) */
+@media (max-height: 520px) {
+  .memoriesViewport {
+    min-height: 0;
+  }
+  .memoriesHeader {
+    height: 54px;
+    padding: 2px 6px;
+  }
+  .memoriesTitle {
+    top: 2px;
+    width: min(32vw, 210px);
+  }
+}
+
+/* Paused / Reduced motion: readable 2-column or 1-column static scrapbook gallery */
+.genesisMemories[data-motion-paused="true"],
+:global(html[data-motion-paused="true"]) .genesisMemories {
+  min-height: 0 !important;
+}
+
+.genesisMemories[data-motion-paused="true"] .memoriesViewport,
+:global(html[data-motion-paused="true"]) .genesisMemories .memoriesViewport {
+  position: relative;
+  height: auto;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.genesisMemories[data-motion-paused="true"] .memoriesHeader,
+:global(html[data-motion-paused="true"]) .genesisMemories .memoriesHeader {
+  position: relative;
+  height: 100px;
+}
+
+.genesisMemories[data-motion-paused="true"] .memoriesCamera,
+:global(html[data-motion-paused="true"]) .genesisMemories .memoriesCamera {
+  position: relative;
+  left: auto;
+  top: auto;
+  translate: none;
+  transform: none !important;
+  width: min(100%, 1100px);
+  height: auto;
+  margin: 12px auto 50px;
+  padding: 12px 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  pointer-events: auto;
+  will-change: auto;
+}
+
+@media (max-width: 639px) {
+  .genesisMemories[data-motion-paused="true"] .memoriesCamera,
+  :global(html[data-motion-paused="true"]) .genesisMemories .memoriesCamera {
+    grid-template-columns: 1fr;
+  }
+}
+
+.genesisMemories[data-motion-paused="true"] .memoriesPhoto,
+:global(html[data-motion-paused="true"]) .genesisMemories .memoriesPhoto {
+  position: static;
+  width: 100%;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .genesisMemories {
+    min-height: 0 !important;
+  }
+  .memoriesViewport {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+  .memoriesHeader {
+    position: relative;
+    height: 100px;
+  }
+  .memoriesCamera {
+    position: relative;
+    left: auto;
+    top: auto;
+    translate: none;
+    transform: none !important;
+    width: min(100%, 1100px);
+    height: auto;
+    margin: 12px auto 50px;
+    padding: 12px 18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    pointer-events: auto;
+    will-change: auto;
+  }
+  .memoriesPhoto {
+    position: static;
+    width: 100%;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 639px) and (prefers-reduced-motion: reduce) {
+  .memoriesCamera {
+    grid-template-columns: 1fr;
+  }
+}

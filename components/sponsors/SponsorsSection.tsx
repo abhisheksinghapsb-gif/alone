@@ -111,7 +111,7 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
         <div id="sponsors-heading-group" className={styles.sponsorsHeadingGroup}>
           {/* Crowned Green Character Icon (Left flank) */}
           <div className={styles.headingIconFlank} aria-hidden="true">
-            <div className={styles.crownIdleWrap}>
+            <div id="crown-idle-wrap" className={styles.crownIdleWrap}>
               <img
                 src={SPONSORS_ASSETS.crownedIcon.src}
                 alt=""
@@ -141,7 +141,7 @@ export const SponsorsSection: React.FC<SponsorsSectionProps> = ({
 
           {/* Credits Chest Icon (Right flank with dedicated idle & reaction wrappers) */}
           <div className={styles.headingIconFlank} aria-hidden="true">
-            <div className={styles.chestIdleWrap}>
+            <div id="chest-idle-wrap" className={styles.chestIdleWrap}>
               <div className={`${styles.chestReactWrap} ${chestSettle ? styles.chestReact : ''}`}>
                 <img
                   src={SPONSORS_ASSETS.creditsChest.src}

@@ -108,16 +108,20 @@ export const ArenaScene: React.FC<ArenaSceneProps> = ({ motionPaused, pageRef })
 
       {/* 3. Glowing Blue Moon Dome (Midground) */}
       {/* Sits behind the characters and behind the arena rail */}
-      <div id="moon-layer" className="moonWrap parallax-mid">
-        <div id="moon-glow-idle">
-          <img
-            src={SCENE_ASSETS.moonDome.src}
-            alt={SCENE_ASSETS.moonDome.alt}
-            width={SCENE_ASSETS.moonDome.width}
-            height={SCENE_ASSETS.moonDome.height}
-            className="moonImg"
-            draggable={false}
-          />
+      {/* Outer anchor provides permanent CSS horizontal centering (left:50% + translateX(-50%)) */}
+      <div className="moonWrap">
+        {/* Inner wrapper receives GSAP entrance and midground parallax without overwriting CSS layout anchor */}
+        <div id="moon-layer" className="moonTransformInner parallax-mid">
+          <div id="moon-glow-idle">
+            <img
+              src={SCENE_ASSETS.moonDome.src}
+              alt={SCENE_ASSETS.moonDome.alt}
+              width={SCENE_ASSETS.moonDome.width}
+              height={SCENE_ASSETS.moonDome.height}
+              className="moonImg"
+              draggable={false}
+            />
+          </div>
         </div>
       </div>
 

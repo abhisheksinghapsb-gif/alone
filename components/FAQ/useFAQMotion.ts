@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FAQCategoryId } from './faqData';
@@ -20,30 +20,41 @@ export const useFAQMotion = ({
   activeCategoryId,
   motionPaused,
 }: UseFAQMotionProps) => {
+  const entranceTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const categorySwitchTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const isInitialMount = useRef(true);
+  const motionPausedRef = useRef<boolean>(motionPaused);
+  motionPausedRef.current = motionPaused;
+  const hasEnteredRef = useRef<boolean>(false);
+
+  const isReducedMotion = useCallback(() => {
+    return (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  }, []);
+
+  const setRestingStyles = useCallback(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    gsap.set(
+      [
+        section.querySelector('[data-faq-plaque]'),
+        section.querySelector('[data-faq-panel]'),
+        section.querySelector('[data-faq-category-bar]'),
+        section.querySelectorAll('[data-faq-item]'),
+      ],
+      { opacity: 1, y: 0, clearProps: 'transform,opacity' }
+    );
+  }, [sectionRef]);
 
   // 1. Entrance Choreography with ScrollTrigger
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion || motionPaused) {
-      // Immediate presentation for reduced motion or paused state
-      gsap.set(
-        [
-          section.querySelector('[data-faq-plaque]'),
-          section.querySelector('[data-faq-panel]'),
-          section.querySelector('[data-faq-category-bar]'),
-          section.querySelectorAll('[data-faq-item]'),
-        ],
-        { opacity: 1, y: 0, clearProps: 'all' }
-      );
-      return;
+    if (isReducedMotion() || motionPausedRef.current) {
+      setRestingStyles();
     }
 
     const ctx = gsap.context(() => {
@@ -53,16 +64,26 @@ export const useFAQMotion = ({
       const firstItems = section.querySelectorAll('[data-faq-item]');
 
       const tl = gsap.timeline({
+        paused: true,
         scrollTrigger: {
           trigger: section,
           start: 'top 80%',
           once: true,
+          onEnter: () => {
+            hasEnteredRef.current = true;
+            if (!motionPausedRef.current && !isReducedMotion()) {
+              tl.play();
+            } else {
+              tl.progress(1);
+              setRestingStyles();
+            }
+          },
         },
         onComplete: () => {
-          // Refresh scroll measurements without infinite loop
           ScrollTrigger.refresh();
         },
       });
+      entranceTimelineRef.current = tl;
 
       // 1. Plaque settles (~14px movement)
       if (plaque) {
@@ -105,28 +126,32 @@ export const useFAQMotion = ({
       }
     }, section);
 
-    return () => {
-      ctx.revert();
+    // Live OS reduced motion listener
+    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const handleMotionPreferenceChange = () => {
+      if (isReducedMotion()) {
+        entranceTimelineRef.current?.progress(1);
+        setRestingStyles();
+      }
     };
-  }, [sectionRef]);
+    mql?.addEventListener('change', handleMotionPreferenceChange);
+
+    return () => {
+      mql?.removeEventListener('change', handleMotionPreferenceChange);
+      ctx.revert();
+      entranceTimelineRef.current = null;
+    };
+  }, [sectionRef, isReducedMotion, setRestingStyles]);
 
   // Handle mid-entrance pause: immediately set readable resting state without re-running entrance
   useEffect(() => {
     if (motionPaused) {
-      const section = sectionRef.current;
-      if (section) {
-        gsap.set(
-          [
-            section.querySelector('[data-faq-plaque]'),
-            section.querySelector('[data-faq-panel]'),
-            section.querySelector('[data-faq-category-bar]'),
-            section.querySelectorAll('[data-faq-item]'),
-          ],
-          { opacity: 1, y: 0 }
-        );
+      if (entranceTimelineRef.current && !hasEnteredRef.current) {
+        entranceTimelineRef.current.progress(1);
       }
+      setRestingStyles();
     }
-  }, [motionPaused, sectionRef]);
+  }, [motionPaused, setRestingStyles]);
 
   // 2. Tactile Category Switch Transition (Staggered row settling)
   useEffect(() => {
@@ -149,11 +174,7 @@ export const useFAQMotion = ({
       gsap.set(allTitles, { clearProps: 'transform,opacity' });
     }
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion || motionPaused) {
+    if (isReducedMotion() || motionPaused) {
       const activePanel = section.querySelector<HTMLElement>(
         `[id="faq-panel-${activeCategoryId}"]`
       );
@@ -191,7 +212,7 @@ export const useFAQMotion = ({
       );
     }
 
-    // Question rows settle into place with short stagger (4-8px, ~220ms per row, ~40ms stagger)
+    // Question rows settle into place with short stagger
     if (items.length > 0) {
       tl.fromTo(
         items,
@@ -220,5 +241,5 @@ export const useFAQMotion = ({
         gsap.set(categoryTitle, { clearProps: 'transform,opacity' });
       }
     };
-  }, [activeCategoryId, sectionRef, motionPaused]);
+  }, [activeCategoryId, sectionRef, motionPaused, isReducedMotion]);
 };

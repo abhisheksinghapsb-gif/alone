@@ -98,7 +98,7 @@ export const SponsorBoard: React.FC<SponsorBoardProps> = ({
           className={styles.spikeCharacterDock}
           aria-hidden="true"
         >
-          <div className={styles.spikeIdleWrap}>
+          <div id="spike-idle-wrap" className={styles.spikeIdleWrap}>
             <div className={`${styles.spikeReactionWrap} ${reactionClass}`}>
               <img
                 src={SPONSORS_ASSETS.characterSpike.src}

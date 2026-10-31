@@ -11,11 +11,8 @@ import { SponsorsSection } from '../sponsors/SponsorsSection';
 import { SponsorsToPrizeDivider, PrizePoolSection } from '../prize-pool';
 import { FAQSection } from '../FAQ';
 import { ContactSection } from '../contact';
-import {
-  AboutToTimelineDivider,
-  PrizeToFAQDivider,
-  FAQToContactDivider,
-} from '../dividers';
+import { AboutToTimelineDivider, PrizeToFAQDivider, FAQToContactDivider } from '../dividers';
+import { MemoriesSection } from '../memories';
 import { uiAudio } from '../../lib/uiAudio';
 
 export const LandingExperience: React.FC = () => {
@@ -61,7 +58,7 @@ export const LandingExperience: React.FC = () => {
         position: 'relative',
         width: '100%',
         minHeight: '100vh',
-        overflowX: 'hidden',
+        overflowX: 'clip',
         backgroundColor: 'var(--color-bg-space)',
       }}
     >
@@ -94,16 +91,7 @@ export const LandingExperience: React.FC = () => {
         soundEnabled={soundEnabled}
       />
 
-      {/* 3. Royal Crown Structural Divider (Timeline -> Sponsors) */}
-      <SponsorsDivider motionPaused={effectiveMotionPaused} />
-
-      {/* Sponsors Section (Interactive Sponsor Shop) */}
-      <SponsorsSection
-        motionPaused={effectiveMotionPaused}
-        soundEnabled={soundEnabled}
-      />
-
-      {/* 4. Purple Gem Structural Divider (Sponsors -> Prize Pool) */}
+      {/* 3. Purple Gem Structural Divider (Timeline -> Prize Pool) */}
       <SponsorsToPrizeDivider motionPaused={effectiveMotionPaused} />
 
       {/* Prize Pool Section (Two Illustrated Trophy Stages) */}
@@ -112,7 +100,19 @@ export const LandingExperience: React.FC = () => {
         soundEnabled={soundEnabled}
       />
 
-      {/* 5. Cyber Intel Crystal Structural Divider (Prize Pool -> FAQ) */}
+      {/* Memories Section (Photo Scrapbook Journey) */}
+      <MemoriesSection motionPaused={effectiveMotionPaused} />
+
+      {/* 4. Royal Crown Structural Divider (Memories -> Sponsors) */}
+      <SponsorsDivider motionPaused={effectiveMotionPaused} />
+
+      {/* Sponsors Section (Interactive Sponsor Shop) */}
+      <SponsorsSection
+        motionPaused={effectiveMotionPaused}
+        soundEnabled={soundEnabled}
+      />
+
+      {/* 5. Cyber Intel Crystal Structural Divider (Sponsors -> FAQ) */}
       <PrizeToFAQDivider motionPaused={effectiveMotionPaused} />
 
       {/* Genesis 6 Frequently Asked Questions Section */}

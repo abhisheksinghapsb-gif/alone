@@ -480,6 +480,11 @@
 
 /* Tablet & Smaller Laptops (<= 1024px) */
 @media (max-width: 1024px) {
+  .faqSection {
+    min-height: auto;
+    justify-content: flex-start;
+  }
+
   .contentContainer {
     padding: 36px 16px 20px 16px;
   }
@@ -490,7 +495,11 @@
 
   .panelBody {
     padding: 28px 28px 30px 28px;
-    min-height: 440px;
+    min-height: auto;
+  }
+
+  .categoryBarContainer {
+    margin-top: 28px;
   }
 
   .questionText {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -20,27 +20,38 @@ export const useContactMotion = ({
   motionPaused,
 }: UseContactMotionProps) => {
   const isOffscreenRef = useRef(false);
+  const entranceTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const motionPausedRef = useRef<boolean>(motionPaused);
+  motionPausedRef.current = motionPaused;
+  const hasEnteredRef = useRef<boolean>(false);
+
+  const isReducedMotion = useCallback(() => {
+    return (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  }, []);
+
+  const setRestingStyles = useCallback(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    gsap.set(
+      [
+        section.querySelector('[data-contact-heading]'),
+        section.querySelectorAll('[data-contact-group]'),
+        section.querySelector('[data-contact-venue]'),
+      ],
+      { opacity: 1, y: 0, clearProps: 'transform,opacity' }
+    );
+  }, [sectionRef]);
 
   // 1. Coordinated Section Entrance
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion || motionPaused) {
-      // Immediate presentation for reduced motion or paused state
-      gsap.set(
-        [
-          section.querySelector('[data-contact-heading]'),
-          section.querySelectorAll('[data-contact-group]'),
-          section.querySelector('[data-contact-venue]'),
-        ],
-        { opacity: 1, y: 0, clearProps: 'all' }
-      );
-      return;
+    if (isReducedMotion() || motionPausedRef.current) {
+      setRestingStyles();
     }
 
     const ctx = gsap.context(() => {
@@ -49,15 +60,26 @@ export const useContactMotion = ({
       const venue = section.querySelector('[data-contact-venue]');
 
       const tl = gsap.timeline({
+        paused: true,
         scrollTrigger: {
           trigger: section,
           start: 'top 80%',
           once: true,
+          onEnter: () => {
+            hasEnteredRef.current = true;
+            if (!motionPausedRef.current && !isReducedMotion()) {
+              tl.play();
+            } else {
+              tl.progress(1);
+              setRestingStyles();
+            }
+          },
         },
         onComplete: () => {
           ScrollTrigger.refresh();
         },
       });
+      entranceTimelineRef.current = tl;
 
       // 1. Heading settles (~16px downward settle)
       if (heading) {
@@ -103,27 +125,32 @@ export const useContactMotion = ({
       }
     }, section);
 
-    return () => {
-      ctx.revert();
+    // Live OS reduced motion listener
+    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const handleMotionPreferenceChange = () => {
+      if (isReducedMotion()) {
+        entranceTimelineRef.current?.progress(1);
+        setRestingStyles();
+      }
     };
-  }, [sectionRef]);
+    mql?.addEventListener('change', handleMotionPreferenceChange);
+
+    return () => {
+      mql?.removeEventListener('change', handleMotionPreferenceChange);
+      ctx.revert();
+      entranceTimelineRef.current = null;
+    };
+  }, [sectionRef, isReducedMotion, setRestingStyles]);
 
   // Handle mid-entrance pause: immediately show readable resting state
   useEffect(() => {
     if (motionPaused) {
-      const section = sectionRef.current;
-      if (section) {
-        gsap.set(
-          [
-            section.querySelector('[data-contact-heading]'),
-            section.querySelectorAll('[data-contact-group]'),
-            section.querySelector('[data-contact-venue]'),
-          ],
-          { opacity: 1, y: 0 }
-        );
+      if (entranceTimelineRef.current && !hasEnteredRef.current) {
+        entranceTimelineRef.current.progress(1);
       }
+      setRestingStyles();
     }
-  }, [motionPaused, sectionRef]);
+  }, [motionPaused, setRestingStyles]);
 
   // 2. Illustrated Background Pointer Parallax Depth
   useEffect(() => {

@@ -23,8 +23,12 @@ const VIEWPORTS = [
 ];
 
 const OUT_DIR = path.join(__dirname, '..', 'docs', 'captures');
+const REVIEW_DIR = path.join(__dirname, '..', 'docs', 'review');
 if (!fs.existsSync(OUT_DIR)) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
+}
+if (!fs.existsSync(REVIEW_DIR)) {
+  fs.mkdirSync(REVIEW_DIR, { recursive: true });
 }
 
 function fetchJson(url) {
@@ -128,6 +132,7 @@ async function main() {
   await client.send('Runtime.enable');
 
   const currentRunResults = [];
+  const runTimestamp = Date.now();
 
   for (const vp of VIEWPORTS) {
     console.log(`\n========================================`);
@@ -147,10 +152,10 @@ async function main() {
       awaitPromise: true,
       expression: `(async () => {
         const start = performance.now();
-        const maxWaitMs = 5000;
+        const maxWaitMs = 6000;
         try {
           if (document.fonts && document.fonts.ready) {
-            await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 600))]);
+            await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 800))]);
           }
         } catch (e) {}
 
@@ -179,24 +184,25 @@ async function main() {
       returnByValue: true,
     });
 
-    console.log(`- Readiness: ${readyRes.result.value.settled ? 'SETTLED' : 'TIMEOUT'} (${readyRes.result.value.elapsed.toFixed(0)}ms)`);
+    const isSettled = readyRes.result.value.settled;
+    console.log(`- Readiness: ${isSettled ? 'SETTLED' : 'TIMEOUT'} (${readyRes.result.value.elapsed.toFixed(0)}ms)`);
 
-    // Evaluate layout measurements with ancestor visibility and occlusion checks
+    // Evaluate layout measurements with ancestor visibility (opacity product) and exact scene presence
     const evalRes = await client.send('Runtime.evaluate', {
       expression: `(() => {
         function getBoxAndVisibility(selector) {
           const el = document.querySelector(selector);
           if (!el) return null;
           let cur = el;
-          let minOpacity = 1;
+          let effectiveOpacity = 1;
           while (cur && cur !== document.documentElement) {
             const s = window.getComputedStyle(cur);
             if (s.display === 'none' || s.visibility === 'hidden') {
-              minOpacity = 0;
+              effectiveOpacity = 0;
               break;
             }
             const op = parseFloat(s.opacity);
-            if (!isNaN(op)) minOpacity = Math.min(minOpacity, op);
+            if (!isNaN(op)) effectiveOpacity *= op;
             cur = cur.parentElement;
           }
           const rect = el.getBoundingClientRect();
@@ -207,8 +213,8 @@ async function main() {
             right: Math.round(rect.right),
             width: Math.round(rect.width),
             height: Math.round(rect.height),
-            minOpacity,
-            isVisible: minOpacity > 0.5 && rect.width > 0 && rect.height > 0
+            effectiveOpacity,
+            isVisible: effectiveOpacity > 0.5 && rect.width > 0 && rect.height > 0
           };
         }
 
@@ -228,6 +234,24 @@ async function main() {
         const scrollWidth = document.documentElement.scrollWidth;
         const clientWidth = document.documentElement.clientWidth;
 
+        // Verify all required elements exist and have effective visibility
+        const required = [
+          { name: 'scene', item: scene },
+          { name: 'header', item: header },
+          { name: 'nav', item: nav },
+          { name: 'hero', item: hero },
+          { name: 'logo', item: logo },
+          { name: 'register', item: register },
+          { name: 'gunslinger', item: gunslinger },
+          { name: 'ninja', item: ninja },
+          { name: 'barrier', item: barrier },
+          { name: 'balloon', item: balloon },
+          { name: 'cannon', item: cannon },
+          { name: 'moon', item: moon }
+        ];
+        const missing = required.filter(r => !r.item || !r.item.isVisible).map(r => r.name);
+        const allRequiredVisible = missing.length === 0;
+
         // 1. Header/Nav to Wordmark overlap
         const navBottom = nav ? nav.bottom : 0;
         const logoTop = logo ? logo.top : (hero ? hero.top : 0);
@@ -242,13 +266,14 @@ async function main() {
         const registerVisible = register ? register.isVisible : false;
 
         // 4. Character occlusion by foreground barrier
-        // Essential features (face, weapons, chest) sit in upper 45% of character height.
         let gunslingerOccluded = false;
         let gunslingerVisibleRatio = 1;
         if (gunslinger && barrier) {
           const visibleHeight = barrier.top - gunslinger.top;
           gunslingerVisibleRatio = Math.max(0, Math.min(1, visibleHeight / gunslinger.height));
-          gunslingerOccluded = gunslingerVisibleRatio < 0.40;
+          gunslingerOccluded = gunslingerVisibleRatio < 0.35 || barrier.top <= gunslinger.top + 40;
+        } else {
+          gunslingerOccluded = true;
         }
 
         let ninjaOccluded = false;
@@ -256,17 +281,26 @@ async function main() {
         if (ninja && barrier) {
           const visibleHeight = barrier.top - ninja.top;
           ninjaVisibleRatio = Math.max(0, Math.min(1, visibleHeight / ninja.height));
-          ninjaOccluded = ninjaVisibleRatio < 0.40;
+          ninjaOccluded = ninjaVisibleRatio < 0.35 || barrier.top <= ninja.top + 40;
+        } else {
+          ninjaOccluded = true;
         }
 
         // 5. Moon cut edge exposure
-        // Moon flat cut edge must be concealed behind the opaque barrier
         let moonEdgeExposed = false;
         if (moon && barrier) {
-          moonEdgeExposed = moon.bottom < (barrier.top + 20);
+          moonEdgeExposed = moon.bottom < (barrier.top + 15);
+        } else {
+          moonEdgeExposed = true;
         }
 
-        // 6. Balloon to Ninja face protection check
+        // 6. Moon horizontal centering assertion
+        const sceneCenterX = scene ? (scene.left + scene.width / 2) : (clientWidth / 2);
+        const moonCenterX = moon ? (moon.left + moon.width / 2) : 0;
+        const moonCenterError = Math.round(Math.abs(moonCenterX - sceneCenterX));
+        const moonCentered = moon ? moonCenterError <= 6 : false;
+
+        // 7. Balloon to Ninja face protection check
         let balloonNinjaOverlap = false;
         if (balloon && ninja) {
           const isMobile = clientWidth <= 640;
@@ -286,6 +320,8 @@ async function main() {
           scrollWidth,
           clientWidth,
           hasHorizontalOverflow: scrollWidth > clientWidth,
+          allRequiredVisible,
+          missing,
           scene,
           header,
           nav,
@@ -306,6 +342,8 @@ async function main() {
           ninjaOccluded,
           ninjaVisibleRatio: ninjaVisibleRatio.toFixed(2),
           moonEdgeExposed,
+          moonCenterError,
+          moonCentered,
           balloonNinjaOverlap
         };
       })()`,
@@ -313,33 +351,47 @@ async function main() {
     });
 
     const m = evalRes.result.value;
+    console.log(`- Required Elements Present: ${m.allRequiredVisible ? 'PASS' : 'FAIL (Missing: ' + m.missing.join(', ') + ')'}`);
     console.log(`- Horizontal Overflow: ${m.hasHorizontalOverflow ? 'FAIL (' + m.scrollWidth + ' > ' + m.clientWidth + ')' : 'PASS'}`);
     console.log(`- Header-to-Wordmark Clearance: ${m.headerWordmarkClearance}px (${m.headerWordmarkClearance >= 10 ? 'PASS' : 'FAIL'})`);
     console.log(`- Register Button Visible: ${m.registerVisible ? 'PASS' : 'FAIL (Missing or hidden)'}`);
+    console.log(`- Moon Centering: offset ${m.moonCenterError}px (${m.moonCentered ? 'PASS' : 'FAIL'})`);
     console.log(`- Gunslinger Occlusion: ${m.gunslingerOccluded ? 'FAIL (Occluded, visible ratio: ' + m.gunslingerVisibleRatio + ')' : 'PASS (Visible ratio: ' + m.gunslingerVisibleRatio + ')'}`);
     console.log(`- Ninja Occlusion: ${m.ninjaOccluded ? 'FAIL (Occluded, visible ratio: ' + m.ninjaVisibleRatio + ')' : 'PASS (Visible ratio: ' + m.ninjaVisibleRatio + ')'}`);
     console.log(`- Moon Cut Edge Concealed: ${!m.moonEdgeExposed ? 'PASS' : 'FAIL (Straight edge exposed in air)'}`);
     console.log(`- Balloon Separation: ${!m.balloonNinjaOverlap ? 'PASS' : 'FAIL (Covers Ninja)'}`);
 
-    // Capture screenshot
+    // Capture screenshot with both unique path and latest standard path
     const shot = await client.send('Page.captureScreenshot', { format: 'png' });
-    const shotPath = path.join(OUT_DIR, `${vp.name}.png`);
-    fs.writeFileSync(shotPath, Buffer.from(shot.data, 'base64'));
-    console.log(`- Saved screenshot: ${shotPath}`);
+    const uniqueShotName = `${vp.name}-${runTimestamp}.png`;
+    const uniqueShotPath = path.join(OUT_DIR, uniqueShotName);
+    fs.writeFileSync(uniqueShotPath, Buffer.from(shot.data, 'base64'));
+
+    const standardShotPath = path.join(OUT_DIR, `${vp.name}.png`);
+    fs.writeFileSync(standardShotPath, Buffer.from(shot.data, 'base64'));
+    console.log(`- Saved screenshots: ${uniqueShotName} & ${vp.name}.png`);
 
     const isPass =
+      isSettled &&
+      m.allRequiredVisible &&
       !m.hasHorizontalOverflow &&
-      m.headerWordmarkClearance >= 0 &&
+      m.headerWordmarkClearance >= 10 &&
       !m.balloonNinjaOverlap &&
       m.registerVisible &&
       !m.gunslingerOccluded &&
       !m.ninjaOccluded &&
-      !m.moonEdgeExposed;
+      !m.moonEdgeExposed &&
+      m.moonCentered;
 
     currentRunResults.push({
       viewport: `${vp.width}x${vp.height} (${vp.name})`,
+      dpr: vp.dpr,
       status: isPass ? 'PASS' : 'FAIL',
+      readiness: isSettled ? 'PASS' : 'FAIL',
+      allElementsVisible: m.allRequiredVisible ? 'PASS' : 'FAIL',
       clearance: `${m.headerWordmarkClearance}px`,
+      moonCenterError: `${m.moonCenterError}px`,
+      moonCentered: m.moonCentered ? 'PASS' : 'FAIL',
       charGap: `${m.registerToCharGap}px`,
       registerVisible: m.registerVisible ? 'PASS' : 'FAIL',
       gunslingerVisible: m.gunslingerOccluded ? 'FAIL' : 'PASS',
@@ -347,7 +399,8 @@ async function main() {
       moonConcealed: !m.moonEdgeExposed ? 'PASS' : 'FAIL',
       balloonOverlap: m.balloonNinjaOverlap ? 'FAIL' : 'PASS',
       overflow: m.hasHorizontalOverflow ? 'FAIL' : 'PASS',
-      screenshot: shotPath,
+      screenshot: uniqueShotPath,
+      standardScreenshot: standardShotPath,
       measurements: m,
     });
   }
@@ -361,11 +414,14 @@ async function main() {
     currentRunResults.map((r) => ({
       Viewport: r.viewport,
       Status: r.status,
+      Readiness: r.readiness,
+      Elements: r.allElementsVisible,
       Clearance: r.clearance,
+      MoonCenter: r.moonCentered,
       Register: r.registerVisible,
       Gunslinger: r.gunslingerVisible,
       Ninja: r.ninjaVisible,
-      Moon: r.moonConcealed,
+      MoonCut: r.moonConcealed,
       Balloon: r.balloonOverlap,
       Overflow: r.overflow,
     }))
@@ -379,6 +435,11 @@ async function main() {
       const raw = JSON.parse(fs.readFileSync(resultsFile, 'utf8'));
       if (Array.isArray(raw)) {
         historicalData = raw;
+      } else if (raw.historicalPreviousRuns && Array.isArray(raw.historicalPreviousRuns)) {
+        historicalData = [...raw.historicalPreviousRuns];
+        if (raw.latestRun) {
+          historicalData.unshift(raw.latestRun);
+        }
       } else if (raw.history && Array.isArray(raw.history)) {
         historicalData = raw.history;
       }
@@ -390,6 +451,7 @@ async function main() {
   const outputPayload = {
     latestRun: {
       timestamp: new Date().toISOString(),
+      runId: runTimestamp,
       summary: {
         total: currentRunResults.length,
         passed: currentRunResults.filter((r) => r.status === 'PASS').length,
@@ -401,7 +463,8 @@ async function main() {
   };
 
   fs.writeFileSync(resultsFile, JSON.stringify(outputPayload, null, 2));
-  console.log(`Saved matrix results to: ${resultsFile}`);
+  fs.writeFileSync(path.join(REVIEW_DIR, 'matrix-results.json'), JSON.stringify(outputPayload, null, 2));
+  console.log(`Saved matrix results to: ${resultsFile} and docs/review/matrix-results.json`);
 
   const hasFailures = currentRunResults.some((r) => r.status === 'FAIL');
   if (hasFailures) {

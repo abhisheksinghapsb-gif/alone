@@ -55,6 +55,7 @@
    1. Title Banner
    -------------------------------------------------------------------------- */
 .prizePoolBannerWrapper {
+  width: min(100%, 520px);
   margin-bottom: 40px;
   text-align: center;
   position: relative;
@@ -64,6 +65,7 @@
   display: block;
   max-width: 520px;
   width: 100%;
+  aspect-ratio: 527 / 116;
   height: auto;
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.65));
   user-select: none;
@@ -130,7 +132,7 @@
 .stageSurfaceBody {
   position: relative;
   width: 100%;
-  min-height: 420px;
+  min-height: 445px;
   border-bottom-left-radius: 14px;
   border-bottom-right-radius: 14px;
   overflow: visible;
@@ -822,6 +824,7 @@
   display: block;
   width: 100%;
   max-width: 260px;
+  aspect-ratio: 265 / 315;
   height: auto;
   user-select: none;
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));

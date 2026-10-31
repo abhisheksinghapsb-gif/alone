@@ -112,6 +112,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
     <button
       ref={cardRef}
       id={`sponsor-slot-${slot.id}`}
+      data-sponsor-card
       type="button"
       role="button"
       aria-pressed={isSelected}

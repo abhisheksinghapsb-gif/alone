@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -18,41 +18,67 @@ export const useSponsorsMotion = ({
   motionPaused,
 }: UseSponsorsMotionProps) => {
   const idleTweensRef = useRef<gsap.core.Tween[]>([]);
+  const mainEntranceTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const motionPausedRef = useRef<boolean>(motionPaused);
   motionPausedRef.current = motionPaused;
   const isSectionActiveRef = useRef<boolean>(false);
+  const hasEnteredRef = useRef<boolean>(false);
+
+  const isReducedMotion = useCallback(() => {
+    return (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  }, []);
+
+  const setRestingStyles = useCallback(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const cards = section.querySelectorAll('[data-sponsor-card], button[id^="sponsor-slot-"]');
+    gsap.set(
+      [
+        '#sponsors-heading-group',
+        '#past-sponsors-panel',
+        '#sponsor-board-caption',
+        '#sponsor-spike-character',
+        ...Array.from(cards),
+      ],
+      { opacity: 1, x: 0, y: 0, scale: 1, clearProps: 'transform,opacity' }
+    );
+  }, [sectionRef]);
+
+  const reconcileIdles = useCallback(() => {
+    const shouldPlay =
+      isSectionActiveRef.current &&
+      !document.hidden &&
+      !motionPausedRef.current &&
+      !isReducedMotion();
+
+    if (shouldPlay) {
+      idleTweensRef.current.forEach((t) => t.play());
+    } else {
+      idleTweensRef.current.forEach((t) => t.pause());
+    }
+  }, [isReducedMotion]);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion) {
-      gsap.set(
-        [
-          '#sponsors-heading-group',
-          '#past-sponsors-panel',
-          '.sponsorSlotHitTarget',
-          '#sponsor-board-caption',
-          '#sponsor-spike-character',
-        ],
-        { opacity: 1, x: 0, y: 0, scale: 1 }
-      );
-      return;
+    if (isReducedMotion() || motionPausedRef.current) {
+      setRestingStyles();
     }
 
     const ctx = gsap.context(() => {
-      // ── 1. Slower Coordinated Entrance (~1.8–2.0s sequence) ──
+      // ── 1. Restored Six-Card & Panel Entrance Timeline from be0692a ──
       const mainTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-          toggleActions: 'play reverse play reverse',
+        paused: true,
+        defaults: { ease: 'power2.out' },
+        onComplete: () => {
+          hasEnteredRef.current = true;
         },
       });
+      mainEntranceTimelineRef.current = mainTl;
 
       // 1. Heading settles from small upward offset (0.0s – 0.65s)
       mainTl.fromTo(
@@ -62,129 +88,182 @@ export const useSponsorsMotion = ({
         0
       );
 
-      // 2. Main Sponsor Board Panel emerges (0.25s – 1.05s)
+      // 2. Past Sponsors panel settles from slight left offset (0.2s – 0.9s)
       mainTl.fromTo(
         '#past-sponsors-panel',
-        { y: 24, opacity: 0, scale: 0.98 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' },
-        0.25
+        { x: -18, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' },
+        0.2
       );
 
-      // 3. Grid of Sponsor Slots cascades gently (0.5s – 1.4s)
-      const slotCards = section.querySelectorAll('.sponsorSlotHitTarget');
+      // 3. Six-card sponsor board enters with a restrained card stagger (0.35s – 1.3s)
+      const slotCards = section.querySelectorAll<HTMLElement>(
+        '[data-sponsor-card], button[id^="sponsor-slot-"]'
+      );
+      if (slotCards.length !== 6) {
+        console.warn(`Expected 6 sponsor cards, found ${slotCards.length}`);
+      }
+
       if (slotCards.length > 0) {
         mainTl.fromTo(
           slotCards,
-          { opacity: 0, y: 16, scale: 0.95 },
+          { y: 16, opacity: 0 },
           {
-            opacity: 1,
             y: 0,
-            scale: 1,
+            opacity: 1,
             duration: 0.55,
             stagger: 0.08,
-            ease: 'back.out(1.2)',
+            ease: 'power2.out',
           },
-          0.5
+          0.35
         );
       }
 
-      // 4. Floating dynamic caption below board (0.9s – 1.5s)
+      // 4. Caption bar settles (0.65s – 1.2s)
       mainTl.fromTo(
         '#sponsor-board-caption',
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-        0.9
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' },
+        0.65
       );
 
-      // 5. Spike character slides in from bottom-right (1.0s – 1.85s)
+      // 5. Mascot settles smoothly into its reserved lower-right corner (0.8s – 1.4s)
       mainTl.fromTo(
         '#sponsor-spike-character',
-        { opacity: 0, x: 28, y: 18, scale: 0.94 },
-        {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          scale: 1,
-          duration: 0.85,
-          ease: 'power2.out',
-        },
-        1.0
+        { y: 18, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' },
+        0.8
       );
 
-      // ── 2. Idle Character Animation (Dedicated Idle Wrapper, ~3px bounce) ──
-      const spikeIdle = section.querySelector('#spike-idle-wrap');
-      if (spikeIdle) {
-        const t = gsap.to(spikeIdle, {
-          y: -4,
-          duration: 2.4,
+      // Entrance ScrollTrigger: triggers once on entering viewport
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          hasEnteredRef.current = true;
+          if (!motionPausedRef.current && !isReducedMotion()) {
+            mainTl.play();
+          } else {
+            mainTl.progress(1);
+            setRestingStyles();
+          }
+        },
+      });
+
+      // ── 2. Restored Restrained Idle Motion (Crown, Chest, Mascot) from be0692a ──
+      // Created paused; only played when section is active and motion allowed
+      const crownEl = section.querySelector('[class*="crownIdleWrap"], #crown-idle-wrap');
+      const chestEl = section.querySelector('[class*="chestIdleWrap"], #chest-idle-wrap');
+      const spikeEl = section.querySelector('[class*="spikeIdleWrap"], #spike-idle-wrap');
+
+      const tweens: gsap.core.Tween[] = [];
+
+      if (crownEl) {
+        const crownIdle = gsap.to(crownEl, {
+          y: -2.5,
+          duration: 6.5,
+          ease: 'sine.inOut',
           repeat: -1,
           yoyo: true,
-          ease: 'sine.inOut',
+          paused: true,
         });
-        if (motionPausedRef.current) t.pause();
-        idleTweensRef.current.push(t);
+        tweens.push(crownIdle);
       }
 
-      // Suspend idle loops when section is offscreen
+      if (chestEl) {
+        const chestIdle = gsap.to(chestEl, {
+          y: -3,
+          duration: 8.2,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+          paused: true,
+        });
+        tweens.push(chestIdle);
+      }
+
+      if (spikeEl) {
+        const mascotIdle = gsap.to(spikeEl, {
+          y: -2.5,
+          duration: 7.4,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+          paused: true,
+        });
+        tweens.push(mascotIdle);
+      }
+
+      idleTweensRef.current = tweens;
+
+      // Section intersection observer: suspend idle loops when offscreen
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom',
         end: 'bottom top',
         onEnter: () => {
           isSectionActiveRef.current = true;
-          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          if (!motionPausedRef.current && !document.hidden && !isReduced) {
-            idleTweensRef.current.forEach((t) => t.play());
-          }
+          reconcileIdles();
         },
         onLeave: () => {
           isSectionActiveRef.current = false;
-          idleTweensRef.current.forEach((t) => t.pause());
+          reconcileIdles();
         },
         onEnterBack: () => {
           isSectionActiveRef.current = true;
-          const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          if (!motionPausedRef.current && !document.hidden && !isReduced) {
-            idleTweensRef.current.forEach((t) => t.play());
-          }
+          reconcileIdles();
         },
         onLeaveBack: () => {
           isSectionActiveRef.current = false;
-          idleTweensRef.current.forEach((t) => t.pause());
+          reconcileIdles();
         },
       });
+
+      // Initial reconciliation
+      reconcileIdles();
     }, sectionRef);
 
     // Pause when document is hidden (tab switch)
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        idleTweensRef.current.forEach((t) => t.pause());
-      } else {
-        const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!motionPausedRef.current && !isReduced && isSectionActiveRef.current) {
-          idleTweensRef.current.forEach((t) => t.resume());
-        }
-      }
+      reconcileIdles();
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Live OS reduced motion listener
+    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const handleMotionPreferenceChange = () => {
+      if (isReducedMotion()) {
+        if (mainEntranceTimelineRef.current) {
+          mainEntranceTimelineRef.current.progress(1);
+        }
+        setRestingStyles();
+      }
+      reconcileIdles();
+    };
+    mql?.addEventListener('change', handleMotionPreferenceChange);
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      mql?.removeEventListener('change', handleMotionPreferenceChange);
       ctx.revert();
       idleTweensRef.current.forEach((t) => t.kill());
       idleTweensRef.current = [];
+      mainEntranceTimelineRef.current = null;
     };
-  }, [sectionRef]);
+  }, [sectionRef, isReducedMotion, reconcileIdles, setRestingStyles]);
 
-  // Handle runtime pause toggle without re-triggering entrance sequence
+  // Handle runtime pause toggle without replaying completed entrances
   useEffect(() => {
     if (motionPaused) {
-      idleTweensRef.current.forEach((t) => t.pause());
-    } else {
-      const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (isSectionActiveRef.current && !document.hidden && !isReduced) {
-        idleTweensRef.current.forEach((t) => t.resume());
+      if (mainEntranceTimelineRef.current && !hasEnteredRef.current) {
+        // Paused before entering or mid-entrance: jump to complete resting state
+        mainEntranceTimelineRef.current.progress(1);
       }
+      setRestingStyles();
+      reconcileIdles();
+    } else {
+      reconcileIdles();
     }
-  }, [motionPaused]);
+  }, [motionPaused, setRestingStyles, reconcileIdles]);
 };

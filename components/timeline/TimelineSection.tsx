@@ -46,6 +46,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
   const [railBounds, setRailBounds] = useState<{ top: number; height: number }>({ top: 36, height: 1200 });
 
   const currentActiveIndexRef = useRef<number>(0);
+  const currentProgressRef = useRef<number>(0);
   const railBoundsRef = useRef<{ top: number; height: number }>({ top: 36, height: 1200 });
   const nodeCentersRef = useRef<number[]>([]);
 
@@ -60,6 +61,16 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
     if (progressLineRef.current) {
       progressLineRef.current.style.transform = `scaleY(${Math.max(0.04, clampedProgress)})`;
     }
+  }, []);
+
+  // Compute exact measured badge progress along rail
+  const getBadgeProgress = useCallback((index: number) => {
+    const centers = nodeCentersRef.current;
+    const bounds = railBoundsRef.current;
+    if (centers.length > index && bounds.height > 0) {
+      return Math.max(0, Math.min(1, (centers[index] - bounds.top) / bounds.height));
+    }
+    return index / 3;
   }, []);
 
   // Recalculate rail geometry directly between first and last milestone badge button centers
@@ -94,9 +105,10 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
       return r.top + r.height / 2 - listRect.top;
     });
 
-    // Refresh marker position with current active stage
-    updateMarkerAndProgress(currentActiveIndexRef.current / 3);
-  }, [updateMarkerAndProgress]);
+    // Refresh marker position preserving continuous reading position or measured badge placement
+    const currentProg = currentProgressRef.current > 0 ? currentProgressRef.current : getBadgeProgress(currentActiveIndexRef.current);
+    updateMarkerAndProgress(currentProg);
+  }, [updateMarkerAndProgress, getBadgeProgress]);
 
   useEffect(() => {
     measureRailGeometry();
@@ -154,8 +166,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
     const isMotionDisabled = motionPaused || prefersReduced;
 
     if (isMotionDisabled) {
-      updateMarkerAndProgress(currentActiveIndexRef.current / 3);
-      // Reduced motion: ensure all chapters and elements are displayed statically at final layout
+      // Reduced motion / paused: ensure all chapters and elements are displayed statically at final layout
       revealRefs.current.forEach((revealEl) => {
         if (revealEl) gsap.set(revealEl, { y: 0, opacity: 1 });
       });
@@ -165,85 +176,88 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
       titlePlateRefs.current.forEach((titleEl) => {
         if (titleEl) gsap.set(titleEl, { y: 0 });
       });
-      return;
     }
 
     const ctx = gsap.context(() => {
-      // 1. Reversible Scrubbed Reveals for each Checkpoint Chapter
-      revealRefs.current.forEach((revealEl, idx) => {
-        const rowEl = rowRefs.current[idx];
-        const illusEl = illustrationRefs.current[idx];
-        const titleEl = titlePlateRefs.current[idx];
-        if (!revealEl || !rowEl) return;
+      // 1. Reversible Scrubbed Reveals for each Checkpoint Chapter (active only when motion enabled)
+      if (!isMotionDisabled) {
+        revealRefs.current.forEach((revealEl, idx) => {
+          const rowEl = rowRefs.current[idx];
+          const illusEl = illustrationRefs.current[idx];
+          const titleEl = titlePlateRefs.current[idx];
+          if (!revealEl || !rowEl) return;
 
-        // Outer chapter reveal: settles 28px with opacity
-        gsap.fromTo(
-          revealEl,
-          { y: 28, opacity: 0.75 },
-          {
-            y: 0,
-            opacity: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: rowEl,
-              start: 'top 92%',
-              end: 'top 65%',
-              scrub: 0.4,
-            },
-          }
-        );
-
-        // Foreground illustration moves independently 32px
-        if (illusEl) {
+          // Outer chapter reveal: settles 28px with opacity
           gsap.fromTo(
-            illusEl,
-            { y: 32 },
+            revealEl,
+            { y: 28, opacity: 0.75 },
             {
               y: 0,
+              opacity: 1,
               ease: 'none',
               scrollTrigger: {
                 trigger: rowEl,
-                start: 'top 94%',
-                end: 'top 62%',
+                start: 'top 92%',
+                end: 'top 65%',
                 scrub: 0.4,
               },
             }
           );
-        }
 
-        // Title plate settles 14px
-        if (titleEl) {
-          gsap.fromTo(
-            titleEl,
-            { y: 14 },
-            {
-              y: 0,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: rowEl,
-                start: 'top 94%',
-                end: 'top 68%',
-                scrub: 0.35,
-              },
-            }
-          );
-        }
-      });
+          // Foreground illustration moves independently 32px
+          if (illusEl) {
+            gsap.fromTo(
+              illusEl,
+              { y: 32 },
+              {
+                y: 0,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: rowEl,
+                  start: 'top 94%',
+                  end: 'top 62%',
+                  scrub: 0.4,
+                },
+              }
+            );
+          }
+
+          // Title plate settles 14px
+          if (titleEl) {
+            gsap.fromTo(
+              titleEl,
+              { y: 14 },
+              {
+                y: 0,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: rowEl,
+                  start: 'top 94%',
+                  end: 'top 68%',
+                  scrub: 0.35,
+                },
+              }
+            );
+          }
+        });
+      }
 
       // 2. Master Travelling Marker & Illuminated Rail Scrub Trigger
+      // Keeps reading progress functional even when motion is paused/reduced
       ScrollTrigger.create({
         trigger: listEl,
         start: 'top 70%',
         end: 'bottom 65%',
-        scrub: 0.4,
+        scrub: isMotionDisabled ? false : 0.4,
         onUpdate: (self) => {
           const progress = Math.max(0, Math.min(1, self.progress));
           const currentHeight = railBoundsRef.current.height;
 
           // Single owner GPU transform update
+          currentProgressRef.current = progress;
           updateMarkerAndProgress(progress);
 
-          // Discrete Reading Position using pre-cached milestone geometry (zero layout thrashing)
+          // Discrete Reading Position using pre-cached milestone geometry
           const markerOffsetFromList = railBoundsRef.current.top + progress * currentHeight;
           const centers = nodeCentersRef.current;
           if (centers.length > 0) {
@@ -270,16 +284,18 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
     return () => {
       ctx.revert();
     };
-  }, [motionPaused, railBounds.height, updateMarkerAndProgress]);
+  }, [motionPaused, railBounds.height, updateMarkerAndProgress, getBadgeProgress]);
 
-  // Handle stage selection
+  // Handle stage selection using measured badge position
   const handleStageSelect = useCallback((index: number) => {
     if (soundEnabled) {
       uiAudio.playPressClack();
     }
     currentActiveIndexRef.current = index;
     setActiveStageIndex(index);
-    updateMarkerAndProgress(index / 3);
+    const badgeProg = getBadgeProgress(index);
+    currentProgressRef.current = badgeProg;
+    updateMarkerAndProgress(badgeProg);
 
     const targetRow = rowRefs.current[index];
     if (targetRow) {
@@ -291,7 +307,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
         block: 'center',
       });
     }
-  }, [motionPaused, soundEnabled, updateMarkerAndProgress]);
+  }, [motionPaused, soundEnabled, updateMarkerAndProgress, getBadgeProgress]);
 
   const handleStageHover = useCallback((index: number, hovered: boolean) => {
     if (hovered) {
@@ -490,7 +506,6 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                   <TimelineChapter
                     stage={stage}
                     isActive={isActive}
-                    isHovered={isHovered}
                     onSelect={() => handleStageSelect(index)}
                     onHover={(h) => handleStageHover(index, h)}
                     revealRef={(el) => {

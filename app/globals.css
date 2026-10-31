@@ -72,6 +72,14 @@ html[data-motion-paused="true"] *::after {
   }
 }
 
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: clip;
+}
+
 html,
 body {
   width: 100%;
@@ -81,7 +89,6 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
   user-select: none;
   -webkit-user-select: none;
 }
