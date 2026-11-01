@@ -93,7 +93,28 @@ All approved layout structures, content, section order, artwork, typography, nat
 
 ---
 
-## 6. Deployment Settings (Free Hosting / Vercel / Netlify)
+## 6. Gunfire Geometry & Hydration Blackout Repairs (Final Pass)
+
+1. **Responsive Dual-Gunfire SVG Overlay (`AnimatedCharacter.tsx`, `landing.css`)**:
+   - Replaced separate percentage-positioned emitters and fixed-pixel SVGs with ONE unified responsive `<svg className="coltGunfireSvgOverlay" viewBox="0 0 1532 1200">` that shares the exact coordinate space of `public/assets/genesis/static/gunslinger.webp`.
+   - **Raised Gun Muzzle (Viewer's Left)**: Calibrated directly to illustrated bore center at `translate(332, 284)` with barrel axis pointing upward-right at `rotate(-83deg)` (replacing misaligned `21.2%, 19.0%` rotated at `-115deg`).
+   - **Forward Gun Muzzle (Viewer's Right)**: Calibrated directly to illustrated bore center at `translate(1454, 640)` with barrel axis pointing slightly upward at `rotate(-3.5deg)` (replacing misaligned `98.24%, 52.33%` rotated downward at `+12deg`).
+   - Flash and projectile geometries are drawn in local coordinates around origin `(0, 0)` so they scale proportionally across all responsive screen sizes without fixed-pixel drifting.
+   - Removed floating glow orbs (`.coltLocalGlow`, `.coltLocalGlowLeft`) and orphaned effect styles.
+   - Preserved paired firing from both guns, click, keyboard (`Enter`/`Space`), and touch activation. Added `motionPausedRef` check and pause-cleanup effect.
+
+2. **Elimination of Hero Element Disappearance (`useLandingMotion.ts`)**:
+   - **Root Cause**: During client hydration, `useLandingMotion.ts` ran `gsap.set('#identity-layer', { opacity: 0, y: -24, scale: 0.95 })` and delayed the entrance of `#identity-layer` to Step 7 (~1.3s–2.0s into the timeline). This caused the hero wordmark and CTA—already painted during SSR—to suddenly vanish for 1.5–2 seconds. In addition, `clearProps: 'opacity,transform'` stripped `translateX(-50%)`, causing an abrupt layout jump.
+   - **Fix**: Removed the initial `opacity: 0` hiding. `#identity-layer` maintains visibility from SSR paint with explicit `xPercent: -50`. In the entrance timeline, it settles smoothly at position `0.15s` via `.fromTo('#identity-layer', { opacity: 0.92, y: -8, scale: 0.98, xPercent: -50 }, { opacity: 1, y: 0, scale: 1, xPercent: -50, duration: 0.5, clearProps: 'opacity' })`.
+   - **Verification**: Evaluated with `scripts/test-disappearing-elements.js` in production (`http://localhost:3000`). Opacity remained stable (~1.0) continuously across all samples from 0.1s to 8.0s (0 anomalies detected).
+
+3. **High-Refresh Starfield Pacing Fix (`SpaceEffects.tsx`)**:
+   - **Root Cause**: The 60fps frame limiter previously reset `lastDrawTimeRef.current = currentTime`, discarding the frame remainder on 120Hz/144Hz displays and inducing cyclic phase jitter (oscillating between 48 FPS and 60 FPS).
+   - **Fix**: Retained the elapsed-time remainder via `lastDrawTimeRef.current = currentTime - (elapsedSinceDraw % FRAME_BUDGET_MS)`, and clamped physics delta time to `0.05s` (20 FPS minimum) to avoid catch-up bursts on tab restore.
+
+---
+
+## 7. Deployment Settings (Free Hosting / Vercel / Netlify)
 
 - **Framework**: Next.js (App Router)
 - **Project Root**: `./` (repository root)

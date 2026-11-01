@@ -121,6 +121,8 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
       starsRef.current = initialStars;
     }
 
+    const FRAME_BUDGET_MS = 1000 / 60; // 16.6667ms (60 FPS target)
+
     // Single Animation Frame Loop (cadence-optimized for smooth 60fps)
     const animate = (currentTime: number) => {
       if (!isRunningRef.current) return;
@@ -130,16 +132,21 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
         lastDrawTimeRef.current = currentTime;
       }
 
-      // Throttle canvas rasterization to ~60fps on high-refresh (120Hz/144Hz) displays
-      if (currentTime - lastDrawTimeRef.current < 15.5) {
+      const elapsedSinceDraw = currentTime - lastDrawTimeRef.current;
+
+      // Throttle canvas rasterization to ~60fps on high-refresh (120Hz/144Hz) displays.
+      // Use FRAME_BUDGET_MS - 1.5ms margin to prevent skipping valid 60Hz intervals.
+      if (elapsedSinceDraw < FRAME_BUDGET_MS - 1.5) {
         rafIdRef.current = requestAnimationFrame(animate);
         return;
       }
 
-      // Elapsed time in seconds; clamp to max 0.08s (12.5 FPS) to prevent teleportation after tab restore
-      const dt = Math.min(Math.max((currentTime - lastTimeRef.current) / 1000, 0), 0.08);
+      // Retain elapsed-time remainder rather than continually resetting drawing clock
+      lastDrawTimeRef.current = currentTime - (elapsedSinceDraw % FRAME_BUDGET_MS);
+
+      // Elapsed time in seconds for physics; clamp to max 0.05s (20 FPS) to prevent catch-up bursts
+      const dt = Math.min(Math.max((currentTime - lastTimeRef.current) / 1000, 0), 0.05);
       lastTimeRef.current = currentTime;
-      lastDrawTimeRef.current = currentTime;
 
       ctx.clearRect(0, 0, width, height);
 
@@ -222,6 +229,7 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
     const startLoop = () => {
       if (isRunningRef.current || !isVisible || motionPaused || prefersReducedMotion || document.hidden) return;
       lastTimeRef.current = 0; // Reset last time to prevent delta jump
+      lastDrawTimeRef.current = 0;
       isRunningRef.current = true;
       if (rafIdRef.current === null) {
         rafIdRef.current = requestAnimationFrame(animate);

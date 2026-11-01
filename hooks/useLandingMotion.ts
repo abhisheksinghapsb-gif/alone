@@ -90,7 +90,8 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
       gsap.set('#balloon-layer', { opacity: 0, y: 24 });
       gsap.set('#ringed-planet-layer', { opacity: 0, scale: 0.92 });
       gsap.set('#blue-planet-layer', { opacity: 0, scale: 0.9 });
-      gsap.set('#identity-layer', { opacity: 0, y: -24, scale: 0.95 });
+      // Keep identity layer visible from SSR paint with preserved horizontal centering
+      gsap.set('#identity-layer', { xPercent: -50 });
 
       // Step 1: Base space and arena lighting emerge
       tl.to('#scene-bg', { opacity: 1, duration: 0.55 })
@@ -107,11 +108,12 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
         // Step 6: Grounded cannon and balloon character rise to floor positions
         .to('#cannon-layer', { opacity: 1, y: 0, duration: 0.55 }, '-=0.4')
         .to('#balloon-layer', { opacity: 1, y: 0, duration: 0.55 }, '-=0.45')
-        // Step 7: Genesis wordmark and emblem drop into hero position
-        .to(
+        // Step 7: Genesis wordmark settles into hero position early (eliminates hydration blackout)
+        .fromTo(
           '#identity-layer',
-          { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.15)', clearProps: 'opacity,transform' },
-          '-=0.35'
+          { opacity: 0.92, y: -8, scale: 0.98, xPercent: -50 },
+          { opacity: 1, y: 0, scale: 1, xPercent: -50, duration: 0.5, ease: 'power2.out', clearProps: 'opacity' },
+          0.15
         )
         // Step 8: Top navigation controls arrive with 60ms stagger
         .fromTo(

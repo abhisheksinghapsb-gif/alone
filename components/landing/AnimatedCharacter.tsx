@@ -22,18 +22,21 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
   const blinkIntervalRef = useRef<number | null>(null);
   const blinkCloseTimerRef = useRef<number | null>(null);
   const isUnmountedRef = useRef<boolean>(false);
+  const motionPausedRef = useRef<boolean>(motionPaused);
+
+  useEffect(() => {
+    motionPausedRef.current = motionPaused;
+  }, [motionPaused]);
 
   // --- Colt (Gunslinger) Shooting State ---
   const [muzzleKey, setMuzzleKey] = useState<number>(0);
   const [showMuzzleFx, setShowMuzzleFx] = useState<boolean>(false);
-  const [showLocalGlow, setShowLocalGlow] = useState<boolean>(false);
-  const [projectiles, setProjectiles] = useState<{ id: number }[]>([]);
+    const [projectiles, setProjectiles] = useState<{ id: number }[]>([]);
   const nextProjectileIdRef = useRef<number>(0);
   const projectileTimersRef = useRef<Map<number, number>>(new Map());
   const recoilRef = useRef<HTMLDivElement | null>(null);
 
   const muzzleTimerRef = useRef<number | null>(null);
-  const glowTimerRef = useRef<number | null>(null);
 
   // --- Hover States ---
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -162,11 +165,7 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
       window.clearTimeout(muzzleTimerRef.current);
       muzzleTimerRef.current = null;
     }
-    if (glowTimerRef.current !== null) {
-      window.clearTimeout(glowTimerRef.current);
-      glowTimerRef.current = null;
-    }
-    projectileTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+        projectileTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     projectileTimersRef.current.clear();
   }, []);
 
@@ -175,9 +174,17 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
       clearShotTimers();
     };
   }, [clearShotTimers]);
+  useEffect(() => {
+    if (motionPaused) {
+      clearShotTimers();
+      setShowMuzzleFx(false);
+      setProjectiles([]);
+    }
+  }, [motionPaused, clearShotTimers]);
+
 
   const triggerShot = useCallback(() => {
-    if (isUnmountedRef.current) return;
+    if (isUnmountedRef.current || motionPausedRef.current) return;
 
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
@@ -190,7 +197,6 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
       // 1. Fresh muzzle flash and local weapon glow immediately
       setMuzzleKey((k) => k + 1);
       setShowMuzzleFx(true);
-      setShowLocalGlow(true);
 
       if (muzzleTimerRef.current !== null) {
         window.clearTimeout(muzzleTimerRef.current);
@@ -200,13 +206,6 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
         muzzleTimerRef.current = null;
       }, 75);
 
-      if (glowTimerRef.current !== null) {
-        window.clearTimeout(glowTimerRef.current);
-      }
-      glowTimerRef.current = window.setTimeout(() => {
-        if (!isUnmountedRef.current) setShowLocalGlow(false);
-        glowTimerRef.current = null;
-      }, 110);
 
       // 2. New short projectile in bounded pool (up to 4 simultaneous)
       const pId = nextProjectileIdRef.current++;
@@ -350,156 +349,145 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
               draggable={false}
             />
 
-            {/* Part 2: Local Weapon Glow Response (Right Weapon: 88%, 52.5% | Left Weapon: 12%, 57.5%) */}
-            {showLocalGlow && (
-              <>
-                <div
-                  key={`colt-glow-${muzzleKey}`}
-                  aria-hidden="true"
-                  className="coltLocalGlow"
-                  style={{
-                    position: 'absolute',
-                    left: '88%',
-                    top: '52.5%',
-                    width: '130px',
-                    height: '130px',
-                    transform: 'translate(-50%, -50%)',
-                    background:
-                      'radial-gradient(circle, rgba(0, 245, 255, 0.42) 0%, rgba(0, 160, 255, 0.16) 45%, transparent 70%)',
-                    borderRadius: '50%',
-                    pointerEvents: 'none',
-                    animation: 'localWeaponGlow 110ms ease-out forwards',
-                    zIndex: 5,
-                  }}
-                />
-                <div
-                  key={`colt-glow-left-${muzzleKey}`}
-                  aria-hidden="true"
-                  className="coltLocalGlowLeft"
-                  style={{
-                    position: 'absolute',
-                    left: '21.2%',
-                    top: '19.0%',
-                    width: '130px',
-                    height: '130px',
-                    transform: 'translate(-50%, -50%)',
-                    background:
-                      'radial-gradient(circle, rgba(0, 245, 255, 0.45) 0%, rgba(0, 160, 255, 0.18) 45%, transparent 70%)',
-                    borderRadius: '50%',
-                    pointerEvents: 'none',
-                    animation: 'localWeaponGlow 110ms ease-out forwards',
-                    zIndex: 5,
-                  }}
-                />
-              </>
-            )}
-
-            {/* Hidden SVG Gradient Definitions for Blaster Effects */}
-            <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
+            {/* Responsive Gunfire SVG Overlay sharing exact 1532 x 1200 artwork space */}
+            <svg
+              className="coltGunfireSvgOverlay"
+              viewBox="0 0 1532 1200"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                pointerEvents: 'none',
+                zIndex: 8,
+                overflow: 'visible',
+              }}
+              aria-hidden="true"
+            >
               <defs>
-                <radialGradient id="coltFlashCore" cx="15%" cy="50%" r="70%">
+                <radialGradient id="coltFlashCoreGrad" cx="30%" cy="50%" r="65%">
                   <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
-                  <stop offset="35%" stopColor="#80FFFF" stopOpacity="0.95" />
-                  <stop offset="70%" stopColor="#00F5FF" stopOpacity="0.8" />
+                  <stop offset="30%" stopColor="#80FFFF" stopOpacity="0.95" />
+                  <stop offset="65%" stopColor="#00F5FF" stopOpacity="0.85" />
                   <stop offset="100%" stopColor="#0066FF" stopOpacity="0" />
                 </radialGradient>
-                <filter id="coltFlashGlow" x="-20%" y="-40%" width="150%" height="180%">
-                  <feGaussianBlur stdDeviation="3.5" result="blur" />
+                <filter id="coltFlashGlowFilter" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="4.5" result="blur" />
                   <feMerge>
                     <feMergeNode in="blur" />
                     <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
-                <linearGradient id="coltSharedStreakGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#00F5FF" stopOpacity="0.2" />
-                  <stop offset="40%" stopColor="#00F5FF" stopOpacity="0.9" />
-                  <stop offset="85%" stopColor="#FFFFFF" stopOpacity="1" />
-                  <stop offset="100%" stopColor="#80FFFF" stopOpacity="0.9" />
+                <linearGradient id="coltProjectileStreakGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#00F5FF" stopOpacity="0.1" />
+                  <stop offset="35%" stopColor="#00F5FF" stopOpacity="0.85" />
+                  <stop offset="80%" stopColor="#FFFFFF" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#80FFFF" stopOpacity="0.95" />
                 </linearGradient>
               </defs>
+
+              {/* Raised Gun Muzzle (Viewer's Left): centered at x:332, y:284, pointing along -83deg */}
+              <g className="coltMuzzleRig raisedGunMuzzle" transform="translate(332, 284) rotate(-83)">
+                {showMuzzleFx && (
+                  <g key={`colt-flash-raised-${muzzleKey}`} className="coltFlashGroup">
+                    {/* Compact directional blue-white muzzle flash attached at local (0, 0) */}
+                    <polygon
+                      points="-8,-24 10,-9 36,-5 58,0 36,5 10,9 -8,24 -2,7 -14,0 -2,-7"
+                      fill="url(#coltFlashCoreGrad)"
+                      filter="url(#coltFlashGlowFilter)"
+                    />
+                    <polygon
+                      points="2,-34 9,-12 16,-28"
+                      fill="#00F5FF"
+                      opacity="0.8"
+                      filter="url(#coltFlashGlowFilter)"
+                    />
+                    <polygon
+                      points="2,34 9,12 16,28"
+                      fill="#00F5FF"
+                      opacity="0.8"
+                      filter="url(#coltFlashGlowFilter)"
+                    />
+                    <ellipse cx="6" cy="0" rx="14" ry="7" fill="#FFFFFF" />
+                  </g>
+                )}
+
+                {projectiles.map((p) => (
+                  <g key={`colt-proj-raised-${p.id}`} className="coltProjectileGroup">
+                    {/* Short projectile traveling outward along barrel */}
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="95"
+                      y2="0"
+                      stroke="url(#coltProjectileStreakGrad)"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="24"
+                      y1="0"
+                      x2="92"
+                      y2="0"
+                      stroke="#FFFFFF"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+                  </g>
+                ))}
+              </g>
+
+              {/* Forward Gun Muzzle (Viewer's Right): centered at x:1454, y:640, pointing along -3.5deg */}
+              <g className="coltMuzzleRig forwardGunMuzzle" transform="translate(1454, 640) rotate(-3.5)">
+                {showMuzzleFx && (
+                  <g key={`colt-flash-forward-${muzzleKey}`} className="coltFlashGroup">
+                    {/* Compact directional blue-white muzzle flash attached at local (0, 0) */}
+                    <polygon
+                      points="-8,-24 10,-9 36,-5 58,0 36,5 10,9 -8,24 -2,7 -14,0 -2,-7"
+                      fill="url(#coltFlashCoreGrad)"
+                      filter="url(#coltFlashGlowFilter)"
+                    />
+                    <polygon
+                      points="2,-34 9,-12 16,-28"
+                      fill="#00F5FF"
+                      opacity="0.8"
+                      filter="url(#coltFlashGlowFilter)"
+                    />
+                    <polygon
+                      points="2,34 9,12 16,28"
+                      fill="#00F5FF"
+                      opacity="0.8"
+                      filter="url(#coltFlashGlowFilter)"
+                    />
+                    <ellipse cx="6" cy="0" rx="14" ry="7" fill="#FFFFFF" />
+                  </g>
+                )}
+
+                {projectiles.map((p) => (
+                  <g key={`colt-proj-forward-${p.id}`} className="coltProjectileGroup">
+                    {/* Short projectile traveling outward along barrel */}
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="95"
+                      y2="0"
+                      stroke="url(#coltProjectileStreakGrad)"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="24"
+                      y1="0"
+                      x2="92"
+                      y2="0"
+                      stroke="#FFFFFF"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+                  </g>
+                ))}
+              </g>
             </svg>
-
-            {/* ── Left Raised Gun Muzzle Emitter Anchor (Points upward & forward-left at -115deg) ── */}
-            <div
-              className="coltEmitterAnchor"
-              style={{
-                position: 'absolute',
-                left: '21.2%',
-                top: '19.0%',
-                transform: 'rotate(-115deg)',
-                transformOrigin: '0% 50%',
-                pointerEvents: 'none',
-                zIndex: 8,
-              }}
-              aria-hidden="true"
-            >
-              {showMuzzleFx && (
-                <div key={`colt-flash-raised-${muzzleKey}`} className="coltMuzzleFlashChild">
-                  <svg
-                    viewBox="-10 -40 140 80"
-                    style={{ width: '135px', height: '80px', display: 'block', overflow: 'visible' }}
-                  >
-                    <polygon points="6,-32 14,-8 20,-26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
-                    <polygon points="6,32 14,8 20,26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
-                    <polygon points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7" fill="url(#coltFlashCore)" filter="url(#coltFlashGlow)" />
-                    <ellipse cx="14" cy="0" rx="12" ry="6" fill="#FFFFFF" />
-                  </svg>
-                </div>
-              )}
-
-              {projectiles.map((p) => (
-                <div key={`colt-proj-raised-${p.id}`} className="coltProjectileChild">
-                  <svg
-                    viewBox="0 0 120 18"
-                    style={{ width: '120px', height: '18px', display: 'block', overflow: 'visible' }}
-                  >
-                    <line x1="0" y1="9" x2="85" y2="9" stroke="url(#coltSharedStreakGrad)" strokeWidth="5" strokeLinecap="round" />
-                    <line x1="25" y1="9" x2="82" y2="9" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" />
-                  </svg>
-                </div>
-              ))}
-            </div>
-
-            {/* ── Right Forward Gun Muzzle Emitter Anchor (Points forward & down-right at 12deg) ── */}
-            <div
-              className="coltEmitterAnchor"
-              style={{
-                position: 'absolute',
-                left: '98.24%',
-                top: '52.33%',
-                transform: 'rotate(12deg)',
-                transformOrigin: '0% 50%',
-                pointerEvents: 'none',
-                zIndex: 8,
-              }}
-              aria-hidden="true"
-            >
-              {showMuzzleFx && (
-                <div key={`colt-flash-forward-${muzzleKey}`} className="coltMuzzleFlashChild">
-                  <svg
-                    viewBox="-10 -40 140 80"
-                    style={{ width: '135px', height: '80px', display: 'block', overflow: 'visible' }}
-                  >
-                    <polygon points="6,-32 14,-8 20,-26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
-                    <polygon points="6,32 14,8 20,26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
-                    <polygon points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7" fill="url(#coltFlashCore)" filter="url(#coltFlashGlow)" />
-                    <ellipse cx="14" cy="0" rx="12" ry="6" fill="#FFFFFF" />
-                  </svg>
-                </div>
-              )}
-
-              {projectiles.map((p) => (
-                <div key={`colt-proj-forward-${p.id}`} className="coltProjectileChild">
-                  <svg
-                    viewBox="0 0 120 18"
-                    style={{ width: '120px', height: '18px', display: 'block', overflow: 'visible' }}
-                  >
-                    <line x1="0" y1="9" x2="85" y2="9" stroke="url(#coltSharedStreakGrad)" strokeWidth="5" strokeLinecap="round" />
-                    <line x1="25" y1="9" x2="82" y2="9" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" />
-                  </svg>
-                </div>
-              ))}
-            </div>
 
             {/* Semantic Accessible Button Over Gunslinger Hit Target */}
             <button

@@ -183,7 +183,7 @@
       "title": "Prize Pool Scroll-Driven Entrance & Reverse Reversal",
       "passed": true,
       "opacityAtView": "1",
-      "opacityOnReverse": "0.0984"
+      "opacityOnReverse": "0.1062"
     },
     "req18": {
       "title": "Character Blink Layers In DOM (Visual Display Suppressed in Approved Baseline CSS)",
@@ -1177,7 +1177,7 @@
       "tscPassed": true,
       "tscOutput": "PASSED (0 errors)",
       "buildExists": true,
-      "buildId": "d9P5k7FpwqLHgYjRIpevR",
+      "buildId": "GhfbjlezsxfuxdPa0s4Mo",
       "previewUrl": "http://localhost:3000"
     }
   },
