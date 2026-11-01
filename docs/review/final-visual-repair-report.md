@@ -37,6 +37,7 @@ This report documents the targeted visual, interactive, and structural repairs i
 - **Issue**: A large dead black void (~300px) separated the cyan arena floor and the About section, while the countdown timer lacked visibility resumption handling, suffered from digit layout jitter, and spammed screen readers every second.
 - **Root Cause & Repair**:
   - Applied negative margins to `.timerSectionWrap`: `margin-top: clamp(-84px, -6vw, -52px); margin-bottom: clamp(-42px, -3vw, -24px);`, bridging the timer card across the arena edge without occluding `#primary-register-btn`.
+  - Configured `z-index: 50;` on `.timerSectionWrap` (above the `.barrierLayer` arena floor at `z-index: 40`), ensuring the entire timer card, top chevron button, and header ribbon render in front of the floor without clipping.
   - Compacted the `.arenaSectionDivider` height across viewports: `56px` (desktop), `50px` (laptop), `46px` (landscape tablet), `44px` (portrait tablet), `40px` (mobile).
   - Corrected target timestamp to `2027-03-05T09:00:00+05:30`.
   - Added expiration clamping (`Math.max(0, TARGET_TIMESTAMP - now)`).
@@ -74,7 +75,7 @@ This report documents the targeted visual, interactive, and structural repairs i
 
 ## 3. Automated Verification Results (27/27 Passed)
 
-Executed via `node scripts/verify-all-genesis-requirements.js` against running production build (`okU1sbB_ttpYdFATJYFpN`):
+Executed via `node scripts/verify-all-genesis-requirements.js` against running production build (`g-YGgz0X7zPocJ8PSgjIr`):
 
 | # | Requirement / Check | Status | Key Measurement Evidence |
 |---|---------------------|--------|--------------------------|
@@ -104,7 +105,7 @@ Executed via `node scripts/verify-all-genesis-requirements.js` against running p
 | REQ24 | Social Footer Real Anchors & Tap Targets | **PASSED** | Real `<a>` tags, target `_blank`, tap heights >= 44px |
 | REQ25 | 12-Viewport Responsive Matrix | **PASSED** | 12 viewports tested: zero horizontal overflow, ancestor bounds valid |
 | REQ26 | User-Pause Control Dynamic Behavior | **PASSED** | Pause halts animations, resume restarts them seamlessly |
-| REQ27 | Type Check & Production Build | **PASSED** | `tsc --noEmit` 0 errors, Turbopack production build verified (`okU1sbB_ttpYdFATJYFpN`) |
+| REQ27 | Type Check & Production Build | **PASSED** | `tsc --noEmit` 0 errors, Turbopack production build verified (`g-YGgz0X7zPocJ8PSgjIr`) |
 
 ---
 
