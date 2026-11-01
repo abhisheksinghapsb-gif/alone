@@ -1,54 +1,65 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './BrawlStatsTimer.module.css';
 
 export interface BrawlStatsTimerProps {
   motionPaused?: boolean;
 }
 
-export const BrawlStatsTimer: React.FC<BrawlStatsTimerProps> = ({ motionPaused = false }) => {
-  // Target: Genesis 6 Event Start Date: March 5, 2027 09:00:00 IST
-  const targetDate = new Date('2027-03-05T09:00:00+05:30').getTime();
+// Target: Genesis 6 Event Start Date: March 5, 2027 09:00:00 IST (+05:30)
+const TARGET_TIMESTAMP = new Date('2027-03-05T09:00:00+05:30').getTime();
 
+const calculateTimeLeft = () => {
+  const now = Date.now();
+  const diff = Math.max(0, TARGET_TIMESTAMP - now);
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  return { days, hours, minutes, seconds, isExpired: diff <= 0 };
+};
+
+export const BrawlStatsTimer: React.FC<BrawlStatsTimerProps> = ({ motionPaused = false }) => {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
     minutes: number;
     seconds: number;
+    isExpired: boolean;
   }>({
-    days: 97,
-    hours: 11,
-    minutes: 47,
-    seconds: 26,
+    days: 123,
+    hours: 14,
+    minutes: 0,
+    seconds: 0,
+    isExpired: false,
   });
 
-  useEffect(() => {
-    const updateCountdown = () => {
-      const now = Date.now();
-      const diff = targetDate - now;
+  const updateCountdown = useCallback(() => {
+    setTimeLeft(calculateTimeLeft());
+  }, []);
 
-      if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        setTimeLeft({ days, hours, minutes, seconds });
-      } else {
-        // Ticking fallback if past or zero
-        const totalSecs = Math.abs(Math.floor(diff / 1000));
-        const days = Math.floor(totalSecs / 86400) % 100;
-        const hours = Math.floor((totalSecs % 86400) / 3600);
-        const minutes = Math.floor((totalSecs % 3600) / 60);
-        const seconds = totalSecs % 60;
-        setTimeLeft({ days, hours, minutes, seconds });
+  useEffect(() => {
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    const handleResume = () => {
+      if (document.visibilityState === 'visible') {
+        updateCountdown();
       }
     };
 
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, [targetDate]);
+    window.addEventListener('focus', handleResume);
+    document.addEventListener('visibilitychange', handleResume);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleResume);
+      document.removeEventListener('visibilitychange', handleResume);
+    };
+  }, [updateCountdown]);
 
   const handleScrollDown = () => {
     const target = document.getElementById('about') || document.getElementById('about-genesis');
@@ -165,8 +176,14 @@ export const BrawlStatsTimer: React.FC<BrawlStatsTimerProps> = ({ motionPaused =
           </div>
           <div className={styles.statTextCol}>
             <span className={styles.statLabelRed}>STARTS IN</span>
-            <span className={styles.countdownValue} id="live-brawl-countdown">
-              {timeLeft.days}d : {pad(timeLeft.hours)}h : {pad(timeLeft.minutes)}m : {pad(timeLeft.seconds)}s
+            <span
+              className={styles.countdownValue}
+              id="live-brawl-countdown"
+              aria-live="off"
+            >
+              {timeLeft.isExpired
+                ? '00d : 00h : 00m : 00s'
+                : `${timeLeft.days}d : ${pad(timeLeft.hours)}h : ${pad(timeLeft.minutes)}m : ${pad(timeLeft.seconds)}s`}
             </span>
           </div>
         </div>

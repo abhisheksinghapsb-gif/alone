@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { PAST_SPONSORS, SPONSORS_COPY } from '../../data/sponsorsData';
 import styles from './sponsors.module.css';
 
 export interface PastSponsorsPanelProps {
@@ -15,43 +14,67 @@ export const PastSponsorsPanel: React.FC<PastSponsorsPanelProps> = () => {
       className={styles.pastSponsorsPanel}
       aria-label="Past Event Sponsors Archive"
     >
-      {/* Outer Slanted Decorative Frame Border */}
-      <div className={styles.pastPanelFrameBg} aria-hidden="true" />
-
-      {/* Header Plaque */}
-      <div className={styles.pastPanelHeader}>
-        <h3 className={styles.pastPanelTitle}>{SPONSORS_COPY.pastHeading}</h3>
-        {/* Info circle detail matching Figma */}
-        <div className={styles.pastPanelOrnament} title="Past Sponsors" aria-hidden="true">
-          <span className={styles.ornamentText}>i</span>
-        </div>
+      {/* Outer Blue Arcade Cabinet Frame */}
+      <div className={styles.pastCabinetOuterFrame} aria-hidden="true">
+        <img
+          src="/assets/genesis/sponsors/past-sponsors-outer-frame.svg"
+          alt=""
+          className={styles.cabinetFrameSvg}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
-      {/* Content Area containing the two verified past sponsor plates */}
+      {/* Inner Border Artwork & (i) Info Badge */}
+      <div className={styles.pastCabinetInnerBorder} aria-hidden="true">
+        <img
+          src="/assets/genesis/sponsors/past-sponsors-inner-border.svg"
+          alt=""
+          className={styles.cabinetBorderSvg}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      {/* Logos: GameCloud & GameDoora with Authentic Cyan & Amber Glows */}
       <div className={styles.pastPanelBody}>
-        {PAST_SPONSORS.map((sponsor) => (
-          <div
-            key={sponsor.id}
-            id={`past-sponsor-plate-${sponsor.id}`}
-            className={styles.pastLogoPlate}
-            tabIndex={0}
-            role="region"
-            aria-label={sponsor.name}
-          >
-            <div className={styles.logoPlateSurface}>
-              <img
-                src={sponsor.logo}
-                alt={sponsor.alt}
-                width={sponsor.width}
-                height={sponsor.height}
-                className={styles.pastSponsorImg}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-              />
-            </div>
-          </div>
-        ))}
+        <div
+          id="past-sponsor-plate-gamecloud"
+          className={`${styles.pastLogoPlate} ${styles.sponsorGlowGamecloud}`}
+          tabIndex={0}
+          role="region"
+          aria-label="GameCloud Technologies Private Limited"
+        >
+          <img
+            src="/assets/genesis/sponsors/sponsor-logo-gamecloud.svg"
+            alt="GameCloud Technologies Private Limited — Past Sponsor"
+            width={330}
+            height={149}
+            className={styles.pastSponsorImg}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
+
+        <div
+          id="past-sponsor-plate-gamedoora"
+          className={`${styles.pastLogoPlate} ${styles.sponsorGlowGamedoora}`}
+          tabIndex={0}
+          role="region"
+          aria-label="GAMEDOORA"
+        >
+          <img
+            src="/assets/genesis/sponsors/sponsor-logo-gamedoora.svg"
+            alt="GAMEDOORA — Past Sponsor"
+            width={320}
+            height={139}
+            className={styles.pastSponsorImg}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
       </div>
     </aside>
   );

@@ -204,9 +204,9 @@
   position: relative;
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(330px, 365px) minmax(0, 1fr);
-  gap: 28px;
-  align-items: stretch;
+  grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
+  gap: clamp(32px, 3.5vw, 48px);
+  align-items: center;
   box-sizing: border-box;
 }
 
@@ -218,175 +218,106 @@
   min-width: 0;
 }
 
-/* 7. Past Sponsors Panel (Left Archive - Strong Royal-Blue Slanted Game Panel) */
+/* 7. Past Sponsors Panel (Left Archive - Blue Arcade Cabinet Frame) */
 .pastSponsorsPanel {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #1260ec 0%, #105de5 45%, #0d4fc7 100%);
-  border: 3.5px solid #000000;
-  border-radius: 16px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8),
-              inset 0 3px 8px rgba(255, 255, 255, 0.35),
-              inset 0 -4px 12px rgba(0, 0, 0, 0.5);
-  padding: 0 0 28px 0;
-  box-sizing: border-box;
-  overflow: hidden;
-  transform: skewX(-4.2deg);
   width: 100%;
+  max-width: 420px;
+  aspect-ratio: 454 / 682;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
 }
 
-.pastPanelFrameBg {
+.pastCabinetOuterFrame {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
 
-.pastPanelHeader {
-  position: relative;
-  z-index: 2;
+.cabinetFrameSvg {
   width: 100%;
-  background: rgba(10, 26, 107, 0.94);
-  border-bottom: 3px solid #000000;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.7));
 }
 
-.pastPanelTitle {
-  font-family: inherit;
-  font-size: 1.3rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  color: #ffffff;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95);
-  margin: 0;
-  transform: skewX(4.2deg); /* un-skew title text upright */
+.pastCabinetInnerBorder {
+  position: absolute;
+  inset: 3.5%;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.pastPanelOrnament {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #2373ff;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
-  transform: skewX(4.2deg);
-}
-
-.ornamentText {
-  font-size: 0.85rem;
-  font-weight: 900;
-  font-style: italic;
-  color: #ffffff;
-  line-height: 1;
+.cabinetBorderSvg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .pastPanelBody {
   position: relative;
-  z-index: 2;
+  z-index: 3;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 52px; /* Generous breathing room between sponsor plates */
-  padding: 38px 14px;
+  gap: clamp(16px, 2.2vw, 26px);
+  padding-top: 24%;
   box-sizing: border-box;
-  transform: skewX(4.2deg); /* un-skew inner logo plates upright */
 }
 
 .pastLogoPlate {
   position: relative;
-  width: 96%;
-  max-width: 345px;
-  height: 110px;
-  min-height: 110px;
-  background: radial-gradient(ellipse at center, rgba(16, 24, 56, 0.96) 0%, rgba(6, 10, 28, 0.98) 100%);
-  border: 2.5px solid #ff2a4d;
-  border-radius: 20px;
-  padding: 10px 18px;
-  margin: 0;
+  width: 82%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.78),
-              0 0 20px rgba(255, 42, 77, 0.85),
-              0 0 38px rgba(255, 60, 90, 0.48),
-              inset 0 0 16px rgba(255, 42, 77, 0.32);
-  animation: sponsorPlateGlow 3.2s ease-in-out infinite alternate;
-  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-              border-color 220ms ease,
-              box-shadow 220ms ease;
-  outline: none;
-  box-sizing: border-box;
   cursor: pointer;
-  overflow: hidden;
+  outline: none;
 }
 
-@keyframes sponsorPlateGlow {
-  0% {
-    border-color: rgba(255, 42, 77, 0.85);
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.75),
-                0 0 18px rgba(255, 42, 77, 0.75),
-                0 0 34px rgba(255, 60, 90, 0.42),
-                inset 0 0 14px rgba(255, 42, 77, 0.28);
-  }
-  100% {
-    border-color: #ff5e7e;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.82),
-                0 0 28px rgba(255, 66, 102, 1),
-                0 0 48px rgba(255, 42, 77, 0.65),
-                inset 0 0 20px rgba(255, 77, 109, 0.45);
-  }
+.sponsorGlowGamecloud {
+  max-width: 330px;
+  aspect-ratio: 370 / 167;
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.75))
+         drop-shadow(0 0 28px rgba(14, 165, 233, 0.45))
+         drop-shadow(0 6px 14px rgba(0, 0, 0, 0.65));
+  transition: transform 240ms cubic-bezier(0.25, 1, 0.5, 1), filter 240ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.pastLogoPlate:hover {
-  transform: translateY(-4px) scale(1.035);
-  border-color: #ffa3b5;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.88),
-              0 0 32px rgba(255, 42, 77, 1),
-              0 0 58px rgba(255, 77, 109, 0.8),
-              inset 0 0 24px rgba(255, 120, 150, 0.55);
+.sponsorGlowGamecloud:hover,
+.sponsorGlowGamecloud:focus-visible {
+  transform: translateY(-3.5px) scale(1.025);
+  filter: drop-shadow(0 0 22px rgba(56, 189, 248, 0.95))
+         drop-shadow(0 0 42px rgba(14, 165, 233, 0.65))
+         drop-shadow(0 8px 18px rgba(0, 0, 0, 0.8));
 }
 
-.pastLogoPlate:focus-visible {
-  outline: 3px solid #ff7b95;
-  outline-offset: 4px;
-  transform: translateY(-4px) scale(1.035);
-  border-color: #ffa3b5;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.88),
-              0 0 32px rgba(255, 42, 77, 1),
-              0 0 58px rgba(255, 77, 109, 0.8),
-              inset 0 0 24px rgba(255, 120, 150, 0.55);
+.sponsorGlowGamedoora {
+  max-width: 320px;
+  aspect-ratio: 355 / 154;
+  filter: drop-shadow(0 0 14px rgba(249, 115, 22, 0.75))
+         drop-shadow(0 0 28px rgba(234, 88, 12, 0.45))
+         drop-shadow(0 6px 14px rgba(0, 0, 0, 0.65));
+  transition: transform 240ms cubic-bezier(0.25, 1, 0.5, 1), filter 240ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.logoPlateSurface {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+.sponsorGlowGamedoora:hover,
+.sponsorGlowGamedoora:focus-visible {
+  transform: translateY(-3.5px) scale(1.025);
+  filter: drop-shadow(0 0 22px rgba(249, 115, 22, 0.95))
+         drop-shadow(0 0 42px rgba(234, 88, 12, 0.65))
+         drop-shadow(0 8px 18px rgba(0, 0, 0, 0.8));
 }
 
 .pastSponsorImg {
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  max-height: 84px;
-  margin: 0;
+  height: 100%;
   object-fit: contain;
-  display: block;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.65));
 }
 
 /* 8. Six-Slot Sponsor Board (Right) */
@@ -475,7 +406,12 @@
   transform-style: preserve-3d;
 }
 
-.sponsorSlotHitTarget.isHovered:not(.isSelected) .slotVisualWrapper {
+.isFocused {
+  outline: none;
+}
+
+.sponsorSlotHitTarget.isHovered:not(.isSelected) .slotVisualWrapper,
+.sponsorSlotHitTarget.isFocused:not(.isSelected) .slotVisualWrapper {
   transform: translateY(-3px) scale(1.015);
 }
 
@@ -724,30 +660,13 @@
 @media (max-width: 1080px) {
   .sponsorsMainColumns {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 24px;
   }
 
   .pastSponsorsPanel {
     order: 2;
-    transform: none;
-    max-width: 600px;
+    max-width: 380px;
     margin: 0 auto;
-  }
-
-  .pastPanelTitle,
-  .pastPanelOrnament,
-  .pastPanelBody {
-    transform: none;
-  }
-
-  .pastPanelBody {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .pastLogoPlate {
-    flex: 1;
-    min-width: 200px;
   }
 
   .sponsorBoardColumnWrap {
@@ -825,9 +744,7 @@
     flex-direction: column;
   }
 
-  .pastLogoPlate {
-    min-width: 100%;
-  }
+
 
   .sponsorCaptionBar {
     padding: 6px 16px;

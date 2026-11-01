@@ -394,218 +394,112 @@ export const AnimatedCharacter: React.FC<AnimatedCharacterProps> = ({
               </>
             )}
 
-            {/* Part 2: Dual Aligned Muzzle Flashes (Right Gun: 98.24%, 52.33% | Left Gun: 4.11%, 57.42%) */}
-            {showMuzzleFx && (
-              <>
-                {/* Right Gun Muzzle Flash */}
-                <div
-                  key={`colt-flash-${muzzleKey}`}
-                  aria-hidden="true"
-                  className="coltBlasterMuzzleFlash"
-                  style={{
-                    position: 'absolute',
-                    left: '98.24%',
-                    top: '52.33%',
-                    width: '135px',
-                    height: '80px',
-                    transform: 'translate(-8px, -50%) rotate(3deg)',
-                    transformOrigin: '8px 50%',
-                    pointerEvents: 'none',
-                    animation: 'directionalMuzzleFlash 75ms ease-out forwards',
-                    zIndex: 8,
-                  }}
-                >
+            {/* Hidden SVG Gradient Definitions for Blaster Effects */}
+            <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
+              <defs>
+                <radialGradient id="coltFlashCore" cx="15%" cy="50%" r="70%">
+                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                  <stop offset="35%" stopColor="#80FFFF" stopOpacity="0.95" />
+                  <stop offset="70%" stopColor="#00F5FF" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#0066FF" stopOpacity="0" />
+                </radialGradient>
+                <filter id="coltFlashGlow" x="-20%" y="-40%" width="150%" height="180%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <linearGradient id="coltSharedStreakGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#00F5FF" stopOpacity="0.2" />
+                  <stop offset="40%" stopColor="#00F5FF" stopOpacity="0.9" />
+                  <stop offset="85%" stopColor="#FFFFFF" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#80FFFF" stopOpacity="0.9" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            {/* ── Left Raised Gun Muzzle Emitter Anchor (Points upward & forward-left at -115deg) ── */}
+            <div
+              className="coltEmitterAnchor"
+              style={{
+                position: 'absolute',
+                left: '21.2%',
+                top: '19.0%',
+                transform: 'rotate(-115deg)',
+                transformOrigin: '0% 50%',
+                pointerEvents: 'none',
+                zIndex: 8,
+              }}
+              aria-hidden="true"
+            >
+              {showMuzzleFx && (
+                <div key={`colt-flash-raised-${muzzleKey}`} className="coltMuzzleFlashChild">
                   <svg
                     viewBox="-10 -40 140 80"
-                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+                    style={{ width: '135px', height: '80px', display: 'block', overflow: 'visible' }}
                   >
-                    <defs>
-                      <radialGradient id="coltFlashCore" cx="15%" cy="50%" r="70%">
-                        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
-                        <stop offset="35%" stopColor="#80FFFF" stopOpacity="0.95" />
-                        <stop offset="70%" stopColor="#00F5FF" stopOpacity="0.8" />
-                        <stop offset="100%" stopColor="#0066FF" stopOpacity="0" />
-                      </radialGradient>
-                      <filter id="coltFlashGlow" x="-20%" y="-40%" width="150%" height="180%">
-                        <feGaussianBlur stdDeviation="3.5" result="blur" />
-                        <feMerge>
-                          <feMergeNode in="blur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
-
-                    {/* Transverse compensator venting spikes (vertical blast) */}
-                    <polygon
-                      points="6,-32 14,-8 20,-26"
-                      fill="#00F5FF"
-                      opacity="0.85"
-                      filter="url(#coltFlashGlow)"
-                    />
-                    <polygon
-                      points="6,32 14,8 20,26"
-                      fill="#00F5FF"
-                      opacity="0.85"
-                      filter="url(#coltFlashGlow)"
-                    />
-
-                    {/* Main forward blast cone & spikes */}
-                    <polygon
-                      points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7"
-                      fill="url(#coltFlashCore)"
-                      filter="url(#coltFlashGlow)"
-                    />
-
-                    {/* High-intensity pure white core */}
+                    <polygon points="6,-32 14,-8 20,-26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
+                    <polygon points="6,32 14,8 20,26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
+                    <polygon points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7" fill="url(#coltFlashCore)" filter="url(#coltFlashGlow)" />
                     <ellipse cx="14" cy="0" rx="12" ry="6" fill="#FFFFFF" />
                   </svg>
                 </div>
+              )}
 
-                {/* Left Gun Muzzle Flash (Aligned to left gun muzzle at 21.2%, 19.0% pointing upwards at -42deg) */}
-                <div
-                  key={`colt-flash-left-${muzzleKey}`}
-                  aria-hidden="true"
-                  className="coltBlasterMuzzleFlashLeft"
-                  style={{
-                    position: 'absolute',
-                    left: '21.2%',
-                    top: '19.0%',
-                    width: '135px',
-                    height: '80px',
-                    transform: 'translate(-8px, -50%) rotate(-42deg)',
-                    transformOrigin: '8px 50%',
-                    pointerEvents: 'none',
-                    animation: 'directionalMuzzleFlash 75ms ease-out forwards',
-                    zIndex: 8,
-                  }}
-                >
+              {projectiles.map((p) => (
+                <div key={`colt-proj-raised-${p.id}`} className="coltProjectileChild">
+                  <svg
+                    viewBox="0 0 120 18"
+                    style={{ width: '120px', height: '18px', display: 'block', overflow: 'visible' }}
+                  >
+                    <line x1="0" y1="9" x2="85" y2="9" stroke="url(#coltSharedStreakGrad)" strokeWidth="5" strokeLinecap="round" />
+                    <line x1="25" y1="9" x2="82" y2="9" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" />
+                  </svg>
+                </div>
+              ))}
+            </div>
+
+            {/* ── Right Forward Gun Muzzle Emitter Anchor (Points forward & down-right at 12deg) ── */}
+            <div
+              className="coltEmitterAnchor"
+              style={{
+                position: 'absolute',
+                left: '98.24%',
+                top: '52.33%',
+                transform: 'rotate(12deg)',
+                transformOrigin: '0% 50%',
+                pointerEvents: 'none',
+                zIndex: 8,
+              }}
+              aria-hidden="true"
+            >
+              {showMuzzleFx && (
+                <div key={`colt-flash-forward-${muzzleKey}`} className="coltMuzzleFlashChild">
                   <svg
                     viewBox="-10 -40 140 80"
-                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+                    style={{ width: '135px', height: '80px', display: 'block', overflow: 'visible' }}
                   >
-                    <polygon
-                      points="6,-32 14,-8 20,-26"
-                      fill="#00F5FF"
-                      opacity="0.85"
-                      filter="url(#coltFlashGlow)"
-                    />
-                    <polygon
-                      points="6,32 14,8 20,26"
-                      fill="#00F5FF"
-                      opacity="0.85"
-                      filter="url(#coltFlashGlow)"
-                    />
-                    <polygon
-                      points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7"
-                      fill="url(#coltFlashCore)"
-                      filter="url(#coltFlashGlow)"
-                    />
+                    <polygon points="6,-32 14,-8 20,-26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
+                    <polygon points="6,32 14,8 20,26" fill="#00F5FF" opacity="0.85" filter="url(#coltFlashGlow)" />
+                    <polygon points="6,-7 22,-14 42,-5 105,0 42,5 22,14 6,7" fill="url(#coltFlashCore)" filter="url(#coltFlashGlow)" />
                     <ellipse cx="14" cy="0" rx="12" ry="6" fill="#FFFFFF" />
                   </svg>
                 </div>
-              </>
-            )}
+              )}
 
-            {/* Part 2: Dual Projectile Energy Trail Streaks (Bounded Pool) */}
-            {projectiles.map((p) => (
-              <React.Fragment key={`colt-proj-pair-${p.id}`}>
-                {/* Right Gun Projectile */}
-                <div
-                  key={`colt-proj-${p.id}`}
-                  aria-hidden="true"
-                  className="coltProjectileStreak"
-                  style={{
-                    position: 'absolute',
-                    left: '98.24%',
-                    top: '52.33%',
-                    width: '120px',
-                    height: '18px',
-                    transform: 'translate(0, -50%) rotate(3deg)',
-                    transformOrigin: '0% 50%',
-                    pointerEvents: 'none',
-                    animation: 'projectileStreak 150ms ease-out forwards',
-                    zIndex: 7,
-                  }}
-                >
+              {projectiles.map((p) => (
+                <div key={`colt-proj-forward-${p.id}`} className="coltProjectileChild">
                   <svg
                     viewBox="0 0 120 18"
-                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
+                    style={{ width: '120px', height: '18px', display: 'block', overflow: 'visible' }}
                   >
-                    <defs>
-                      <linearGradient id={`coltStreakGrad-${p.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#00F5FF" stopOpacity="0.2" />
-                        <stop offset="40%" stopColor="#00F5FF" stopOpacity="0.9" />
-                        <stop offset="85%" stopColor="#FFFFFF" stopOpacity="1" />
-                        <stop offset="100%" stopColor="#80FFFF" stopOpacity="0.9" />
-                      </linearGradient>
-                    </defs>
-                    {/* Outer neon cyan glow beam */}
-                    <line
-                      x1="0"
-                      y1="9"
-                      x2="85"
-                      y2="9"
-                      stroke={`url(#coltStreakGrad-${p.id})`}
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                    />
-                    {/* Intense inner white core line */}
-                    <line
-                      x1="25"
-                      y1="9"
-                      x2="82"
-                      y2="9"
-                      stroke="#FFFFFF"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                    />
+                    <line x1="0" y1="9" x2="85" y2="9" stroke="url(#coltSharedStreakGrad)" strokeWidth="5" strokeLinecap="round" />
+                    <line x1="25" y1="9" x2="82" y2="9" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" />
                   </svg>
                 </div>
-
-                {/* Left Gun Projectile (Aligned to left gun muzzle at 21.2%, 19.0% firing upward at -42deg) */}
-                <div
-                  key={`colt-proj-left-${p.id}`}
-                  aria-hidden="true"
-                  className="coltProjectileStreakLeft"
-                  style={{
-                    position: 'absolute',
-                    left: '21.2%',
-                    top: '19.0%',
-                    width: '120px',
-                    height: '18px',
-                    transform: 'translate(0, -50%) rotate(-42deg)',
-                    transformOrigin: '0% 50%',
-                    pointerEvents: 'none',
-                    animation: 'projectileStreakLeftGun 150ms ease-out forwards',
-                    zIndex: 7,
-                  }}
-                >
-                  <svg
-                    viewBox="0 0 120 18"
-                    style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}
-                  >
-                    <line
-                      x1="0"
-                      y1="9"
-                      x2="85"
-                      y2="9"
-                      stroke={`url(#coltStreakGrad-${p.id})`}
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="25"
-                      y1="9"
-                      x2="82"
-                      y2="9"
-                      stroke="#FFFFFF"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-              </React.Fragment>
-            ))}
+              ))}
+            </div>
 
             {/* Semantic Accessible Button Over Gunslinger Hit Target */}
             <button

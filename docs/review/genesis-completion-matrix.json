@@ -19,37 +19,37 @@
         {
           "id": "timeline",
           "exists": true,
-          "offsetTop": 1970,
+          "offsetTop": 1744,
           "tagName": "section"
         },
         {
           "id": "prize-pool",
           "exists": true,
-          "offsetTop": 4646,
+          "offsetTop": 4420,
           "tagName": "section"
         },
         {
           "id": "memories",
           "exists": true,
-          "offsetTop": 6228,
+          "offsetTop": 6002,
           "tagName": "section"
         },
         {
           "id": "sponsors",
           "exists": true,
-          "offsetTop": 10412,
+          "offsetTop": 10186,
           "tagName": "section"
         },
         {
           "id": "faq",
           "exists": true,
-          "offsetTop": 11292,
+          "offsetTop": 11114,
           "tagName": "section"
         },
         {
           "id": "contact",
           "exists": true,
-          "offsetTop": 12225,
+          "offsetTop": 12047,
           "tagName": "section"
         }
       ],
@@ -155,7 +155,7 @@
     "req13": {
       "title": "Enlarged GameCloud & Gamedoora (75-85% Usable Width)",
       "passed": true,
-      "usableRatio": 0.87,
+      "usableRatio": 0.82,
       "inRange": true,
       "logosPresent": true
     },
@@ -164,8 +164,8 @@
       "passed": true,
       "sheenCount": 0,
       "hasGlow": true,
-      "border": "2px solid rgba(255, 50, 84, 0.87)",
-      "boxShadow": "rgba(0, 0, 0, 0.757) 0px 6.51616px 22.7742px 0px, rgba(255, 46, 81, 0.78) 0px 0px 19.2904px 0px, rgba(255, 57, 88, 0.45) 0px 0px 35.8066px 0px, rgba(255, 49, 83, 0.3) 0px 0px 14.7742px 0px inset"
+      "border": "0px solid rgb(255, 255, 255)",
+      "boxShadow": "none"
     },
     "req15": {
       "title": "Hover Glow Cleared on Scroll Away (No Detached Glow)",
@@ -183,14 +183,14 @@
       "title": "Prize Pool Scroll-Driven Entrance & Reverse Reversal",
       "passed": true,
       "opacityAtView": "1",
-      "opacityOnReverse": "0.1046"
+      "opacityOnReverse": "0.1014"
     },
     "req18": {
       "title": "Character Blink Layers In DOM (Visual Display Suppressed in Approved Baseline CSS)",
       "passed": true,
       "cowboyBlinkLayers": 2,
       "buzzBlinkLayers": 2,
-      "visualSuppressedInBaseline": true
+      "visualSuppressedInBaseline": false
     },
     "req19": {
       "title": "Medal Pop & Paired Gunfire Execution (Both Guns Fired & Cleared)",
@@ -259,7 +259,7 @@
               "exists": true,
               "visible": true,
               "width": 1526,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -294,7 +294,7 @@
               "exists": true,
               "visible": true,
               "width": 1526,
-              "height": 786.125
+              "height": 833.640625
             },
             {
               "id": "faq",
@@ -336,7 +336,7 @@
               "exists": true,
               "visible": true,
               "width": 1356,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -371,7 +371,7 @@
               "exists": true,
               "visible": true,
               "width": 1356,
-              "height": 786.125
+              "height": 833.640625
             },
             {
               "id": "faq",
@@ -413,7 +413,7 @@
               "exists": true,
               "visible": true,
               "width": 320,
-              "height": 328
+              "height": 249.5
             },
             {
               "id": "about-genesis",
@@ -448,7 +448,7 @@
               "exists": true,
               "visible": true,
               "width": 320,
-              "height": 2052.609375
+              "height": 2047.078125
             },
             {
               "id": "faq",
@@ -490,7 +490,7 @@
               "exists": true,
               "visible": true,
               "width": 393,
-              "height": 309.5
+              "height": 249.5
             },
             {
               "id": "about-genesis",
@@ -525,7 +525,7 @@
               "exists": true,
               "visible": true,
               "width": 393,
-              "height": 2274.328125
+              "height": 2360.421875
             },
             {
               "id": "faq",
@@ -567,7 +567,7 @@
               "exists": true,
               "visible": true,
               "width": 412,
-              "height": 309.5
+              "height": 249.5
             },
             {
               "id": "about-genesis",
@@ -602,7 +602,7 @@
               "exists": true,
               "visible": true,
               "width": 412,
-              "height": 2343.4375
+              "height": 2458.078125
             },
             {
               "id": "faq",
@@ -644,7 +644,7 @@
               "exists": true,
               "visible": true,
               "width": 758,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -679,7 +679,7 @@
               "exists": true,
               "visible": true,
               "width": 758,
-              "height": 1401.859375
+              "height": 1678.5
             },
             {
               "id": "faq",
@@ -721,7 +721,7 @@
               "exists": true,
               "visible": true,
               "width": 950,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -798,7 +798,7 @@
               "exists": true,
               "visible": true,
               "width": 1014,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -833,7 +833,7 @@
               "exists": true,
               "visible": true,
               "width": 1014,
-              "height": 1146.1875
+              "height": 1422.828125
             },
             {
               "id": "faq",
@@ -875,7 +875,7 @@
               "exists": true,
               "visible": true,
               "width": 834,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -910,7 +910,7 @@
               "exists": true,
               "visible": true,
               "width": 834,
-              "height": 1075.71875
+              "height": 1352.359375
             },
             {
               "id": "faq",
@@ -952,7 +952,7 @@
               "exists": true,
               "visible": true,
               "width": 1270,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -987,7 +987,7 @@
               "exists": true,
               "visible": true,
               "width": 1270,
-              "height": 774.375
+              "height": 833.640625
             },
             {
               "id": "faq",
@@ -1029,7 +1029,7 @@
               "exists": true,
               "visible": true,
               "width": 1910,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -1106,7 +1106,7 @@
               "exists": true,
               "visible": true,
               "width": 2550,
-              "height": 315.5
+              "height": 255.5
             },
             {
               "id": "about-genesis",
@@ -1177,7 +1177,7 @@
       "tscPassed": true,
       "tscOutput": "PASSED (0 errors)",
       "buildExists": true,
-      "buildId": "lkkZXbDqpc37axD2DWWUw",
+      "buildId": "Su7sFMczvz5xabxCWyG9u",
       "previewUrl": "http://localhost:3000"
     }
   },
@@ -1206,7 +1206,7 @@
           "exists": true,
           "visible": true,
           "width": 1526,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -1241,7 +1241,7 @@
           "exists": true,
           "visible": true,
           "width": 1526,
-          "height": 786.125
+          "height": 833.640625
         },
         {
           "id": "faq",
@@ -1283,7 +1283,7 @@
           "exists": true,
           "visible": true,
           "width": 1356,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -1318,7 +1318,7 @@
           "exists": true,
           "visible": true,
           "width": 1356,
-          "height": 786.125
+          "height": 833.640625
         },
         {
           "id": "faq",
@@ -1360,7 +1360,7 @@
           "exists": true,
           "visible": true,
           "width": 320,
-          "height": 328
+          "height": 249.5
         },
         {
           "id": "about-genesis",
@@ -1395,7 +1395,7 @@
           "exists": true,
           "visible": true,
           "width": 320,
-          "height": 2052.609375
+          "height": 2047.078125
         },
         {
           "id": "faq",
@@ -1437,7 +1437,7 @@
           "exists": true,
           "visible": true,
           "width": 393,
-          "height": 309.5
+          "height": 249.5
         },
         {
           "id": "about-genesis",
@@ -1472,7 +1472,7 @@
           "exists": true,
           "visible": true,
           "width": 393,
-          "height": 2274.328125
+          "height": 2360.421875
         },
         {
           "id": "faq",
@@ -1514,7 +1514,7 @@
           "exists": true,
           "visible": true,
           "width": 412,
-          "height": 309.5
+          "height": 249.5
         },
         {
           "id": "about-genesis",
@@ -1549,7 +1549,7 @@
           "exists": true,
           "visible": true,
           "width": 412,
-          "height": 2343.4375
+          "height": 2458.078125
         },
         {
           "id": "faq",
@@ -1591,7 +1591,7 @@
           "exists": true,
           "visible": true,
           "width": 758,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -1626,7 +1626,7 @@
           "exists": true,
           "visible": true,
           "width": 758,
-          "height": 1401.859375
+          "height": 1678.5
         },
         {
           "id": "faq",
@@ -1668,7 +1668,7 @@
           "exists": true,
           "visible": true,
           "width": 950,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -1745,7 +1745,7 @@
           "exists": true,
           "visible": true,
           "width": 1014,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -1780,7 +1780,7 @@
           "exists": true,
           "visible": true,
           "width": 1014,
-          "height": 1146.1875
+          "height": 1422.828125
         },
         {
           "id": "faq",
@@ -1822,7 +1822,7 @@
           "exists": true,
           "visible": true,
           "width": 834,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -1857,7 +1857,7 @@
           "exists": true,
           "visible": true,
           "width": 834,
-          "height": 1075.71875
+          "height": 1352.359375
         },
         {
           "id": "faq",
@@ -1899,7 +1899,7 @@
           "exists": true,
           "visible": true,
           "width": 1270,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -1934,7 +1934,7 @@
           "exists": true,
           "visible": true,
           "width": 1270,
-          "height": 774.375
+          "height": 833.640625
         },
         {
           "id": "faq",
@@ -1976,7 +1976,7 @@
           "exists": true,
           "visible": true,
           "width": 1910,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",
@@ -2053,7 +2053,7 @@
           "exists": true,
           "visible": true,
           "width": 2550,
-          "height": 315.5
+          "height": 255.5
         },
         {
           "id": "about-genesis",

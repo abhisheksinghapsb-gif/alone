@@ -448,19 +448,32 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
               height: `${railBounds.height}px`,
             }}
           >
+            {/* Dark track backdrop channel */}
+            <div className={styles.railTrackBackdrop} />
+
             {/* Dynamic Illuminated Progress Overlay Layer (GPU Transform Scale) */}
             <div
               ref={progressLineRef}
               data-timeline-progress="true"
-              className={styles.railProgressFill}
+              className={styles.railTrackFill}
             />
 
             {/* Traveling Progress Marker (Single Coordinate System via translate3d) */}
             <div
               ref={markerRef}
               data-timeline-marker="true"
-              className={styles.travellingMarker}
-            />
+              className={styles.travelingMarker}
+              aria-hidden="true"
+            >
+              <div className={styles.markerInnerGlow} />
+              <img
+                src="/assets/genesis/timeline/chapter2-star.svg"
+                alt=""
+                className={styles.markerIconImg}
+                width={32}
+                height={32}
+              />
+            </div>
           </div>
 
           {/* Semantic Ordered List of 4 Chapters */}
