@@ -88,12 +88,21 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
 
     const periodMs = 42000; // 42 seconds per revolution
 
-    const isReducedMotion = () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Reused prefers-reduced-motion MediaQueryList to avoid matchMedia calls in animation frames
+    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    let reducedMotion = mql ? mql.matches : false;
+    const onMotionPreferenceChange = (e: MediaQueryListEvent) => {
+      reducedMotion = e.matches;
+      if (reducedMotion) {
+        stopLoop();
+      } else if (isVisible && !motionPausedRef.current && !document.hidden) {
+        startLoop();
+      }
+    };
+    mql?.addEventListener('change', onMotionPreferenceChange);
 
     const loop = (time: number) => {
-      if (isDestroyed || !isVisible || motionPausedRef.current || document.hidden || isReducedMotion()) return;
+      if (isDestroyed || !isVisible || motionPausedRef.current || document.hidden || reducedMotion) return;
 
       const dt = Math.max(0, time - lastActiveTime);
       lastActiveTime = time;
@@ -109,7 +118,7 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
     };
 
     const startLoop = () => {
-      if (animId !== null || isDestroyed || !isVisible || motionPausedRef.current || document.hidden || isReducedMotion()) return;
+      if (animId !== null || isDestroyed || !isVisible || motionPausedRef.current || document.hidden || reducedMotion) return;
       lastActiveTime = performance.now();
       animId = requestAnimationFrame(loop);
     };
@@ -249,16 +258,6 @@ export const RingedPlanet: React.FC<RingedPlanetProps> = ({ motionPaused = false
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
 
-    // Media query listener for live prefers-reduced-motion OS changes
-    const mql = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-    const onMotionPreferenceChange = (e: MediaQueryListEvent) => {
-      if (e.matches) {
-        stopLoop();
-      } else if (isVisible && !motionPausedRef.current && !document.hidden) {
-        startLoop();
-      }
-    };
-    mql?.addEventListener('change', onMotionPreferenceChange);
 
     mapImg.src = '/assets/genesis/static/ringed-planet-surface-map.webp';
     mapImg.onload = () => {

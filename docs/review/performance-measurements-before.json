@@ -1,0 +1,733 @@
+{
+  "envInfo": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "arch": "x64",
+    "cpuModel": "AMD Ryzen 7 7840HS w/ Radeon 780M Graphics     ",
+    "cpuCores": 16,
+    "totalMemoryGB": "15.29",
+    "targetUrl": "http://localhost:3000",
+    "timestamp": "2026-10-31T19:17:53.098Z"
+  },
+  "profiles": {
+    "desktop-unthrottled": {
+      "profile": {
+        "name": "desktop-unthrottled",
+        "label": "Desktop (1536x730, Unthrottled)",
+        "width": 1536,
+        "height": 730,
+        "mobile": false,
+        "deviceScaleFactor": 1,
+        "cpuThrottlingRate": 1,
+        "networkThrottling": null
+      },
+      "cold": {
+        "lcp": {
+          "median": 660,
+          "min": 624,
+          "max": 756,
+          "range": 132,
+          "all": [
+            624,
+            660,
+            756,
+            660,
+            712
+          ]
+        },
+        "cls": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "range": 0,
+          "all": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tbt": {
+          "median": 78,
+          "min": 60,
+          "max": 185,
+          "range": 125,
+          "all": [
+            61,
+            60,
+            185,
+            78,
+            95
+          ]
+        },
+        "domContentLoaded": {
+          "median": 449.8,
+          "min": 229.8,
+          "max": 473.3,
+          "range": 243.5,
+          "all": [
+            466.7,
+            449.8,
+            229.8,
+            438,
+            473.3
+          ]
+        },
+        "interactionLatency": {
+          "median": 195.8,
+          "min": 194.2,
+          "max": 848.3,
+          "range": 654.1,
+          "all": [
+            848.3,
+            194.2,
+            206.7,
+            195.8,
+            194.3
+          ]
+        },
+        "transferTotalKB": {
+          "median": 2011.95,
+          "min": 2011.95,
+          "max": 2011.95,
+          "range": 0,
+          "all": [
+            2011.95,
+            2011.95,
+            2011.95,
+            2011.95,
+            2011.95
+          ]
+        },
+        "transferJsKB": {
+          "median": 227.51,
+          "min": 227.51,
+          "max": 227.51,
+          "range": 0,
+          "all": [
+            227.51,
+            227.51,
+            227.51,
+            227.51,
+            227.51
+          ]
+        },
+        "transferCssKB": {
+          "median": 79.49,
+          "min": 79.49,
+          "max": 79.49,
+          "range": 0,
+          "all": [
+            79.49,
+            79.49,
+            79.49,
+            79.49,
+            79.49
+          ]
+        },
+        "transferImgKB": {
+          "median": 1703.71,
+          "min": 1703.71,
+          "max": 1703.71,
+          "range": 0,
+          "all": [
+            1703.71,
+            1703.71,
+            1703.71,
+            1703.71,
+            1703.71
+          ]
+        },
+        "transferFontKB": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "range": 0,
+          "all": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "raw": [
+          {
+            "lcp": 624,
+            "cls": 0.0000633151613085472,
+            "tbt": 61,
+            "domContentLoaded": 466.7000000476837,
+            "load": 563,
+            "interactionLatency": 848.2999999523163,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1744594,
+              "fontSize": 0,
+              "totalSize": 2060241,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 660,
+            "cls": 0.0000633151613085472,
+            "tbt": 60,
+            "domContentLoaded": 449.8000000715256,
+            "load": 675.3999999761581,
+            "interactionLatency": 194.20000004768372,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1744594,
+              "fontSize": 0,
+              "totalSize": 2060241,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 756,
+            "cls": 0,
+            "tbt": 185,
+            "domContentLoaded": 229.79999995231628,
+            "load": 730.6999999284744,
+            "interactionLatency": 206.70000004768372,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1744594,
+              "fontSize": 0,
+              "totalSize": 2060241,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 660,
+            "cls": 0.0000633151613085472,
+            "tbt": 78,
+            "domContentLoaded": 438,
+            "load": 710.6999999284744,
+            "interactionLatency": 195.79999995231628,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1744594,
+              "fontSize": 0,
+              "totalSize": 2060241,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 712,
+            "cls": 0.0000633151613085472,
+            "tbt": 95,
+            "domContentLoaded": 473.3000000715256,
+            "load": 571.8999999761581,
+            "interactionLatency": 194.30000007152557,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1744594,
+              "fontSize": 0,
+              "totalSize": 2060241,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          }
+        ]
+      },
+      "warm": {
+        "lcp": {
+          "median": 672,
+          "min": 596,
+          "max": 956,
+          "range": 360,
+          "all": [
+            956,
+            596,
+            672
+          ]
+        },
+        "cls": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "range": 0,
+          "all": [
+            0,
+            0,
+            0
+          ]
+        },
+        "tbt": {
+          "median": 82,
+          "min": 57,
+          "max": 83,
+          "range": 26,
+          "all": [
+            83,
+            57,
+            82
+          ]
+        },
+        "domContentLoaded": {
+          "median": 668.9,
+          "min": 407.9,
+          "max": 736.6,
+          "range": 328.7,
+          "all": [
+            736.6,
+            407.9,
+            668.9
+          ]
+        },
+        "interactionLatency": {
+          "median": 193.4,
+          "min": 191.6,
+          "max": 196.6,
+          "range": 5,
+          "all": [
+            196.6,
+            191.6,
+            193.4
+          ]
+        },
+        "raw": [
+          {
+            "lcp": 956,
+            "cls": 0.0000633151613085472,
+            "tbt": 83,
+            "domContentLoaded": 736.5999999046326,
+            "load": 1014.5999999046326,
+            "interactionLatency": 196.60000002384186,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1735872,
+              "fontSize": 0,
+              "totalSize": 2051519,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 596,
+            "cls": 0.0000633151613085472,
+            "tbt": 57,
+            "domContentLoaded": 407.89999997615814,
+            "load": 669.5999999046326,
+            "interactionLatency": 191.60000002384186,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1735872,
+              "fontSize": 0,
+              "totalSize": 2051519,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 672,
+            "cls": 0.0000633151613085472,
+            "tbt": 82,
+            "domContentLoaded": 668.8999999761581,
+            "load": 708.7999999523163,
+            "interactionLatency": 193.39999997615814,
+            "transfer": {
+              "jsSize": 232975,
+              "cssSize": 81398,
+              "imgSize": 1735872,
+              "fontSize": 0,
+              "totalSize": 2051519,
+              "resourceCount": 43
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          }
+        ]
+      }
+    },
+    "mobile-slower-4x": {
+      "profile": {
+        "name": "mobile-slower-4x",
+        "label": "Mobile Profile (393x852, 4x CPU Throttling, Fast 3G / Slow 4G)",
+        "width": 393,
+        "height": 852,
+        "mobile": true,
+        "deviceScaleFactor": 2.75,
+        "cpuThrottlingRate": 4,
+        "networkThrottling": {
+          "offline": false,
+          "latency": 150,
+          "downloadThroughput": 209715.2,
+          "uploadThroughput": 96000
+        }
+      },
+      "cold": {
+        "lcp": {
+          "median": 2304,
+          "min": 2280,
+          "max": 2372,
+          "range": 92,
+          "all": [
+            2372,
+            2304,
+            2340,
+            2296,
+            2280
+          ]
+        },
+        "cls": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "range": 0,
+          "all": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tbt": {
+          "median": 84,
+          "min": 74,
+          "max": 236,
+          "range": 162,
+          "all": [
+            236,
+            79,
+            74,
+            84,
+            105
+          ]
+        },
+        "domContentLoaded": {
+          "median": 2226.2,
+          "min": 2198.2,
+          "max": 2871.7,
+          "range": 673.5,
+          "all": [
+            2871.7,
+            2253.3,
+            2226.2,
+            2198.2,
+            2206.3
+          ]
+        },
+        "interactionLatency": {
+          "median": 43.7,
+          "min": 30.8,
+          "max": 56.5,
+          "range": 25.7,
+          "all": [
+            56.5,
+            51.7,
+            30.8,
+            37.1,
+            43.7
+          ]
+        },
+        "transferTotalKB": {
+          "median": 333.54,
+          "min": 321.87,
+          "max": 336.21,
+          "range": 14.35,
+          "all": [
+            333.54,
+            321.87,
+            336.21,
+            336.21,
+            329.26
+          ]
+        },
+        "transferJsKB": {
+          "median": 0,
+          "min": 0,
+          "max": 11.67,
+          "range": 11.67,
+          "all": [
+            11.67,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "transferCssKB": {
+          "median": 27.5,
+          "min": 27.5,
+          "max": 27.5,
+          "range": 0,
+          "all": [
+            27.5,
+            27.5,
+            27.5,
+            27.5,
+            27.5
+          ]
+        },
+        "transferImgKB": {
+          "median": 300.52,
+          "min": 293.12,
+          "max": 307.47,
+          "range": 14.35,
+          "all": [
+            293.12,
+            293.12,
+            307.47,
+            307.47,
+            300.52
+          ]
+        },
+        "transferFontKB": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "range": 0,
+          "all": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "raw": [
+          {
+            "lcp": 2372,
+            "cls": 0,
+            "tbt": 236,
+            "domContentLoaded": 2871.7000000476837,
+            "load": 0,
+            "interactionLatency": 56.5,
+            "transfer": {
+              "jsSize": 11951,
+              "cssSize": 28162,
+              "imgSize": 300156,
+              "fontSize": 0,
+              "totalSize": 341543,
+              "resourceCount": 16
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 2304,
+            "cls": 0,
+            "tbt": 79,
+            "domContentLoaded": 2253.3000000715256,
+            "load": 0,
+            "interactionLatency": 51.699999928474426,
+            "transfer": {
+              "jsSize": 0,
+              "cssSize": 28162,
+              "imgSize": 300156,
+              "fontSize": 0,
+              "totalSize": 329592,
+              "resourceCount": 14
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 2340,
+            "cls": 0,
+            "tbt": 74,
+            "domContentLoaded": 2226.1999999284744,
+            "load": 0,
+            "interactionLatency": 30.799999952316284,
+            "transfer": {
+              "jsSize": 0,
+              "cssSize": 28162,
+              "imgSize": 314848,
+              "fontSize": 0,
+              "totalSize": 344284,
+              "resourceCount": 15
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 2296,
+            "cls": 0,
+            "tbt": 84,
+            "domContentLoaded": 2198.1999999284744,
+            "load": 0,
+            "interactionLatency": 37.09999990463257,
+            "transfer": {
+              "jsSize": 0,
+              "cssSize": 28162,
+              "imgSize": 314848,
+              "fontSize": 0,
+              "totalSize": 344284,
+              "resourceCount": 15
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 2280,
+            "cls": 0,
+            "tbt": 105,
+            "domContentLoaded": 2206.3000000715256,
+            "load": 0,
+            "interactionLatency": 43.699999928474426,
+            "transfer": {
+              "jsSize": 0,
+              "cssSize": 28162,
+              "imgSize": 307728,
+              "fontSize": 0,
+              "totalSize": 337164,
+              "resourceCount": 14
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          }
+        ]
+      },
+      "warm": {
+        "lcp": {
+          "median": 2320,
+          "min": 2152,
+          "max": 2400,
+          "range": 248,
+          "all": [
+            2152,
+            2320,
+            2400
+          ]
+        },
+        "cls": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "range": 0,
+          "all": [
+            0,
+            0,
+            0
+          ]
+        },
+        "tbt": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "range": 0,
+          "all": [
+            0,
+            0,
+            0
+          ]
+        },
+        "domContentLoaded": {
+          "median": 2270.4,
+          "min": 2159.8,
+          "max": 2393.4,
+          "range": 233.6,
+          "all": [
+            2159.8,
+            2270.4,
+            2393.4
+          ]
+        },
+        "interactionLatency": {
+          "median": 24,
+          "min": 21.1,
+          "max": 30.3,
+          "range": 9.2,
+          "all": [
+            30.3,
+            24,
+            21.1
+          ]
+        },
+        "raw": [
+          {
+            "lcp": 2152,
+            "cls": 0.0003438881325800194,
+            "tbt": 0,
+            "domContentLoaded": 2159.7999999523163,
+            "load": 0,
+            "interactionLatency": 30.300000071525574,
+            "transfer": {
+              "jsSize": 7711,
+              "cssSize": 28162,
+              "imgSize": 352582,
+              "fontSize": 0,
+              "totalSize": 389729,
+              "resourceCount": 17
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 2320,
+            "cls": 0.0003438881325800194,
+            "tbt": 0,
+            "domContentLoaded": 2270.399999976158,
+            "load": 0,
+            "interactionLatency": 24,
+            "transfer": {
+              "jsSize": 7711,
+              "cssSize": 28162,
+              "imgSize": 314848,
+              "fontSize": 0,
+              "totalSize": 351995,
+              "resourceCount": 16
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          },
+          {
+            "lcp": 2400,
+            "cls": 0.0003438881325800194,
+            "tbt": 0,
+            "domContentLoaded": 2393.399999976158,
+            "load": 0,
+            "interactionLatency": 21.100000023841858,
+            "transfer": {
+              "jsSize": 0,
+              "cssSize": 28162,
+              "imgSize": 352582,
+              "fontSize": 0,
+              "totalSize": 382018,
+              "resourceCount": 16
+            },
+            "logoVisible": true,
+            "regVisible": true,
+            "failedRequests": []
+          }
+        ]
+      }
+    }
+  }
+}

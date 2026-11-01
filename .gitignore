@@ -32,3 +32,4 @@ Thumbs.db
 # Temporary & backup folders
 scratch/
 .backup_vite/
+.chrome-*/

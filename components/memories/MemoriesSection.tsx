@@ -164,14 +164,20 @@ export const MemoriesSection: React.FC<MemoriesSectionProps> = ({
 
     initialise();
 
+    let resizeRaf: number | null = null;
     const handleResize = () => {
-      ScrollTrigger.refresh();
-      if (section && camera) {
-        const rect = section.getBoundingClientRect();
-        if (rect.top >= -20 && rect.top <= 20) {
-          applyInitialFocus?.();
+      if (resizeRaf !== null) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = null;
+        if (disposed) return;
+        ScrollTrigger.refresh();
+        if (section && camera) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top >= -20 && rect.top <= 20) {
+            applyInitialFocus?.();
+          }
         }
-      }
+      });
     };
     window.addEventListener('resize', handleResize);
 
@@ -185,6 +191,10 @@ export const MemoriesSection: React.FC<MemoriesSectionProps> = ({
 
     return () => {
       disposed = true;
+      if (resizeRaf !== null) {
+        cancelAnimationFrame(resizeRaf);
+        resizeRaf = null;
+      }
       window.removeEventListener('resize', handleResize);
       if (resizeObserver) resizeObserver.disconnect();
       camera.classList.remove(styles.isAnimating);

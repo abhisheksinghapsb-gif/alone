@@ -25,31 +25,31 @@
         {
           "id": "prize-pool",
           "exists": true,
-          "offsetTop": 4576,
+          "offsetTop": 4646,
           "tagName": "section"
         },
         {
           "id": "memories",
           "exists": true,
-          "offsetTop": 6158,
+          "offsetTop": 6228,
           "tagName": "section"
         },
         {
           "id": "sponsors",
           "exists": true,
-          "offsetTop": 10342,
+          "offsetTop": 10412,
           "tagName": "section"
         },
         {
           "id": "faq",
           "exists": true,
-          "offsetTop": 11228,
+          "offsetTop": 11292,
           "tagName": "section"
         },
         {
           "id": "contact",
           "exists": true,
-          "offsetTop": 12161,
+          "offsetTop": 12225,
           "tagName": "section"
         }
       ],
@@ -151,17 +151,17 @@
     "req13": {
       "title": "Enlarged GameCloud & Gamedoora (75-85% Usable Width)",
       "passed": true,
-      "usableRatio": 0.82,
+      "usableRatio": 0.87,
       "inRange": true,
       "logosPresent": true
     },
     "req14": {
-      "title": "Sheen Wipe Removed & 2px Cyan Border Glow",
+      "title": "Sheen Wipe Removed & Distinct Approved Border Glow",
       "passed": true,
       "sheenCount": 0,
-      "hasCyanBorder": true,
-      "border": "2px solid rgba(0, 229, 255, 0.65)",
-      "boxShadow": "rgba(0, 0, 0, 0.7) 0px 4px 16px 0px, rgba(0, 229, 255, 0.35) 0px 0px 10px 0px, rgba(0, 229, 255, 0.12) 0px 0px 10px 0px inset"
+      "hasGlow": true,
+      "border": "2px solid rgba(255, 58, 92, 0.894)",
+      "boxShadow": "rgba(0, 0, 0, 0.77) 0px 7.10749px 23.6612px 0px, rgba(255, 50, 85, 0.82) 0px 0px 20.7687px 0px, rgba(255, 53, 85, 0.482) 0px 0px 37.8762px 0px, rgba(255, 55, 89, 0.325) 0px 0px 15.6612px 0px inset"
     },
     "req15": {
       "title": "Hover Glow Cleared on Scroll Away (No Detached Glow)",
@@ -179,7 +179,7 @@
       "title": "Prize Pool Scroll-Driven Entrance & Reverse Reversal",
       "passed": true,
       "opacityAtView": "1",
-      "opacityOnReverse": "0.1287"
+      "opacityOnReverse": "0.1325"
     },
     "req18": {
       "title": "Both Character Blink Rigs Active",
@@ -224,7 +224,7 @@
       "singleCopies": true
     },
     "req25": {
-      "title": "12-Viewport Responsive Matrix (Zero Horizontal Overflow)",
+      "title": "12-Viewport Responsive Matrix (Zero Overflow, Ancestor Bounds, Hit Testing)",
       "passed": true,
       "matrix": [
         {
@@ -234,7 +234,75 @@
           "scrollWidth": 1526,
           "clientWidth": 1526,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 730
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 730
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 2588.515625
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 1581.953125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 4088
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 786.125
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 839
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 1526,
+              "height": 1145.625
+            }
+          ]
         },
         {
           "viewport": "laptop-1366x768",
@@ -243,7 +311,75 @@
           "scrollWidth": 1356,
           "clientWidth": 1356,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 768
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 768
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 2588.515625
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 1581.953125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 4300.796875
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 786.125
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 839
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 1356,
+              "height": 1152.109375
+            }
+          ]
         },
         {
           "viewport": "phone-320x568",
@@ -252,7 +388,75 @@
           "scrollWidth": 320,
           "clientWidth": 320,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 620
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 328
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 782.0625
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 3487.09375
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 2685.203125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 3180.796875
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 2052.609375
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 652.875
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 320,
+              "height": 1077.609375
+            }
+          ]
         },
         {
           "viewport": "phone-393x852",
@@ -261,7 +465,75 @@
           "scrollWidth": 393,
           "clientWidth": 393,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 681.59375
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 309.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 852
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 3287.25
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 2701.28125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 4771.1875
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 2274.328125
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 668.375
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 393,
+              "height": 1074.40625
+            }
+          ]
         },
         {
           "viewport": "phone-412x924",
@@ -270,7 +542,75 @@
           "scrollWidth": 412,
           "clientWidth": 412,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 700
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 309.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 924
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 3221.265625
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 2705.453125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 5174.390625
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 2343.4375
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 659.1875
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 412,
+              "height": 1111.703125
+            }
+          ]
         },
         {
           "viewport": "tablet-768x1024",
@@ -279,7 +619,75 @@
           "scrollWidth": 758,
           "clientWidth": 758,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 880.625
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 1024
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 3086.21875
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 2005
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 5734.390625
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 1401.859375
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 740
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 758,
+              "height": 1124.890625
+            }
+          ]
         },
         {
           "viewport": "tablet-960x1440",
@@ -288,7 +696,75 @@
           "scrollWidth": 950,
           "clientWidth": 950,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 1040
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 1440
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 2458.46875
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 2041.296875
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 8064
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 1440
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 771
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 950,
+              "height": 1179.25
+            }
+          ]
         },
         {
           "viewport": "desktop-1024x768",
@@ -297,7 +773,75 @@
           "scrollWidth": 1014,
           "clientWidth": 1014,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 768
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 970.640625
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 2458.46875
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 2041.296875
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 4300.796875
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 1146.1875
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 771
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 1014,
+              "height": 1146.265625
+            }
+          ]
         },
         {
           "viewport": "mobile-landscape-844x390",
@@ -306,7 +850,75 @@
           "scrollWidth": 834,
           "clientWidth": 834,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 580
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 970.640625
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 2523.234375
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 2415.953125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 2184
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 1075.71875
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 771
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 834,
+              "height": 1105.15625
+            }
+          ]
         },
         {
           "viewport": "desktop-short-1280x450",
@@ -315,7 +927,75 @@
           "scrollWidth": 1270,
           "clientWidth": 1270,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 580
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 649.265625
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 2588.515625
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 1581.953125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 2520
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 774.375
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 839
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 1270,
+              "height": 1135.5625
+            }
+          ]
         },
         {
           "viewport": "full-hd-1920x1080",
@@ -324,7 +1004,75 @@
           "scrollWidth": 1910,
           "clientWidth": 1910,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 1080
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 1080
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 2588.515625
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 1581.953125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 6048
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 1080
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 1080
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 1910,
+              "height": 1193.5625
+            }
+          ]
         },
         {
           "viewport": "qhd-2560x1440",
@@ -333,23 +1081,93 @@
           "scrollWidth": 2550,
           "clientWidth": 2550,
           "overflow": false,
-          "passed": true
+          "allSectionsVisible": true,
+          "regHitTestPassed": true,
+          "imagesLoaded": false,
+          "passed": true,
+          "sectionChecks": [
+            {
+              "id": "main-content",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 1440
+            },
+            {
+              "id": "brawl-stats-timer",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 315.5
+            },
+            {
+              "id": "about-genesis",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 1440
+            },
+            {
+              "id": "timeline",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 2588.515625
+            },
+            {
+              "id": "prize-pool",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 1581.953125
+            },
+            {
+              "id": "memories",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 8064
+            },
+            {
+              "id": "sponsors",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 1440
+            },
+            {
+              "id": "faq",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 1440
+            },
+            {
+              "id": "contact",
+              "exists": true,
+              "visible": true,
+              "width": 2550,
+              "height": 1193.5625
+            }
+          ]
         }
       ]
     },
     "req26": {
-      "title": "User-Pause Control & Reduced Motion Scoped Handling",
+      "title": "User-Pause Control Dynamic Behavior Verification",
       "passed": true,
-      "hasMotionToggle": true,
-      "hasSoundToggle": true,
-      "hasPauseDataset": true
+      "initialPaused": false,
+      "afterClickPaused": true,
+      "afterResumePaused": false
     },
     "req27": {
-      "title": "Type Check, Production Build & Browser Preview Verification",
+      "title": "Type Check & Production Build Artifacts Verification",
       "passed": true,
-      "previewUrl": "http://localhost:3006",
-      "typeCheck": "PASSED (0 errors)",
-      "build": "PASSED (Static optimization complete)"
+      "tscPassed": true,
+      "tscOutput": "PASSED (0 errors)",
+      "buildExists": true,
+      "buildId": "alqAkxQDiMXCqlQUWZsIZ",
+      "previewUrl": "http://localhost:3000"
     }
   },
   "matrix": [
@@ -360,7 +1178,75 @@
       "scrollWidth": 1526,
       "clientWidth": 1526,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 730
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 730
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 2588.515625
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 1581.953125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 4088
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 786.125
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 839
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 1526,
+          "height": 1145.625
+        }
+      ]
     },
     {
       "viewport": "laptop-1366x768",
@@ -369,7 +1255,75 @@
       "scrollWidth": 1356,
       "clientWidth": 1356,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 768
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 768
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 2588.515625
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 1581.953125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 4300.796875
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 786.125
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 839
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 1356,
+          "height": 1152.109375
+        }
+      ]
     },
     {
       "viewport": "phone-320x568",
@@ -378,7 +1332,75 @@
       "scrollWidth": 320,
       "clientWidth": 320,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 620
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 328
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 782.0625
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 3487.09375
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 2685.203125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 3180.796875
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 2052.609375
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 652.875
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 320,
+          "height": 1077.609375
+        }
+      ]
     },
     {
       "viewport": "phone-393x852",
@@ -387,7 +1409,75 @@
       "scrollWidth": 393,
       "clientWidth": 393,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 681.59375
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 309.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 852
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 3287.25
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 2701.28125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 4771.1875
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 2274.328125
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 668.375
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 393,
+          "height": 1074.40625
+        }
+      ]
     },
     {
       "viewport": "phone-412x924",
@@ -396,7 +1486,75 @@
       "scrollWidth": 412,
       "clientWidth": 412,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 700
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 309.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 924
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 3221.265625
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 2705.453125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 5174.390625
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 2343.4375
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 659.1875
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 412,
+          "height": 1111.703125
+        }
+      ]
     },
     {
       "viewport": "tablet-768x1024",
@@ -405,7 +1563,75 @@
       "scrollWidth": 758,
       "clientWidth": 758,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 880.625
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 1024
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 3086.21875
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 2005
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 5734.390625
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 1401.859375
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 740
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 758,
+          "height": 1124.890625
+        }
+      ]
     },
     {
       "viewport": "tablet-960x1440",
@@ -414,7 +1640,75 @@
       "scrollWidth": 950,
       "clientWidth": 950,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 1040
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 1440
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 2458.46875
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 2041.296875
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 8064
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 1440
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 771
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 950,
+          "height": 1179.25
+        }
+      ]
     },
     {
       "viewport": "desktop-1024x768",
@@ -423,7 +1717,75 @@
       "scrollWidth": 1014,
       "clientWidth": 1014,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 768
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 970.640625
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 2458.46875
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 2041.296875
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 4300.796875
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 1146.1875
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 771
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 1014,
+          "height": 1146.265625
+        }
+      ]
     },
     {
       "viewport": "mobile-landscape-844x390",
@@ -432,7 +1794,75 @@
       "scrollWidth": 834,
       "clientWidth": 834,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 580
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 970.640625
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 2523.234375
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 2415.953125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 2184
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 1075.71875
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 771
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 834,
+          "height": 1105.15625
+        }
+      ]
     },
     {
       "viewport": "desktop-short-1280x450",
@@ -441,7 +1871,75 @@
       "scrollWidth": 1270,
       "clientWidth": 1270,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 580
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 649.265625
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 2588.515625
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 1581.953125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 2520
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 774.375
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 839
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 1270,
+          "height": 1135.5625
+        }
+      ]
     },
     {
       "viewport": "full-hd-1920x1080",
@@ -450,7 +1948,75 @@
       "scrollWidth": 1910,
       "clientWidth": 1910,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 1080
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 1080
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 2588.515625
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 1581.953125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 6048
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 1080
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 1080
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 1910,
+          "height": 1193.5625
+        }
+      ]
     },
     {
       "viewport": "qhd-2560x1440",
@@ -459,7 +2025,75 @@
       "scrollWidth": 2550,
       "clientWidth": 2550,
       "overflow": false,
-      "passed": true
+      "allSectionsVisible": true,
+      "regHitTestPassed": true,
+      "imagesLoaded": false,
+      "passed": true,
+      "sectionChecks": [
+        {
+          "id": "main-content",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 1440
+        },
+        {
+          "id": "brawl-stats-timer",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 315.5
+        },
+        {
+          "id": "about-genesis",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 1440
+        },
+        {
+          "id": "timeline",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 2588.515625
+        },
+        {
+          "id": "prize-pool",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 1581.953125
+        },
+        {
+          "id": "memories",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 8064
+        },
+        {
+          "id": "sponsors",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 1440
+        },
+        {
+          "id": "faq",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 1440
+        },
+        {
+          "id": "contact",
+          "exists": true,
+          "visible": true,
+          "width": 2550,
+          "height": 1193.5625
+        }
+      ]
     }
   ]
 }

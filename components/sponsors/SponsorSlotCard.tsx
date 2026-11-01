@@ -95,8 +95,11 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
     onSelect(slot.id);
   };
 
-  // Clear hover state and transform if user scrolls while pointer is stationary
+  // Clear hover state and transform if user scrolls while pointer is stationary over card.
+  // Active only during pointer interaction (when isHovered is true) to eliminate idle scroll overhead.
   useEffect(() => {
+    if (!isHovered) return;
+
     const handleScroll = () => {
       if (!cardRef.current) return;
       if (lastPointerRef.current) {
@@ -114,19 +117,19 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
             applyVisualTransform('');
           }
         }
-      } else if (!isFocused) {
+      } else {
         setIsHovered(false);
-        applyVisualTransform('');
+        if (!isFocused) {
+          applyVisualTransform('');
+        }
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
-    document.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll, { capture: true });
-      document.removeEventListener('scroll', handleScroll, { capture: true });
+      window.removeEventListener('scroll', handleScroll);
     };
-  }, [isFocused, applyVisualTransform]);
+  }, [isHovered, isFocused, applyVisualTransform]);
 
   // Clear inline tilt when motion is paused or on unmount
   useEffect(() => {
