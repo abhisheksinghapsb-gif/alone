@@ -397,8 +397,19 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
           }
         };
 
+        let cachedHeroRect: DOMRect | null = null;
+        const getHeroRect = () => {
+          if (!cachedHeroRect) {
+            cachedHeroRect = heroElement.getBoundingClientRect();
+          }
+          return cachedHeroRect;
+        };
+        const handleInvalidateHeroRect = () => {
+          cachedHeroRect = null;
+        };
+
         const handlePointerMove = (e: MouseEvent) => {
-          const rect = heroElement.getBoundingClientRect();
+          const rect = getHeroRect();
           if (rect.width === 0 || rect.height === 0) return;
           const rawX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
           const rawY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
@@ -408,6 +419,7 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
         };
 
         const handlePointerLeave = () => {
+          cachedHeroRect = null;
           targetX = 0;
           targetY = 0;
           requestParallaxFrame();
@@ -420,9 +432,13 @@ export function useLandingMotion({ sceneRef, motionPaused }: UseLandingMotionOpt
 
         heroElement.addEventListener('mousemove', handlePointerMove, { passive: true });
         heroElement.addEventListener('mouseleave', handlePointerLeave, { passive: true });
+        window.addEventListener('resize', handleInvalidateHeroRect, { passive: true });
+        window.addEventListener('scroll', handleInvalidateHeroRect, { passive: true });
         cleanupPointerListenersRef.current = () => {
           heroElement.removeEventListener('mousemove', handlePointerMove);
           heroElement.removeEventListener('mouseleave', handlePointerLeave);
+          window.removeEventListener('resize', handleInvalidateHeroRect);
+          window.removeEventListener('scroll', handleInvalidateHeroRect);
         };
       }
     }, scene);

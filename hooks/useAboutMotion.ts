@@ -186,8 +186,19 @@ export const useAboutMotion = ({
       pointerRafRef.current = requestAnimationFrame(updateParallax);
     };
 
+    let cachedSectionRect: DOMRect | null = null;
+    const getSectionRect = () => {
+      if (!cachedSectionRect) {
+        cachedSectionRect = section.getBoundingClientRect();
+      }
+      return cachedSectionRect;
+    };
+    const handleInvalidateSectionRect = () => {
+      cachedSectionRect = null;
+    };
+
     const handlePointerMove = (e: PointerEvent) => {
-      const rect = section.getBoundingClientRect();
+      const rect = getSectionRect();
       if (rect.width <= 0 || rect.height <= 0) return;
 
       // Section-relative normalized coordinates (-1 to +1)
@@ -203,12 +214,15 @@ export const useAboutMotion = ({
     };
 
     const handlePointerLeave = () => {
+      cachedSectionRect = null;
       mouseTarget.current = { x: 0, y: 0, isHovering: false };
       startParallax();
     };
 
     section.addEventListener('pointermove', handlePointerMove, { passive: true });
     section.addEventListener('pointerleave', handlePointerLeave);
+    window.addEventListener('resize', handleInvalidateSectionRect, { passive: true });
+    window.addEventListener('scroll', handleInvalidateSectionRect, { passive: true });
 
     return () => {
       if (pointerRafRef.current) {
@@ -218,6 +232,8 @@ export const useAboutMotion = ({
       isRunning = false;
       section.removeEventListener('pointermove', handlePointerMove);
       section.removeEventListener('pointerleave', handlePointerLeave);
+      window.removeEventListener('resize', handleInvalidateSectionRect);
+      window.removeEventListener('scroll', handleInvalidateSectionRect);
     };
   }, [sectionRef, motionPaused]);
 

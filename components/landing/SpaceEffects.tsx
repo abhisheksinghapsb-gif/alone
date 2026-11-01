@@ -13,6 +13,8 @@ interface FallingStar {
   color: string;
   isStreak: boolean;
   trailLength: number;
+  dirX: number;
+  dirY: number;
 }
 
 export interface SpaceEffectsProps {
@@ -24,6 +26,7 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
   const starsRef = useRef<FallingStar[]>([]);
   const rafIdRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
+  const lastDrawTimeRef = useRef<number>(0);
   const isRunningRef = useRef<boolean>(false);
 
   useEffect(() => {
@@ -95,6 +98,9 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
         // Approximately 10% of stars have short aligned light streaks
         const isStreak = tier > 0.88;
         const trailLength = isStreak ? 12 + Math.random() * 12 : 0;
+        const norm = Math.hypot(speedX, speedY) || 1;
+        const dirX = speedX / norm;
+        const dirY = speedY / norm;
 
         initialStars.push({
           x: Math.random() * (width + 60) - 30,
@@ -107,23 +113,33 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
           color: starColors[Math.floor(Math.random() * starColors.length)],
           isStreak,
           trailLength,
+          dirX,
+          dirY,
         });
       }
 
       starsRef.current = initialStars;
     }
 
-    // Single Animation Frame Loop
+    // Single Animation Frame Loop (cadence-optimized for smooth 60fps)
     const animate = (currentTime: number) => {
       if (!isRunningRef.current) return;
 
       if (!lastTimeRef.current) {
         lastTimeRef.current = currentTime;
+        lastDrawTimeRef.current = currentTime;
+      }
+
+      // Throttle canvas rasterization to ~60fps on high-refresh (120Hz/144Hz) displays
+      if (currentTime - lastDrawTimeRef.current < 15.5) {
+        rafIdRef.current = requestAnimationFrame(animate);
+        return;
       }
 
       // Elapsed time in seconds; clamp to max 0.08s (12.5 FPS) to prevent teleportation after tab restore
       const dt = Math.min(Math.max((currentTime - lastTimeRef.current) / 1000, 0), 0.08);
       lastTimeRef.current = currentTime;
+      lastDrawTimeRef.current = currentTime;
 
       ctx.clearRect(0, 0, width, height);
 
@@ -152,14 +168,10 @@ export const SpaceEffects: React.FC<SpaceEffectsProps> = ({ motionPaused }) => {
         ctx.globalAlpha = star.alpha;
         ctx.fill();
 
-        // Draw streak trail if active
+        // Draw streak trail if active using precomputed normalized direction
         if (star.isStreak && star.trailLength > 0) {
-          const norm = Math.hypot(star.speedX, star.speedY) || 1;
-          const dirX = star.speedX / norm;
-          const dirY = star.speedY / norm;
-
-          const startX = star.x - dirX * star.trailLength;
-          const startY = star.y - dirY * star.trailLength;
+          const startX = star.x - star.dirX * star.trailLength;
+          const startY = star.y - star.dirY * star.trailLength;
 
           const grad = ctx.createLinearGradient(startX, startY, star.x, star.y);
           grad.addColorStop(0, 'rgba(255, 255, 255, 0)');

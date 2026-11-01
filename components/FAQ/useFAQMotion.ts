@@ -79,9 +79,6 @@ export const useFAQMotion = ({
             }
           },
         },
-        onComplete: () => {
-          ScrollTrigger.refresh();
-        },
       });
       entranceTimelineRef.current = tl;
 

@@ -75,9 +75,6 @@ export const useContactMotion = ({
             }
           },
         },
-        onComplete: () => {
-          ScrollTrigger.refresh();
-        },
       });
       entranceTimelineRef.current = tl;
 
@@ -174,11 +171,22 @@ export const useContactMotion = ({
     const quickX = gsap.quickTo(bg, 'x', { duration: 0.6, ease: 'power2.out' });
     const quickY = gsap.quickTo(bg, 'y', { duration: 0.6, ease: 'power2.out' });
 
+    let cachedSectionRect: DOMRect | null = null;
+    const getSectionRect = () => {
+      if (!cachedSectionRect) {
+        cachedSectionRect = section.getBoundingClientRect();
+      }
+      return cachedSectionRect;
+    };
+    const handleInvalidateSectionRect = () => {
+      cachedSectionRect = null;
+    };
+
     // Pointer move handler using reusable quickTo setters to eliminate GC thrashing
     const handlePointerMove = (e: PointerEvent) => {
       if (isOffscreenRef.current || document.hidden) return;
 
-      const rect = section.getBoundingClientRect();
+      const rect = getSectionRect();
       if (rect.height <= 0 || rect.width <= 0) return;
 
       // Compute normalized offsets (-1 to +1) from section center
@@ -194,16 +202,21 @@ export const useContactMotion = ({
     };
 
     const handlePointerLeave = () => {
+      cachedSectionRect = null;
       quickX(0);
       quickY(0);
     };
 
     section.addEventListener('pointermove', handlePointerMove, { passive: true });
     section.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+    window.addEventListener('resize', handleInvalidateSectionRect, { passive: true });
+    window.addEventListener('scroll', handleInvalidateSectionRect, { passive: true });
 
     return () => {
       section.removeEventListener('pointermove', handlePointerMove);
       section.removeEventListener('pointerleave', handlePointerLeave);
+      window.removeEventListener('resize', handleInvalidateSectionRect);
+      window.removeEventListener('scroll', handleInvalidateSectionRect);
       gsap.killTweensOf(bg);
       gsap.set(bg, { x: 0, y: 0 });
     };

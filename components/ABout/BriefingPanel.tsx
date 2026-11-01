@@ -24,6 +24,8 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
   const reflectionGradRef = useRef<SVGRadialGradientElement | null>(null);
   const reflectionPathRef = useRef<SVGPathElement | null>(null);
   const pointerRafRef = useRef<number | null>(null);
+  const containerRectRef = useRef<DOMRect | null>(null);
+  const lastPointerCoordsRef = useRef<{ x: number; y: number } | null>(null);
 
   // Scrolling state management
   const [canScroll, setCanScroll] = useState<boolean>(false);
@@ -120,24 +122,29 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
   );
 
   const updateReflectionPosition = (clientX: number, clientY: number) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const px = Math.round(clientX - rect.left);
-    const py = Math.round(clientY - rect.top);
+    lastPointerCoordsRef.current = { x: clientX, y: clientY };
 
-    if (pointerRafRef.current !== null) {
-      cancelAnimationFrame(pointerRafRef.current);
+    if (pointerRafRef.current === null) {
+      pointerRafRef.current = requestAnimationFrame(() => {
+        pointerRafRef.current = null;
+        if (!lastPointerCoordsRef.current) return;
+        if (!containerRectRef.current) {
+          containerRectRef.current = containerRef.current?.getBoundingClientRect() || null;
+        }
+        const rect = containerRectRef.current;
+        if (!rect) return;
+        const px = Math.round(lastPointerCoordsRef.current.x - rect.left);
+        const py = Math.round(lastPointerCoordsRef.current.y - rect.top);
+
+        if (reflectionGradRef.current) {
+          reflectionGradRef.current.setAttribute('cx', String(px));
+          reflectionGradRef.current.setAttribute('cy', String(py));
+        }
+        if (reflectionPathRef.current) {
+          reflectionPathRef.current.style.opacity = '1';
+        }
+      });
     }
-    pointerRafRef.current = requestAnimationFrame(() => {
-      pointerRafRef.current = null;
-      if (reflectionGradRef.current) {
-        reflectionGradRef.current.setAttribute('cx', String(px));
-        reflectionGradRef.current.setAttribute('cy', String(py));
-      }
-      if (reflectionPathRef.current) {
-        reflectionPathRef.current.style.opacity = '1';
-      }
-    });
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -166,6 +173,8 @@ export const BriefingPanel: React.FC<BriefingPanelProps> = ({
 
   const handlePointerLeave = () => {
     isHoveredRef.current = false;
+    containerRectRef.current = null;
+    lastPointerCoordsRef.current = null;
     onHoverChange?.(false);
 
     if (pointerRafRef.current !== null) {

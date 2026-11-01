@@ -21,6 +21,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
   const visualRef = useRef<HTMLDivElement | null>(null);
   const tiltRafRef = useRef<number | null>(null);
   const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
+  const cachedRectRef = useRef<DOMRect | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [pulseKey, setPulseKey] = useState<number>(0);
@@ -39,7 +40,10 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       if (motionPaused || e.pointerType === 'touch') return;
       if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return;
 
-      const rect = e.currentTarget.getBoundingClientRect();
+      if (!cachedRectRef.current) {
+        cachedRectRef.current = e.currentTarget.getBoundingClientRect();
+      }
+      const rect = cachedRectRef.current;
       const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to +0.5
       const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to +0.5
       const rotateX = Math.max(-1.0, Math.min(1.0, -y * 2.0));
@@ -60,6 +64,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
 
   const handlePointerEnter = (e: React.PointerEvent<HTMLButtonElement>) => {
     lastPointerRef.current = { x: e.clientX, y: e.clientY };
+    cachedRectRef.current = e.currentTarget.getBoundingClientRect();
     setIsHovered(true);
     if (!motionPaused) {
       applyVisualTransform('perspective(600px) translateY(-3px) scale(1.015)');
@@ -68,6 +73,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
 
   const handlePointerLeave = () => {
     lastPointerRef.current = null;
+    cachedRectRef.current = null;
     setIsHovered(false);
     if (tiltRafRef.current !== null) {
       cancelAnimationFrame(tiltRafRef.current);
@@ -109,6 +115,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
         if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
           setIsHovered(false);
           lastPointerRef.current = null;
+          cachedRectRef.current = null;
           if (tiltRafRef.current !== null) {
             cancelAnimationFrame(tiltRafRef.current);
             tiltRafRef.current = null;
@@ -119,6 +126,7 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
         }
       } else {
         setIsHovered(false);
+        cachedRectRef.current = null;
         if (!isFocused) {
           applyVisualTransform('');
         }
@@ -172,9 +180,6 @@ export const SponsorSlotCard: React.FC<SponsorSlotCardProps> = ({
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
       onPointerCancel={handlePointerLeave}
-      onMouseEnter={handlePointerEnter}
-      onMouseLeave={handlePointerLeave}
-      onMouseMove={handlePointerMove}
     >
       {/* Stable Visual Motion Wrapper (transforms visual without altering hit test area) */}
       <div
