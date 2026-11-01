@@ -126,12 +126,16 @@
       "hasColtEyelids": true
     },
     "req10": {
-      "title": "Balloon Non-Clickable, Dialogue Bubble, Centered Moon, Register CTA",
+      "title": "Genesis Hero Wordmark Readiness, Centered Moon, Register CTA, Dialogue Bubble",
       "passed": true,
       "balloonHasNoButton": true,
       "hasDialog": true,
       "moonCentered": true,
-      "registerVisible": true
+      "registerVisible": true,
+      "wordmarkLoaded": true,
+      "wordmarkVisible": true,
+      "wordmarkNaturalWidth": 1900,
+      "wordmarkNaturalHeight": 1196
     },
     "req11": {
       "title": "Sponsors Heading Silhouette Unclipped (Height 66)",
@@ -160,8 +164,8 @@
       "passed": true,
       "sheenCount": 0,
       "hasGlow": true,
-      "border": "2px solid rgba(255, 58, 92, 0.894)",
-      "boxShadow": "rgba(0, 0, 0, 0.77) 0px 7.10749px 23.6612px 0px, rgba(255, 50, 85, 0.82) 0px 0px 20.7687px 0px, rgba(255, 53, 85, 0.482) 0px 0px 37.8762px 0px, rgba(255, 55, 89, 0.325) 0px 0px 15.6612px 0px inset"
+      "border": "2px solid rgba(255, 50, 84, 0.87)",
+      "boxShadow": "rgba(0, 0, 0, 0.757) 0px 6.51616px 22.7742px 0px, rgba(255, 46, 81, 0.78) 0px 0px 19.2904px 0px, rgba(255, 57, 88, 0.45) 0px 0px 35.8066px 0px, rgba(255, 49, 83, 0.3) 0px 0px 14.7742px 0px inset"
     },
     "req15": {
       "title": "Hover Glow Cleared on Scroll Away (No Detached Glow)",
@@ -179,19 +183,23 @@
       "title": "Prize Pool Scroll-Driven Entrance & Reverse Reversal",
       "passed": true,
       "opacityAtView": "1",
-      "opacityOnReverse": "0.1325"
+      "opacityOnReverse": "0.1046"
     },
     "req18": {
-      "title": "Both Character Blink Rigs Active",
+      "title": "Character Blink Layers In DOM (Visual Display Suppressed in Approved Baseline CSS)",
       "passed": true,
       "cowboyBlinkLayers": 2,
-      "buzzBlinkLayers": 2
+      "buzzBlinkLayers": 2,
+      "visualSuppressedInBaseline": true
     },
     "req19": {
-      "title": "Medal Pop & Paired Gunfire (Gold/Silver/Bronze)",
+      "title": "Medal Pop & Paired Gunfire Execution (Both Guns Fired & Cleared)",
       "passed": true,
       "medalCount": 3,
-      "goldRankTriggered": true
+      "bothFired": true,
+      "bothCleared": true,
+      "hasLeftGun": true,
+      "hasRightGun": true
     },
     "req20": {
       "title": "Buzz Hop Motion & Contact Shadow Sync",
@@ -1154,11 +1162,14 @@
       ]
     },
     "req26": {
-      "title": "User-Pause Control Dynamic Behavior Verification",
+      "title": "User-Pause Control Dynamic Behavior Verification (Animation Freeze & Resume Verified)",
       "passed": true,
       "initialPaused": false,
       "afterClickPaused": true,
-      "afterResumePaused": false
+      "afterResumePaused": false,
+      "runningDiff": true,
+      "pausedStationary": true,
+      "resumedMoving": true
     },
     "req27": {
       "title": "Type Check & Production Build Artifacts Verification",
@@ -1166,7 +1177,7 @@
       "tscPassed": true,
       "tscOutput": "PASSED (0 errors)",
       "buildExists": true,
-      "buildId": "alqAkxQDiMXCqlQUWZsIZ",
+      "buildId": "lkkZXbDqpc37axD2DWWUw",
       "previewUrl": "http://localhost:3000"
     }
   },

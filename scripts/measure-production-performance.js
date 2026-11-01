@@ -7,9 +7,9 @@ const path = require('path');
 const os = require('os');
 
 const CHROME_PATH = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const PORT = parseInt(process.env.CDP_PORT || '9222', 10);
+const PORT = parseInt(process.env.CDP_PORT || '9228', 10);
 const TARGET_URL = process.env.TARGET_URL || 'http://localhost:3000';
-const OUT_FILE = process.argv[2] || path.join(__dirname, '..', 'docs', 'review', 'performance-measurements-before.json');
+const OUT_FILE = process.argv[2] || path.join(__dirname, '..', 'docs', 'review', 'performance-measurements-after.json');
 
 function wait(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -60,10 +60,19 @@ class CdpClient {
       };
     });
   }
-  send(method, params = {}) {
+  send(method, params = {}, timeoutMs = 15000) {
     return new Promise((res, rej) => {
       const id = this.msgId++;
-      this.callbacks.set(id, { res, rej });
+      const timer = setTimeout(() => {
+        if (this.callbacks.has(id)) {
+          this.callbacks.delete(id);
+          rej(new Error(`CDP command '${method}' timed out after ${timeoutMs}ms`));
+        }
+      }, timeoutMs);
+      this.callbacks.set(id, {
+        res: (val) => { clearTimeout(timer); res(val); },
+        rej: (err) => { clearTimeout(timer); rej(err); },
+      });
       this.ws.send(JSON.stringify({ id, method, params }));
     });
   }
@@ -77,23 +86,25 @@ class CdpClient {
 }
 
 function median(arr) {
-  if (!arr.length) return 0;
-  const s = [...arr].sort((a, b) => a - b);
+  const valid = arr.filter((v) => typeof v === 'number' && !isNaN(v));
+  if (!valid.length) return null;
+  const s = [...valid].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
   return s.length % 2 !== 0 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
 function stats(arr) {
-  if (!arr.length) return { median: 0, min: 0, max: 0, range: 0 };
-  const s = [...arr].sort((a, b) => a - b);
+  const valid = arr.filter((v) => typeof v === 'number' && !isNaN(v));
+  if (!valid.length) return { median: null, min: null, max: null, range: null, all: arr };
+  const s = [...valid].sort((a, b) => a - b);
   const min = s[0];
   const max = s[s.length - 1];
   return {
-    median: Math.round(median(arr) * 100) / 100,
+    median: Math.round(median(valid) * 100) / 100,
     min: Math.round(min * 100) / 100,
     max: Math.round(max * 100) / 100,
     range: Math.round((max - min) * 100) / 100,
-    all: arr.map(v => Math.round(v * 100) / 100),
+    all: arr.map((v) => (typeof v === 'number' ? Math.round(v * 100) / 100 : v)),
   };
 }
 
@@ -126,9 +137,15 @@ const PROFILES = [
 ];
 
 async function measureRun(profile, isCold, runIdx) {
-  const userDataDir = path.join(__dirname, '..', `.chrome-perf-${profile.name}-${isCold ? 'cold' : 'warm'}-${runIdx}`);
+  const userDataDir = path.join(
+    __dirname,
+    '..',
+    `.chrome-perf-${profile.name}-${isCold ? 'cold' : 'warm'}-${runIdx}`
+  );
   if (isCold && fs.existsSync(userDataDir)) {
-    try { fs.rmSync(userDataDir, { recursive: true, force: true }); } catch (e) {}
+    try {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+    } catch (e) {}
   }
 
   const chromeProc = spawn(CHROME_PATH, [
@@ -179,24 +196,26 @@ async function measureRun(profile, isCold, runIdx) {
       mobile: profile.mobile,
     });
 
+    // Handle cold vs warm cache preparation
     if (isCold) {
       await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
       await cdp.send('Network.clearBrowserCache');
     } else {
+      // Warm run: Unmeasured priming navigation in THIS SAME profile with caching enabled
       await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
+      await cdp.send('Page.navigate', { url: TARGET_URL });
+      await wait(3500); // Allow all assets, fonts, and scripts to populate disk/memory cache
     }
 
     const failedRequests = [];
-    // Inject instrumentation before document loads
+    // Inject PerformanceObserver instrumentation before document loads
     await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
       source: `
         window.__metrics = {
           cls: 0,
-          lcp: 0,
+          lcp: null,
           tbt: 0,
           longTasks: [],
-          logoVisibleTime: null,
-          registerVisibleTime: null,
         };
 
         try {
@@ -231,30 +250,43 @@ async function measureRun(profile, isCold, runIdx) {
           });
           longTaskObserver.observe({ type: 'longtask', buffered: true });
         } catch (e) {}
-      `
+      `,
     });
 
-    const navStart = Date.now();
-    await cdp.send('Page.navigate', { url: TARGET_URL });
+    // Execute navigation or measured reload
+    if (isCold) {
+      await cdp.send('Page.navigate', { url: TARGET_URL });
+    } else {
+      // Measured reload in primed profile with caching enabled
+      await cdp.send('Page.reload', { ignoreCache: false });
+    }
     await wait(3500);
 
-    // Evaluate visibility of logo and register
+    // Evaluate visibility of Genesis hero wordmark, register CTA, and network transfers
     const probe = await cdp.send('Runtime.evaluate', {
       expression: `(() => {
         const perf = window.performance;
         const timing = perf.getEntriesByType('navigation')[0] || {};
         
-        const logo = document.getElementById('gdai-badge-container') || document.querySelector('.gdaiBadgeWrap');
+        const wordmark = document.querySelector('.genesisLogoWrap img.genesisLogoImg, img.genesisLogoImg');
         const register = document.getElementById('primary-register-btn');
         
-        const logoRect = logo ? logo.getBoundingClientRect() : null;
+        const wmRect = wordmark ? wordmark.getBoundingClientRect() : null;
         const regRect = register ? register.getBoundingClientRect() : null;
+        const wmLoaded = wordmark && wordmark.complete && wordmark.naturalWidth > 0 && wordmark.naturalHeight > 0;
+        const wmVisible = wmLoaded && wmRect && wmRect.width > 0 && wmRect.height > 0 &&
+                          window.getComputedStyle(wordmark).display !== 'none';
 
         const resources = perf.getEntriesByType('resource');
         let jsSize = 0, cssSize = 0, imgSize = 0, fontSize = 0, totalSize = 0;
+        let cachedResources = 0;
+
         for (const r of resources) {
           const size = r.transferSize || 0;
           totalSize += size;
+          if (r.transferSize === 0 && r.decodedBodySize > 0) {
+            cachedResources++;
+          }
           if (r.initiatorType === 'script' || r.name.endsWith('.js')) jsSize += size;
           else if (r.initiatorType === 'css' || r.name.endsWith('.css')) cssSize += size;
           else if (r.initiatorType === 'img' || /\\.(png|jpg|jpeg|webp|svg|gif)/.test(r.name)) imgSize += size;
@@ -263,12 +295,12 @@ async function measureRun(profile, isCold, runIdx) {
 
         return {
           navTiming: {
-            domContentLoaded: timing.domContentLoadedEventEnd,
-            load: timing.loadEventEnd,
-            responseEnd: timing.responseEnd,
+            domContentLoaded: timing.domContentLoadedEventEnd || null,
+            load: timing.loadEventEnd || null,
+            responseEnd: timing.responseEnd || null,
           },
           metrics: window.__metrics,
-          logoVisible: logoRect && logoRect.width > 0 && logoRect.height > 0,
+          wordmarkVisible: !!wmVisible,
           regVisible: regRect && regRect.width > 0 && regRect.height > 0,
           transfer: {
             jsSize,
@@ -276,7 +308,8 @@ async function measureRun(profile, isCold, runIdx) {
             imgSize,
             fontSize,
             totalSize,
-            resourceCount: resources.length
+            resourceCount: resources.length,
+            cachedResources,
           }
         };
       })()`,
@@ -286,34 +319,53 @@ async function measureRun(profile, isCold, runIdx) {
 
     const data = probe.result ? probe.result.value : {};
 
-    // Measure interaction latency on representative controls
-    const interactionLatency = await cdp.send('Runtime.evaluate', {
-      expression: `(async () => {
+    // Measure interaction latency via real CDP mouse input
+    let latencyVal = null;
+    const btnBox = await cdp.send('Runtime.evaluate', {
+      expression: `(() => {
         const btn = document.getElementById('sound-toggle-btn') || document.getElementById('primary-register-btn');
-        if (!btn) return { latency: 0 };
-        const t0 = performance.now();
-        btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-        const t1 = performance.now();
-        return {
-          latency: t1 - t0
-        };
+        if (!btn) return null;
+        const r = btn.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2, width: r.width, height: r.height };
       })()`,
       returnByValue: true,
-      awaitPromise: true,
     });
 
-    const latencyVal = interactionLatency.result && interactionLatency.result.value ? interactionLatency.result.value.latency : 0;
+    if (btnBox.result && btnBox.result.value) {
+      const { x, y } = btnBox.result.value;
+      const t0 = Date.now();
+      await cdp.send('Input.dispatchMouseEvent', {
+        type: 'mousePressed',
+        button: 'left',
+        clickCount: 1,
+        x: Math.round(x),
+        y: Math.round(y),
+      });
+      await cdp.send('Input.dispatchMouseEvent', {
+        type: 'mouseReleased',
+        button: 'left',
+        clickCount: 1,
+        x: Math.round(x),
+        y: Math.round(y),
+      });
+      // Wait for rendering frames to settle
+      await cdp.send('Runtime.evaluate', {
+        expression: `new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`,
+        awaitPromise: true,
+      });
+      latencyVal = Date.now() - t0;
+    }
 
+    const metrics = data.metrics || {};
     return {
-      lcp: data.metrics ? data.metrics.lcp : 0,
-      cls: data.metrics ? data.metrics.cls : 0,
-      tbt: data.metrics ? data.metrics.tbt : 0,
-      domContentLoaded: data.navTiming ? data.navTiming.domContentLoaded : 0,
-      load: data.navTiming ? data.navTiming.load : 0,
+      lcp: typeof metrics.lcp === 'number' ? metrics.lcp : null,
+      cls: typeof metrics.cls === 'number' ? metrics.cls : null,
+      tbt: typeof metrics.tbt === 'number' ? metrics.tbt : null,
+      domContentLoaded: data.navTiming ? data.navTiming.domContentLoaded : null,
+      load: data.navTiming ? data.navTiming.load : null,
       interactionLatency: latencyVal,
       transfer: data.transfer || {},
-      logoVisible: !!data.logoVisible,
+      wordmarkVisible: !!data.wordmarkVisible,
       regVisible: !!data.regVisible,
       failedRequests,
     };
@@ -326,6 +378,26 @@ async function measureRun(profile, isCold, runIdx) {
 
 async function run() {
   const cpus = os.cpus();
+  let chromeVersion = 'Unknown';
+  try {
+    const versionProc = spawn(CHROME_PATH, ['--remote-debugging-port=9230', '--headless=new', 'about:blank']);
+    await wait(1000);
+    const verJson = await fetchJson('http://127.0.0.1:9230/json/version');
+    if (verJson && verJson.Browser) chromeVersion = verJson.Browser;
+    killProcessTree(versionProc.pid);
+  } catch (e) {}
+
+  let buildId = 'Unknown';
+  try {
+    const buildIdPath = path.join(__dirname, '..', '.next', 'BUILD_ID');
+    if (fs.existsSync(buildIdPath)) buildId = fs.readFileSync(buildIdPath, 'utf8').trim();
+  } catch (e) {}
+
+  let commitSha = 'Unknown';
+  try {
+    commitSha = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+  } catch (e) {}
+
   const envInfo = {
     platform: os.platform(),
     release: os.release(),
@@ -335,10 +407,15 @@ async function run() {
     totalMemoryGB: (os.totalmem() / 1024 / 1024 / 1024).toFixed(2),
     targetUrl: TARGET_URL,
     timestamp: new Date().toISOString(),
+    chromeVersion,
+    nodeVersion: process.version,
+    nextBuildId: buildId,
+    commitSha,
   };
 
   console.log('=== Genesis 6 Production Performance Measurement Suite ===');
-  console.log(`Environment: ${envInfo.cpuModel} (${envInfo.cpuCores} cores), ${envInfo.totalMemoryGB} GB RAM, OS: ${envInfo.platform} ${envInfo.release}`);
+  console.log(`Environment: ${envInfo.cpuModel} (${envInfo.cpuCores} cores), ${envInfo.totalMemoryGB} GB RAM`);
+  console.log(`Browser: ${envInfo.chromeVersion}, Node: ${envInfo.nodeVersion}, BuildID: ${envInfo.nextBuildId}, SHA: ${envInfo.commitSha.substring(0, 10)}`);
   console.log(`Target: ${TARGET_URL}\n`);
 
   const report = {
@@ -348,62 +425,68 @@ async function run() {
 
   for (const profile of PROFILES) {
     console.log(`\n==================================================`);
-    console.log(`Profiling: ${profile.label}`);
+    console.log(`Profile: ${profile.label}`);
     console.log(`==================================================`);
 
     const coldRuns = [];
-    console.log('\n--- 5 Cold Runs (Cache Disabled) ---');
+    console.log(`--- Running 5 Cold Loads (isolated profile, cache disabled & cleared) ---`);
     for (let i = 1; i <= 5; i++) {
-      process.stdout.write(`  Cold Run ${i}/5 ... `);
+      process.stdout.write(`  Cold Run ${i}/5... `);
       const res = await measureRun(profile, true, i);
       coldRuns.push(res);
-      console.log(`LCP: ${res.lcp.toFixed(1)}ms | CLS: ${res.cls.toFixed(4)} | TBT: ${res.tbt.toFixed(1)}ms | Interaction: ${res.interactionLatency.toFixed(1)}ms | Transfer: ${(res.transfer.totalSize / 1024).toFixed(1)} KB`);
+      console.log(
+        `LCP: ${res.lcp !== null ? res.lcp.toFixed(1) + 'ms' : 'NULL'}, ` +
+        `CLS: ${res.cls !== null ? res.cls.toFixed(4) : 'NULL'}, ` +
+        `TBT: ${res.tbt !== null ? res.tbt.toFixed(1) + 'ms' : 'NULL'}, ` +
+        `Latency: ${res.interactionLatency !== null ? res.interactionLatency.toFixed(1) + 'ms' : 'NULL'}, ` +
+        `Transfer: ${(res.transfer.totalSize / 1024).toFixed(1)} KB`
+      );
     }
 
     const warmRuns = [];
-    console.log('\n--- 3 Warm Runs (Cache Enabled) ---');
+    console.log(`\n--- Running 3 Warm Loads (priming navigation, then measured reload with cache enabled) ---`);
     for (let i = 1; i <= 3; i++) {
-      process.stdout.write(`  Warm Run ${i}/3 ... `);
+      process.stdout.write(`  Warm Run ${i}/3... `);
       const res = await measureRun(profile, false, i);
       warmRuns.push(res);
-      console.log(`LCP: ${res.lcp.toFixed(1)}ms | CLS: ${res.cls.toFixed(4)} | TBT: ${res.tbt.toFixed(1)}ms | Interaction: ${res.interactionLatency.toFixed(1)}ms`);
+      console.log(
+        `LCP: ${res.lcp !== null ? res.lcp.toFixed(1) + 'ms' : 'NULL'}, ` +
+        `CLS: ${res.cls !== null ? res.cls.toFixed(4) : 'NULL'}, ` +
+        `TBT: ${res.tbt !== null ? res.tbt.toFixed(1) + 'ms' : 'NULL'}, ` +
+        `Latency: ${res.interactionLatency !== null ? res.interactionLatency.toFixed(1) + 'ms' : 'NULL'}, ` +
+        `Transfer: ${(res.transfer.totalSize / 1024).toFixed(1)} KB (Cached: ${res.transfer.cachedResources || 0})`
+      );
     }
 
     report.profiles[profile.name] = {
       profile,
       cold: {
-        lcp: stats(coldRuns.map(r => r.lcp)),
-        cls: stats(coldRuns.map(r => r.cls)),
-        tbt: stats(coldRuns.map(r => r.tbt)),
-        domContentLoaded: stats(coldRuns.map(r => r.domContentLoaded)),
-        interactionLatency: stats(coldRuns.map(r => r.interactionLatency)),
-        transferTotalKB: stats(coldRuns.map(r => r.transfer.totalSize / 1024)),
-        transferJsKB: stats(coldRuns.map(r => (r.transfer.jsSize || 0) / 1024)),
-        transferCssKB: stats(coldRuns.map(r => (r.transfer.cssSize || 0) / 1024)),
-        transferImgKB: stats(coldRuns.map(r => (r.transfer.imgSize || 0) / 1024)),
-        transferFontKB: stats(coldRuns.map(r => (r.transfer.fontSize || 0) / 1024)),
-        raw: coldRuns,
+        runs: coldRuns,
+        lcp: stats(coldRuns.map((r) => r.lcp)),
+        cls: stats(coldRuns.map((r) => r.cls)),
+        tbt: stats(coldRuns.map((r) => r.tbt)),
+        interactionLatency: stats(coldRuns.map((r) => r.interactionLatency)),
+        transferKB: stats(coldRuns.map((r) => r.transfer.totalSize / 1024)),
       },
       warm: {
-        lcp: stats(warmRuns.map(r => r.lcp)),
-        cls: stats(warmRuns.map(r => r.cls)),
-        tbt: stats(warmRuns.map(r => r.tbt)),
-        domContentLoaded: stats(warmRuns.map(r => r.domContentLoaded)),
-        interactionLatency: stats(warmRuns.map(r => r.interactionLatency)),
-        raw: warmRuns,
-      }
+        runs: warmRuns,
+        lcp: stats(warmRuns.map((r) => r.lcp)),
+        cls: stats(warmRuns.map((r) => r.cls)),
+        tbt: stats(warmRuns.map((r) => r.tbt)),
+        interactionLatency: stats(warmRuns.map((r) => r.interactionLatency)),
+        transferKB: stats(warmRuns.map((r) => r.transfer.totalSize / 1024)),
+        cachedResources: stats(warmRuns.map((r) => r.transfer.cachedResources)),
+      },
     };
   }
 
-  const reviewDir = path.dirname(OUT_FILE);
-  if (!fs.existsSync(reviewDir)) fs.mkdirSync(reviewDir, { recursive: true });
+  const outDir = path.dirname(OUT_FILE);
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(report, null, 2));
-
-  console.log(`\nMeasurements recorded and saved to: ${OUT_FILE}`);
+  console.log(`\nPerformance measurements saved successfully to: ${OUT_FILE}`);
 }
 
 run().catch((err) => {
-  console.error('\nMeasurement failed:', err);
+  console.error('\nPerformance measurement failed:', err);
   process.exit(1);
 });
-

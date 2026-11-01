@@ -15,6 +15,13 @@ function wait(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+function killProcessTree(pid) {
+  if (!pid) return;
+  try {
+    execSync(`taskkill /pid ${pid} /T /F`, { stdio: 'ignore' });
+  } catch (e) {}
+}
+
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
     http.get(url, (res) => {
@@ -126,28 +133,44 @@ async function run() {
   if (!fs.existsSync(CAPTURES_DIR)) fs.mkdirSync(CAPTURES_DIR, { recursive: true });
   if (!fs.existsSync(REVIEW_DIR)) fs.mkdirSync(REVIEW_DIR, { recursive: true });
 
-  const chromeProc = await getOrCreateChrome();
-  const tabs = await fetchJson(`http://127.0.0.1:${PORT}/json/list`);
-  const tab = tabs.find((t) => t.type === 'page') || tabs[0];
-  const cdp = new CdpClient(tab.webSocketDebuggerUrl);
-  await cdp.connect();
+  let chromeProc = null;
+  let cdp = null;
 
-  await cdp.send('Page.enable');
-  await cdp.send('Runtime.enable');
-  await cdp.send('DOM.enable');
+  try {
+    chromeProc = await getOrCreateChrome();
+    const tabs = await fetchJson(`http://127.0.0.1:${PORT}/json/list`);
+    const tab = tabs.find((t) => t.type === 'page') || tabs[0];
+    cdp = new CdpClient(tab.webSocketDebuggerUrl);
+    await cdp.connect();
 
-  await cdp.send('Emulation.setDeviceMetricsOverride', {
-    width: 1536,
-    height: 730,
-    deviceScaleFactor: 1,
-    mobile: false,
-  });
+    await cdp.send('Page.enable');
+    await cdp.send('Runtime.enable');
+    await cdp.send('DOM.enable');
+    await cdp.send('Network.enable');
 
-  console.log(`Navigating to ${TARGET_URL}...`);
-  await cdp.send('Page.navigate', { url: TARGET_URL });
-  await wait(3000);
+    const networkFailures = [];
+    // Observe network request errors
+    cdp.ws.addEventListener('message', (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.method === 'Network.loadingFailed') {
+          networkFailures.push({ url: msg.params.requestId, error: msg.params.errorText });
+        }
+      } catch (e) {}
+    });
 
-  const results = {};
+    await cdp.send('Emulation.setDeviceMetricsOverride', {
+      width: 1536,
+      height: 730,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
+
+    console.log(`Navigating to ${TARGET_URL}...`);
+    await cdp.send('Page.navigate', { url: TARGET_URL });
+    await wait(3000);
+
+    const results = {};
 
   console.log('\n--- STAGE 1: Page Scrolling and Navigation ---');
   // Requirement 1: Section Order & Unique IDs
@@ -479,35 +502,56 @@ async function run() {
   results['req9'] = { title: 'Telescope Stationary, Ninja Plain, Colt Blinking & Blaster', ...req9 };
   console.log(`Req 9: ${req9.passed ? 'PASS' : 'FAIL'} (Telescope Non-Click: ${req9.telescopeHasNoClick}, Ninja Plain: ${req9.ninjaIsPlain})`);
 
-  // Requirement 10: Balloon Non-Clickable, Dialogue Bubble, Moon Centering, Register Visibility
+  // Stage 3 Hero Wordmark & CTA Readiness Check
+  console.log('\n--- STAGE 3: Landing-Page Motion and Visibility ---');
+  // Scroll back to top
+  await evalInPage(cdp, `window.scrollTo({ top: 0, behavior: 'instant' })`);
+  await wait(400);
+
+  // Requirement 10: Balloon Non-Clickable, Dialogue Bubble, Moon Centering, Genesis Hero Wordmark Readiness, Register Visibility
   const req10 = await evalInPage(
     cdp,
     `(() => {
       const balloon = document.getElementById('balloon-character-group');
       const dialog = document.getElementById('squeak-dialog-wrapper');
-      const balloonHasNoButton = !balloon.querySelector('button');
+      const balloonHasNoButton = balloon && !balloon.querySelector('button');
       const scene = document.getElementById('main-content');
       const moon = document.getElementById('moon-layer');
       const registerBtn = document.getElementById('primary-register-btn');
       
+      const wordmark = document.querySelector('.genesisLogoWrap img.genesisLogoImg, img.genesisLogoImg');
+      const wordmarkLoaded = wordmark && wordmark.complete && wordmark.naturalWidth > 0 && wordmark.naturalHeight > 0;
+      const wordmarkRect = wordmark ? wordmark.getBoundingClientRect() : null;
+      const wordmarkStyle = wordmark ? window.getComputedStyle(wordmark) : null;
+      const wordmarkWrap = wordmark ? wordmark.closest('.genesisLogoWrap') : null;
+      const wrapStyle = wordmarkWrap ? window.getComputedStyle(wordmarkWrap) : null;
+      const wordmarkVisible = !!(wordmarkLoaded && wordmarkRect && wordmarkRect.width > 0 && wordmarkRect.height > 0 &&
+                              wordmarkStyle.display !== 'none' && wordmarkStyle.visibility !== 'hidden' &&
+                              parseFloat(wordmarkStyle.opacity) > 0 &&
+                              (!wrapStyle || (wrapStyle.display !== 'none' && parseFloat(wrapStyle.opacity) > 0)));
+
       const sceneRect = scene.getBoundingClientRect();
       const moonRect = moon.getBoundingClientRect();
       const sceneCenter = sceneRect.left + sceneRect.width / 2;
       const moonCenter = moonRect.left + moonRect.width / 2;
       const moonCentered = Math.abs(sceneCenter - moonCenter) < 2;
-      const registerVisible = registerBtn && registerBtn.offsetWidth > 100 && registerBtn.offsetHeight > 30;
+      const registerVisible = !!(registerBtn && registerBtn.offsetWidth > 100 && registerBtn.offsetHeight > 30);
 
       return {
-        passed: !!balloon && balloonHasNoButton && !!dialog && moonCentered && registerVisible,
+        passed: !!balloon && balloonHasNoButton && !!dialog && moonCentered && registerVisible && wordmarkVisible,
         balloonHasNoButton,
         hasDialog: !!dialog,
         moonCentered,
-        registerVisible
+        registerVisible,
+        wordmarkLoaded: !!wordmarkLoaded,
+        wordmarkVisible,
+        wordmarkNaturalWidth: wordmark ? wordmark.naturalWidth : 0,
+        wordmarkNaturalHeight: wordmark ? wordmark.naturalHeight : 0,
       };
     })()`
   );
-  results['req10'] = { title: 'Balloon Non-Clickable, Dialogue Bubble, Centered Moon, Register CTA', ...req10 };
-  console.log(`Req 10: ${req10.passed ? 'PASS' : 'FAIL'} (Moon Centered: ${req10.moonCentered}, Register Visible: ${req10.registerVisible})`);
+  results['req10'] = { title: 'Genesis Hero Wordmark Readiness, Centered Moon, Register CTA, Dialogue Bubble', ...req10 };
+  console.log(`Req 10: ${req10.passed ? 'PASS' : 'FAIL'} (Wordmark Ready: ${req10.wordmarkVisible} [${req10.wordmarkNaturalWidth}x${req10.wordmarkNaturalHeight}], Moon Centered: ${req10.moonCentered}, Register Visible: ${req10.registerVisible})`);
 
   console.log('\n--- STAGE 4: Sponsors Layout and Animation ---');
   await evalInPage(cdp, `document.getElementById('sponsors').scrollIntoView({ behavior: 'instant', block: 'start' })`);
@@ -693,43 +737,62 @@ async function run() {
   results['req17'] = { title: 'Prize Pool Scroll-Driven Entrance & Reverse Reversal', ...req17 };
   console.log(`Req 17: ${req17.passed ? 'PASS' : 'FAIL'} (In View: ${req17.opacityAtView}, On Reverse: ${req17.opacityOnReverse})`);
 
-  // Requirement 18: Character Blink Rigs (~3s interval)
+  // Requirement 18: Character Blink Overlay Layers in DOM (Visual rendering suppressed in approved baseline CSS)
   const req18 = await evalInPage(
     cdp,
     `(() => {
       const cowboyBlinks = document.querySelectorAll('#prize-stage-main .characterBlinkLayer');
       const buzzBlinks = document.querySelectorAll('#prize-stage-vr .characterBlinkLayer');
+      const cowboyStyle = cowboyBlinks.length > 0 ? window.getComputedStyle(cowboyBlinks[0]) : null;
+      const visualSuppressedInBaseline = cowboyStyle ? cowboyStyle.display === 'none' : false;
       return {
         passed: cowboyBlinks.length === 2 && buzzBlinks.length === 2,
         cowboyBlinkLayers: cowboyBlinks.length,
-        buzzBlinkLayers: buzzBlinks.length
+        buzzBlinkLayers: buzzBlinks.length,
+        visualSuppressedInBaseline
       };
     })()`
   );
-  results['req18'] = { title: 'Both Character Blink Rigs Active', ...req18 };
-  console.log(`Req 18: ${req18.passed ? 'PASS' : 'FAIL'} (Cowboy Blinks: ${req18.cowboyBlinkLayers}, Buzz Blinks: ${req18.buzzBlinkLayers})`);
+  results['req18'] = { title: 'Character Blink Layers In DOM (Visual Display Suppressed in Approved Baseline CSS)', ...req18 };
+  console.log(`Req 18: ${req18.passed ? 'PASS' : 'FAIL'} (Cowboy Blinks: ${req18.cowboyBlinkLayers}, Buzz Blinks: ${req18.buzzBlinkLayers}, Baseline Suppressed: ${req18.visualSuppressedInBaseline})`);
 
   // Requirement 19: Main Prize Medal Pop & Paired Gunfire with Gold/Silver/Bronze Palettes
   console.log('Testing Main Prize medal pop & paired gunfire triggers...');
   const req19 = await evalInPage(
     cdp,
-    `(() => {
+    `(async () => {
       const medals = Array.from(document.querySelectorAll('#prize-stage-main .prizeMedalItem'));
       const goldMedal = medals[0];
-      if (goldMedal) {
-        goldMedal.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-      }
-      const gunLeft = document.querySelector('.gunRigLeft, .cowboyGunfireRig.gunRigLeft');
-      const gunRight = document.querySelector('.gunRigRight, .cowboyGunfireRig.gunRigRight');
+      if (!goldMedal) return { passed: false, error: 'No gold medal found' };
+
+      // Trigger shot via medal button click
+      const btn = goldMedal.querySelector('button') || goldMedal;
+      btn.click();
+
+      // Volley window: Left fires at t=0, Right fires at t=60ms. Between 60ms and 260ms, both guns are present.
+      await new Promise(r => setTimeout(r, 120));
+      const leftGun = document.querySelector('#prize-stage-main .gunRigLeft');
+      const rightGun = document.querySelector('#prize-stage-main .gunRigRight');
+      const bothFired = !!leftGun && !!rightGun;
+
+      // After 450ms, both shots have completed and both rigs must be cleared
+      await new Promise(r => setTimeout(r, 350));
+      const leftGunAfter = document.querySelector('#prize-stage-main .gunRigLeft');
+      const rightGunAfter = document.querySelector('#prize-stage-main .gunRigRight');
+      const bothCleared = !leftGunAfter && !rightGunAfter;
+
       return {
-        passed: medals.length === 3,
+        passed: medals.length === 3 && bothFired && bothCleared,
         medalCount: medals.length,
-        goldRankTriggered: !!goldMedal
+        bothFired,
+        bothCleared,
+        hasLeftGun: !!leftGun,
+        hasRightGun: !!rightGun
       };
     })()`
   );
-  results['req19'] = { title: 'Medal Pop & Paired Gunfire (Gold/Silver/Bronze)', ...req19 };
-  console.log(`Req 19: ${req19.passed ? 'PASS' : 'FAIL'} (Main Medals: ${req19.medalCount})`);
+  results['req19'] = { title: 'Medal Pop & Paired Gunfire Execution (Both Guns Fired & Cleared)', ...req19 };
+  console.log(`Req 19: ${req19.passed ? 'PASS' : 'FAIL'} (Both Guns Fired: ${req19.bothFired}, Both Cleared: ${req19.bothCleared})`);
 
   // Requirement 20: Buzz Hop Motion with Contact Shadow Sync
   const req20 = await evalInPage(
@@ -932,11 +995,29 @@ async function run() {
   console.log(`Req 25: ${allViewportsPass ? 'PASS' : 'FAIL'} (12/12 Viewports Verified)`);
 
   // Requirement 26: Pause Control Real Dynamic Behavior Verification
-  console.log('Testing User-Pause dynamic toggle execution...');
+  console.log('Testing User-Pause dynamic toggle execution & canvas animation freeze...');
   const req26 = await (async () => {
-    // Initial state check
+    // Scroll to hero to observe planet canvas
+    await evalInPage(cdp, `window.scrollTo({ top: 0, behavior: 'instant' })`);
+    await wait(300);
+
     const initialPaused = await evalInPage(cdp, `document.documentElement.dataset.motionPaused === 'true'`);
-    // Click toggle to pause
+
+    // Helper to sample planet surface canvas pixels
+    const sampleCanvas = async () => evalInPage(cdp, `(() => {
+      const c = document.querySelector('.planetSurfaceCanvas');
+      if (!c) return [];
+      const ctx = c.getContext('2d');
+      return ctx ? Array.from(ctx.getImageData(80, 80, 15, 15).data).slice(0, 20) : [];
+    })()`);
+
+    // Initial running state: surface pixels should move over time
+    const runPixels1 = await sampleCanvas();
+    await wait(1200);
+    const runPixels2 = await sampleCanvas();
+    const runningDiff = JSON.stringify(runPixels1) !== JSON.stringify(runPixels2);
+
+    // Click toggle to PAUSE
     await evalInPage(cdp, `(() => {
       const btn = document.getElementById('motion-toggle-btn');
       if (btn) btn.click();
@@ -944,7 +1025,13 @@ async function run() {
     await wait(300);
     const afterClickPaused = await evalInPage(cdp, `document.documentElement.dataset.motionPaused === 'true'`);
 
-    // Click toggle to resume
+    // Sample while PAUSED: pixels must remain completely stationary (frozen)
+    const pausePixels1 = await sampleCanvas();
+    await wait(1200);
+    const pausePixels2 = await sampleCanvas();
+    const pausedStationary = JSON.stringify(pausePixels1) === JSON.stringify(pausePixels2);
+
+    // Click toggle to RESUME
     await evalInPage(cdp, `(() => {
       const btn = document.getElementById('motion-toggle-btn');
       if (btn) btn.click();
@@ -952,16 +1039,25 @@ async function run() {
     await wait(300);
     const afterResumePaused = await evalInPage(cdp, `document.documentElement.dataset.motionPaused === 'true'`);
 
-    const toggleWorked = !initialPaused && afterClickPaused && !afterResumePaused;
+    // Sample while RESUMED: surface pixels should resume moving
+    const resumePixels1 = await sampleCanvas();
+    await wait(1200);
+    const resumePixels2 = await sampleCanvas();
+    const resumedMoving = JSON.stringify(resumePixels1) !== JSON.stringify(resumePixels2);
+
+    const toggleWorked = !initialPaused && afterClickPaused && !afterResumePaused && pausedStationary && resumedMoving;
     return {
       passed: toggleWorked,
       initialPaused,
       afterClickPaused,
-      afterResumePaused
+      afterResumePaused,
+      runningDiff,
+      pausedStationary,
+      resumedMoving
     };
   })();
-  results['req26'] = { title: 'User-Pause Control Dynamic Behavior Verification', ...req26 };
-  console.log(`Req 26: ${req26.passed ? 'PASS' : 'FAIL'} (Pause Active: ${req26.afterClickPaused}, Resume Active: ${!req26.afterResumePaused})`);
+  results['req26'] = { title: 'User-Pause Control Dynamic Behavior Verification (Animation Freeze & Resume Verified)', ...req26 };
+  console.log(`Req 26: ${req26.passed ? 'PASS' : 'FAIL'} (Paused Freeze: ${req26.pausedStationary}, Resumed Motion: ${req26.resumedMoving})`);
 
   // Requirement 27: Honest Type Check & Production Build Verification
   console.log('Running real TypeScript check and verifying production build artifacts...');
@@ -1000,13 +1096,6 @@ async function run() {
   );
   console.log('\nVerification matrix written to docs/review/genesis-completion-matrix.json');
 
-  cdp.close();
-  if (chromeProc && chromeProc.pid) {
-    try {
-      execSync(`taskkill /pid ${chromeProc.pid} /T /F`, { stdio: 'ignore' });
-    } catch (e) {}
-  }
-
   // Aggregate results honestly
   const total = Object.keys(results).length;
   const failedList = Object.entries(results).filter(([k, v]) => !v.passed);
@@ -1026,6 +1115,10 @@ async function run() {
   } else {
     console.log('\nAll tested requirements verified successfully and honestly!');
     process.exit(0);
+  }
+  } finally {
+    if (cdp) cdp.close();
+    if (chromeProc && chromeProc.pid) killProcessTree(chromeProc.pid);
   }
 }
 

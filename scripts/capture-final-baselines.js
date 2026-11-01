@@ -129,10 +129,12 @@ async function waitForHydrationAndAssets(cdp) {
 }
 
 async function run() {
-  const baseDir = path.resolve(__dirname, '..', 'docs', 'captures', 'baseline');
+  const baseDir = process.argv[2]
+    ? path.resolve(process.argv[2])
+    : path.resolve(__dirname, '..', 'docs', 'captures', 'baseline');
   if (!fs.existsSync(baseDir)) fs.mkdirSync(baseDir, { recursive: true });
 
-  console.log(`Starting baseline captures targeting: ${TARGET_URL}`);
+  console.log(`Starting captures in ${baseDir} targeting: ${TARGET_URL}`);
 
   for (const vp of VIEWPORTS) {
     console.log(`\n=== Capturing Viewport: ${vp.name} (${vp.width}x${vp.height}) ===`);

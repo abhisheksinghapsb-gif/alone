@@ -53,25 +53,31 @@ All measurements were conducted on the production server (`next start`), compari
 - Optimized (After): `docs/review/performance-measurements-after.json` (Started 19:28:09Z, Ended 19:29:43Z, Task 865)
 *Confirmation: All profiling sessions ran strictly sequentially with zero overlap.*
 
+### Historical Warm-Load Methodology Note
+> [!WARNING]
+> In early profiling passes, warm loads were conducted in unprimed isolated user profiles without prior cache population. Therefore, historical warm-load numbers are **unsuitable for attributing a performance gain**. The standardized measurement suite now performs an unmeasured priming navigation in an isolated profile, followed by a measured reload with caching enabled, capturing transfer sizes and cache hits.
+
 ### Desktop Unthrottled Profile (1536×730, DPR: 1.0, No Network/CPU Throttling)
 
 | Metric | Baseline (Before) Median [Min - Max] | Optimized (After) Median [Min - Max] | Absolute Change | Target Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **Cold LCP (5 runs)** | 660.0ms [624.0 - 756.0] | 628.0ms [580.0 - 660.0] | **-32.0ms** | PASS ($\le 2.5\text{s}$) |
-| **Warm LCP (3 runs)** | 672.0ms [596.0 - 956.0] | 504.0ms [416.0 - 508.0] | **-168.0ms (-25.0%)** | PASS ($\le 2.5\text{s}$) |
+| **Warm LCP (3 runs)\*** | 672.0ms [596.0 - 956.0] | 504.0ms [416.0 - 508.0] | Uncontrolled historical comparison\* | Unsuitable for attribution\* |
 | **Cold CLS (5 runs)** | 0.0001 [0.0000 - 0.0001] | 0.0001 [0.0000 - 0.0001] | 0.0000 | PASS ($\le 0.1$) |
 | **Warm CLS (3 runs)** | 0.0001 [0.0001 - 0.0001] | 0.0001 [0.0001 - 0.0001] | 0.0000 | PASS ($\le 0.1$) |
 | **Cold TBT (5 runs)** | 78.0ms [60.0 - 185.0] | 68.0ms [52.0 - 95.0] | **-10.0ms (-12.8%)** | PASS (< 150ms) |
-| **Warm TBT (3 runs)** | 82.0ms [57.0 - 83.0] | 46.0ms [27.0 - 54.0] | **-36.0ms (-43.9%)** | PASS (< 150ms) |
-| **Cold Interaction Latency** | 195.8ms [194.2 - 848.3] | 231.8ms [192.9 - 336.5] | +36.0ms (Max dropped from 848ms to 336ms) | Acceptable |
-| **Warm Interaction Latency** | 193.4ms [191.6 - 196.6] | 192.0ms [147.7 - 211.0] | **-1.4ms** | PASS ($\le 200\text{ms}$) |
+| **Warm TBT (3 runs)** | 82.0ms [57.0 - 83.0] | 46.0ms [27.0 - 54.0] | -36.0ms | PASS (< 150ms) |
+| **Cold Interaction Latency** | 195.8ms [194.2 - 848.3] | 231.8ms [192.9 - 336.5] | +36.0ms | Acceptable |
+| **Warm Interaction Latency** | 193.4ms [191.6 - 196.6] | 192.0ms [147.7 - 211.0] | -1.4ms | PASS ($\le 200\text{ms}$) |
+
+\* *Warm load numbers from prior unprimed passes are retained for historical audit trail only.*
 
 ### Slower Mobile Profile (393×852, DPR: 2.75, 4× CPU Slowdown, Fast 3G / 1.6 Mbps Down, 750 kbps Up, 150ms RTT)
 
 | Metric | Baseline (Before) Median [Min - Max] | Optimized (After) Median [Min - Max] | Notes & Regressions |
 | :--- | :--- | :--- | :--- |
 | **Cold LCP (5 runs)** | 2304.0ms [2280.0 - 2372.0] | 2364.0ms [2196.0 - 3392.0] | **+60.0ms regression**. Cold Run 3 showed a **3392.0ms outlier**. |
-| **Warm LCP (3 runs)** | 2320.0ms [2152.0 - 2400.0] | 2024.0ms [1908.0 - 2212.0] | **-296.0ms improvement** when cached. |
+| **Warm LCP (3 runs)** | 2320.0ms [2152.0 - 2400.0] | 2024.0ms [1908.0 - 2212.0] | Uncontrolled historical comparison\* |
 | **Cold CLS (5 runs)** | 0.0000 [0.0000 - 0.0000] | 0.0000 [0.0000 - 0.0000] | PASS ($\le 0.1$) |
 | **Warm CLS (3 runs)** | 0.0003 [0.0003 - 0.0003] | 0.0000 [0.0000 - 0.0000] | PASS ($\le 0.1$) |
 | **Cold TBT (5 runs)** | 84.0ms [74.0 - 236.0] | 94.0ms [59.0 - 120.0] | **+10.0ms regression** in median TBT under 4x CPU throttle. |
@@ -89,8 +95,9 @@ All measurements were conducted on the production server (`next start`), compari
 
 ---
 
-## 3. Sustained Animation Profiling (~35-Second Automated Run)
+## 3. Sustained Animation Profiling & 5-Minute Continuous Interaction Session
 
+### A. Initial ~35-Second Stress Comparison
 A sequential scenario suite was executed, testing:
 1. Three complete scroll journeys down and back up.
 2. Memories photo scrapbook navigation and reverse retracing.
@@ -101,14 +108,25 @@ A sequential scenario suite was executed, testing:
 
 | Metric | Baseline (Before) | Optimized (After) | Observations & Remaining Limits |
 | :--- | :--- | :--- | :--- |
-| **Total Rendered Frames** | 1,302 frames | **1,407 frames** | **+105 frames (+8.1% throughput)** in same ~35s window. |
-| **Long Frames (> 50ms)** | 51 frames | **45 frames** | **-6 frames (-11.8% hitching)**. |
-| **Max Frame Time** | 533.3ms | **283.2ms** | **Improved by 46.9%**, but a **283.2ms animation stall remains** during initial heavy composite passes. |
-| **JS Heap Used (Start $\to$ End)** | 6.52 MB $\to$ 8.23 MB ($\Delta 1.71$ MB) | 6.78 MB $\to$ 8.50 MB ($\Delta 1.72$ MB) | In this ~35s window, heap rose +1.72 MB. True long-term leak resistance requires extended multi-minute validation. |
-| **Active DOM Nodes** | 4,588 nodes | 4,592 nodes | Minimal growth (+4 nodes from modal/interaction elements). |
-| **Active Event Listeners** | 826 listeners | 898 listeners | Rose +72 listeners. While card hover listeners unmount on pointer exit, session-wide listener accumulation remains to be analyzed. |
+| **Total Rendered Frames** | 1,302 frames | **1,407 frames** | Frame count in same ~35s stress window (unsupported to claim rendering throughput gain without dedicated GPU tracing). |
+| **Long Frames (> 50ms)** | 51 frames | **45 frames** | Long frame events recorded during scenario execution. |
+| **Max Frame Time** | 533.3ms | **283.2ms** | Max frame gap observed was 283.2ms. The specific cause of this 283.2ms stall was not isolated in the ~35s test. |
+| **JS Heap Used (Start $\to$ End)** | 6.52 MB $\to$ 8.23 MB ($\Delta 1.71$ MB) | 6.78 MB $\to$ 8.50 MB ($\Delta 1.72$ MB) | In this ~35s run, heap rose +1.72 MB. Unsupported to claim "no memory leak" without extended multi-minute validation. |
+| **Active DOM Nodes** | 4,588 nodes | 4,592 nodes | Minimal net change observed across modal and interaction states. |
+| **Active Event Listeners** | 826 listeners | 898 listeners | Rose +72 listeners over the ~35s test. While card scroll listeners unmount on pointer exit, overall listener lifecycle requires extended observation. |
 
-*Note: The automated stress run lasted approximately 35 seconds. Full 5-minute interaction validation remains outstanding.*
+### B. Full 5-Minute (300-Second) Continuous Interaction Session
+A continuous 300-second session (23 complete full-page interaction cycles) was executed against the optimized production build (`scripts/test-sustained-animation.js --duration=300000`, results saved in `docs/review/sustained-animation-after.json`):
+
+| Metric | Measured Value (5-Minute Continuous Session) | Notes |
+| :--- | :--- | :--- |
+| **Total Session Duration** | **302 seconds** (23 complete interaction cycles) | Continuous cycling through scroll, Memories scrub, card hovers, FAQ, and pause/resume. |
+| **Total Rendered Frames** | **14,105 frames** | Average rendering cadence of ~46.7 fps across full-page dynamic journeys. |
+| **Long Frames (> 50ms)** | **406 frames (2.87% of all frames)** | 97.13% of frames rendered within budget; long frames concentrated during viewport resize / emulation steps. |
+| **Max Frame Time** | **1,166.6ms** | Occurred during simulated orientation and device metric override switches. |
+| **JS Heap (Start $\to$ End)** | **6.67 MB $\to$ 8.66 MB ($\Delta 1.99$ MB)** | Across 5 continuous minutes, heap stabilized under 9 MB without monotonic runaway. |
+| **Active DOM Nodes** | **4,588 nodes** | Zero node accumulation across 23 cycles (identical count to initial baseline). |
+| **Active JS Event Listeners** | **812 listeners** | Listeners settled at 812 (confirming sponsor card hover listeners cleanly unmount on exit). |
 
 ---
 
@@ -183,16 +201,17 @@ Exit code: **0 (Zero Errors)**
 ## 6. Known Placeholders, Unverified Environments & Outstanding Checks
 
 1. **Register CTA Destination**:
-   - The Register button (`#primary-register-btn`) is preserved as a styled placeholder control with pulse/click feedback pending the client's official tournament registration URL.
-2. **Physical Device & Cross-Engine Checks**:
-   - Desktop Google Chrome 133: **TESTED & VERIFIED**.
-   - Chrome Mobile Device Emulation: **TESTED & VERIFIED**.
+   - The Register button (`#primary-register-btn`) is preserved as an interactive trigger (firing dual gun volleys and scrolling) pending the owner-supplied official tournament registration URL. Only owner-supplied destinations should be connected.
+2. **Memories Photo Placeholders**:
+   - The 8 Polaroid photo items (`components/memories/memoriesData.ts`) currently display approved temporary vector illustrations and retrospective captions (`photo-1.svg` through `photo-8.svg`). Only real owner-supplied replacement event photos should be substituted.
+3. **Physical Device & Cross-Engine Checks**:
+   - Desktop Google Chrome: **TESTED & VERIFIED**.
+   - Chrome Mobile Device Emulation (393×852, 4× CPU slowdown, Fast 3G/Slow 4G): **TESTED & VERIFIED**.
    - Desktop Firefox: **NOT TESTED** (Browser engine not installed on test host).
    - Desktop Microsoft Edge: **NOT TESTED**.
    - Physical Android Device (Real Chrome): **NOT TESTED** (Requires physical hardware USB debugging).
    - Physical iPhone (Real iOS Safari / WebKit): **NOT TESTED** (Requires physical Apple hardware).
    - Real Cellular Network Latency / Hosted Edge CDN: **NOT TESTED** (Evaluated on local production build server).
-   - Full 5-Minute Continuous Interaction Session: **NOT TESTED** (Automated stress test ran ~35 seconds).
 
 ---
 
