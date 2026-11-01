@@ -74,7 +74,7 @@ This report documents the targeted visual, interactive, and structural repairs i
 
 ## 3. Automated Verification Results (27/27 Passed)
 
-Executed via `node scripts/verify-all-genesis-requirements.js` against running production build (`Su7sFMczvz5xabxCWyG9u`):
+Executed via `node scripts/verify-all-genesis-requirements.js` against running production build (`okU1sbB_ttpYdFATJYFpN`):
 
 | # | Requirement / Check | Status | Key Measurement Evidence |
 |---|---------------------|--------|--------------------------|
@@ -94,7 +94,7 @@ Executed via `node scripts/verify-all-genesis-requirements.js` against running p
 | REQ14 | Sheen Removed, Approved Glow | **PASSED** | 0 sheen elements, approved glowing drop shadows active |
 | REQ15 | Hover Glow Cleared on Scroll Away | **PASSED** | Glow state clears automatically when mouse or viewport leaves target |
 | REQ16 | Crown and Chest Pop Wrappers | **PASSED** | Crown pop and chest pop wrappers present in DOM |
-| REQ17 | Prize Pool Scroll-Driven Entrance | **PASSED** | Opacity at view: 1.0, reverse retrace opacity: 0.1014 |
+| REQ17 | Prize Pool Scroll-Driven Entrance | **PASSED** | Opacity at view: 1.0, reverse retrace opacity: 0.1528 |
 | REQ18 | Character Blink Layers In DOM | **PASSED** | 2 cowboy blink layers, 2 buzz blink layers active and toggling |
 | REQ19 | Medal Pop & Paired Gunfire | **PASSED** | 3 medals, dual gun muzzles fire and clear concurrently |
 | REQ20 | Buzz Hop & Shadow Sync | **PASSED** | Buzz idle loop active, contact shadow synchronized |
@@ -104,7 +104,7 @@ Executed via `node scripts/verify-all-genesis-requirements.js` against running p
 | REQ24 | Social Footer Real Anchors & Tap Targets | **PASSED** | Real `<a>` tags, target `_blank`, tap heights >= 44px |
 | REQ25 | 12-Viewport Responsive Matrix | **PASSED** | 12 viewports tested: zero horizontal overflow, ancestor bounds valid |
 | REQ26 | User-Pause Control Dynamic Behavior | **PASSED** | Pause halts animations, resume restarts them seamlessly |
-| REQ27 | Type Check & Production Build | **PASSED** | `tsc --noEmit` 0 errors, Turbopack production build verified |
+| REQ27 | Type Check & Production Build | **PASSED** | `tsc --noEmit` 0 errors, Turbopack production build verified (`okU1sbB_ttpYdFATJYFpN`) |
 
 ---
 
@@ -114,22 +114,23 @@ Executed via `node scripts/verify-all-genesis-requirements.js` against running p
 
 | Profile | Mode | LCP (ms) | CLS | TBT (ms) | Interaction (ms) | Total Transfer (KB) |
 |---|---|---|---|---|---|---|
-| **Desktop (1536×730, Unthrottled)** | Cold (5 runs) | 652 (596 – 804) | 0.0001 (0 – 0.0001) | 28 (23 – 37) | 248 (168 – 847) | 2172.0 KB |
-| | Warm (3 runs) | 520 (348 – 1080) | 0.0000 | 159 (107 – 198) | 754 (744 – 759) | 10.5 KB (13 cached) |
-| **Mobile (393×852, 4× CPU, Fast 3G)** | Cold (5 runs) | 2252 (2184 – 2268) | 0.0000 | 52 (44 – 56) | 108 (89 – 124) | 329.3 KB |
-| | Warm (3 runs) | 596 (584 – 1368) | 0.0000 | 696 (647 – 776) | 938 (932 – 1013) | 16.2 KB (13 cached) |
+| **Desktop (1536×730, Unthrottled)** | Cold (5 runs) | 652 (632 – 676) | 0.0001 (0 – 0.0001) | 54 (45 – 100) | 226 (192 – 848) | 2172.1 KB |
+| | Warm (3 runs) | 472 (460 – 472) | 0.0000 | 162 (59 – 185) | 798 (774 – 803) | 10.5 KB (13 cached) |
+| **Mobile (393×852, 4× CPU, Fast 3G)** | Cold (5 runs) | 2252 (2228 – 2268) | 0.0000 | 71 (63 – 94) | 120 (115 – 151) | 329.4 KB |
+| | Warm (3 runs) | 776 (736 – 900) | 0.0000 | 636 (565 – 651) | 1004 (989 – 1033) | 10.5 KB (13 cached) |
 
 ### B. 40-Second Sustained Animation Profiling
 
-Telemetry captured via Chrome DevTools Protocol over 3 full page scroll cycles (40 seconds duration):
-- **Total Animation Frames Tracked**: 1,999 frames
-- **Average Frame Duration**: 16.68 ms (~60 FPS)
-- **Long Frames (>50ms)**: 58 frames (primarily during high-density multi-canvas viewport entry)
-- **Maximum Frame Time**: **183.3 ms** (reduced from 283.2 ms in prior unoptimized checkpoint)
-- **JS Heap Used (Before)**: 5.72 MB
-- **JS Heap Used (After)**: 8.35 MB
-- **JS Heap Delta**: +2.63 MB (bounded DOM event and texture caching, no unbounded runaway growth)
+Telemetry captured via Chrome DevTools Protocol over 4 full page scroll cycles (53 seconds duration):
+- **Total Animation Frames Tracked**: 2,733 frames
+- **Average Frame Duration**: 16.65 ms (~60 FPS)
+- **Long Frames (>50ms)**: 70 frames (primarily during high-density multi-canvas viewport entry)
+- **Maximum Frame Time**: **133.4 ms** (reduced from 283.2 ms in prior unoptimized checkpoint)
+- **JS Heap Used (Before)**: 5.54 MB
+- **JS Heap Used (After)**: 8.50 MB
+- **JS Heap Delta**: +2.96 MB (bounded DOM event and texture caching, no unbounded runaway growth)
 - **DOM Node Count**: 4,850 nodes
+- **Active Event Listeners**: 822
 
 ---
 
