@@ -34,3 +34,8 @@ scratch/
 .backup_vite/
 .chrome-*/
 *.mp4
+docs/captures/desktop-pre-repair/
+docs/captures/desktop-post-repair/
+docs/captures/mobile-audit/
+docs/captures/mobile-audit-fresh/
+docs/captures/mobile-deep/

@@ -1262,14 +1262,14 @@
   .gunslingerWrap {
     top: auto;
     bottom: calc(100vw * 0.217 - 18px);
-    left: -2%;
+    left: 0;
     width: clamp(155px, 44vw, 195px);
   }
 
   .ninjaWrap {
     top: auto;
     bottom: calc(100vw * 0.217 - 18px);
-    right: -2%;
+    right: 0;
     width: clamp(145px, 41vw, 185px);
   }
 

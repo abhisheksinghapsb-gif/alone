@@ -665,6 +665,7 @@
 
   .categoryTab {
     padding: 8px 10px;
+    min-height: 44px;
   }
 
   .categoryLabel {
@@ -687,6 +688,7 @@
 
   .categoryTab {
     padding: 6px 8px;
+    min-height: 44px;
   }
 }
 

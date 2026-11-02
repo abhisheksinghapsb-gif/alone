@@ -596,6 +596,8 @@
   outline: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 /* Accessible focus ring */
@@ -1200,7 +1202,53 @@
   }
 
   .medalSvg {
-    max-width: 220px;
+    max-width: 210px;
+  }
+
+  .stageCharacterWrapper.leftCharacter,
+  .stageCharacterWrapper.rightCharacter {
+    width: 170px;
+    margin-top: -15px;
+  }
+}
+
+@media (max-width: 360px) {
+  #prize-pool {
+    padding: 30px 8px 50px 8px;
+  }
+
+  .stageHeaderStrip {
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .stageHeadingImg {
+    height: 26px;
+  }
+
+  .stageSurfaceBody {
+    padding: 16px 10px 24px 10px;
+  }
+
+  .stageMedalsCluster {
+    gap: 12px;
+  }
+
+  .medalSvg {
+    max-width: 190px;
+  }
+
+  .accessibleAmount {
+    font-size: 1.05rem;
+  }
+
+  .stageCharacterWrapper.leftCharacter,
+  .stageCharacterWrapper.rightCharacter {
+    width: 150px;
+  }
+
+  .characterIllustration {
+    max-height: 170px;
   }
 }
 

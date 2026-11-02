@@ -30,7 +30,11 @@ export const LandingHeader: React.FC<LandingHeaderProps> = ({
           aria-label="Visit official Game Developer Association of India (GDAI) website (opens in a new tab)"
           className="gdaiBadgeLink"
           style={{
-            display: 'inline-block',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minWidth: '44px',
+            minHeight: '44px',
             cursor: 'pointer',
             transition: 'transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 200ms ease',
           }}

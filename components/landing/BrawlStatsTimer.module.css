@@ -300,7 +300,68 @@
     font-size: 13.5px;
   }
   .countdownValue {
-    font-size: 14.5px;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (max-width: 360px) {
+  .timerSectionWrap {
+    padding: 0 8px;
+    margin-top: -48px;
+    margin-bottom: -18px;
+  }
+  .tableCard {
+    padding: 18px 10px 12px 10px;
+    border-width: 3px;
+  }
+  .topChevronBadge {
+    width: 44px;
+    height: 44px;
+    top: -22px;
+  }
+  .chevronSvg {
+    width: 16px;
+    height: 16px;
+  }
+  .headerLeft {
+    gap: 8px;
+  }
+  .yellowSkullPlate {
+    width: 38px;
+    height: 38px;
+  }
+  .skullIconSvg {
+    width: 22px;
+    height: 22px;
+  }
+  .brawlText, .startsInText {
+    font-size: 16px;
+  }
+  .max11Badge {
+    font-size: 12px;
+  }
+  .statRow {
+    gap: 8px;
+    padding: 6px 8px;
+  }
+  .statBadgeGreen, .statBadgeRed {
+    width: 32px;
+    height: 32px;
+  }
+  .statBadgeIcon {
+    width: 18px;
+    height: 18px;
+  }
+  .statLabelGreen, .statLabelRed {
+    font-size: 10px;
+  }
+  .statValue {
+    font-size: 12px;
+  }
+  .countdownValue {
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
   }
 }
 

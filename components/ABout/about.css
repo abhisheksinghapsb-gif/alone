@@ -609,9 +609,46 @@
 }
 
 /* 5. Mobile Devices <= 480px / 390px / 360px */
+/* 5. Mobile Devices <= 640px / 480px / 360px:
+   Let the About briefing board grow naturally with text, eliminating awkward mini-scroll containers */
+@media (max-width: 640px) {
+  #about-genesis {
+    padding: 36px 16px 36px 16px;
+    min-height: auto;
+  }
+
+  .aboutContentLayout {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  .briefingBoardContainer {
+    height: auto;
+    min-height: 260px;
+  }
+
+  .briefingScrollContainer {
+    height: auto;
+    overflow: visible;
+    padding: 22px 20px 24px 20px;
+  }
+
+  .briefingParagraph {
+    font-size: 15px;
+    line-height: 1.44;
+    margin-bottom: 14px;
+  }
+
+  .aboutRightRegion {
+    display: none;
+    height: 0;
+    min-height: 0;
+  }
+}
+
 @media (max-width: 480px) {
   #about-genesis {
-    padding: 28px 14px 28px 14px;
+    padding: 28px 12px 32px 12px;
   }
 
   .aboutPlaqueWrapper {
@@ -622,6 +659,8 @@
   .aboutEmblemButton {
     width: 72px;
     height: 72px;
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .aboutWordmarkWrapper {
@@ -629,35 +668,55 @@
   }
 
   .briefingBoardContainer {
-    height: 310px;
+    height: auto;
+    min-height: 240px;
   }
 
   .briefingScrollContainer {
-    padding: 12px 18px 40px 18px;
+    height: auto;
+    overflow: visible;
+    padding: 18px 16px 20px 16px;
   }
 
   .briefingParagraph {
     font-size: 14.5px;
-    line-height: 1.34;
+    line-height: 1.4;
     margin-bottom: 12px;
   }
 
-  .briefingScrollPromptWrapper {
-    bottom: 10px;
-    right: 14px;
-  }
-
-  .briefingScrollBtn {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0;
-  }
-
   .aboutRightRegion {
-    min-height: 160px;
-    height: 190px;
+    display: none;
+    height: 0;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  #about-genesis {
+    padding: 24px 8px 28px 8px;
+  }
+
+  .aboutPlaqueWrapper {
+    width: 175px;
+    margin-left: 36px;
+  }
+
+  .aboutEmblemButton {
+    width: 64px;
+    height: 64px;
+  }
+
+  .aboutWordmarkWrapper {
+    width: 215px;
+  }
+
+  .briefingScrollContainer {
+    padding: 16px 12px 18px 12px;
+  }
+
+  .briefingParagraph {
+    font-size: 13.5px;
+    line-height: 1.38;
   }
 }
 

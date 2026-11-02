@@ -737,8 +737,18 @@
 
 @media (max-width: 360px) {
   .contentContainer {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .socialLinksGroup {
+    border-radius: 20px;
+    padding: 6px 8px;
+    gap: 8px;
+  }
+  .socialLinkAnchor {
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    min-height: 44px;
   }
 
   .plateAnchor {

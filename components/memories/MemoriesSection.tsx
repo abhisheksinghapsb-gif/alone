@@ -78,14 +78,22 @@ export const MemoriesSection: React.FC<MemoriesSectionProps> = ({
 
       try {
         ctx = gsap.context(() => {
-          const isPhone = () => window.innerWidth < 640;
           const scaleForViewport = () => {
-            let scale = isPhone() ? 0.96 : window.innerWidth < 1024 ? 1.06 : 1.19;
-            if (typeof window !== 'undefined' && window.innerHeight < 550) {
-              const heightRatio = (window.innerHeight - 80) / 480;
-              scale = Math.min(scale, Math.min(0.74, heightRatio));
+            if (typeof window === 'undefined') return 1;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            if (w < 380) {
+              return 0.78;
+            } else if (w < 640) {
+              return 0.88;
+            } else if (w < 1024) {
+              return 1.05;
             }
-            return scale;
+            if (h < 550) {
+              const heightRatio = (h - 80) / 480;
+              return Math.min(1.19, Math.min(0.74, heightRatio));
+            }
+            return 1.19;
           };
 
           const target = (memory: Memory) => {

@@ -322,7 +322,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.42rem 0.95rem;
+  padding: 0.55rem 0.95rem;
+  min-height: 44px;
   background: rgba(14, 22, 54, 0.7);
   border: 2px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
@@ -996,23 +997,28 @@
   }
 
   .chapterList {
-    gap: 3.5rem;
+    gap: 3rem;
+  }
+
+  .chapterRow {
+    gap: 1rem;
   }
 
   .verticalRail {
-    left: 28px;
+    left: 24px;
     transform: translateX(-50%);
     width: 10px;
   }
 
   .nodeWrapper {
-    width: 56px;
-    padding-top: 1rem;
+    width: 48px;
+    padding-top: 0.75rem;
   }
 
   .connectorBeam {
-    left: 44px;
-    top: calc(1rem + 26px);
+    left: 42px;
+    top: calc(0.75rem + 24px);
+    width: 16px !important;
     height: 4px;
   }
 
@@ -1022,12 +1028,12 @@
   }
 
   .titlePane {
-    padding: 2rem 1.5rem 1rem 1.5rem;
+    padding: 1.5rem 1.25rem 0.75rem 1.25rem;
   }
 
   .illustrationPane {
-    padding: 1rem 1.5rem 2rem 1.5rem;
-    min-height: 240px;
+    padding: 0.75rem 1.25rem 1.5rem 1.25rem;
+    min-height: 220px;
   }
 
   .charImgStage1 {
@@ -1046,39 +1052,55 @@
   }
 
   .headerTitleWordmark {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
   }
 
   .headerPlaqueFrame {
-    padding: 10px 28px 12px 28px;
+    padding: 10px 24px 12px 24px;
   }
 }
 
 @media (max-width: 480px) {
+  .journeyContainer {
+    padding: 0 0.5rem;
+  }
+
+  .chapterList {
+    gap: 2.5rem;
+  }
+
+  .chapterRow {
+    gap: 0.65rem;
+  }
+
   .verticalRail {
-    left: 24px;
+    left: 22px;
     transform: translateX(-50%);
+    width: 8px;
   }
 
   .nodeWrapper {
-    width: 48px;
+    width: 44px;
+    padding-top: 0.5rem;
   }
 
   .connectorBeam {
-    left: 36px;
-    width: 14px !important;
+    left: 38px;
+    width: 12px !important;
+    top: calc(0.5rem + 22px);
   }
 
   .stageMainTitle {
-    font-size: 1.45rem;
+    font-size: 1.4rem;
   }
 
   .titlePane {
-    padding: 1.5rem 1rem 0.75rem 1rem;
+    padding: 1.25rem 0.85rem 0.6rem 0.85rem;
   }
 
   .illustrationPane {
-    padding: 0.75rem 1rem 1.5rem 1rem;
+    padding: 0.5rem 0.85rem 1.25rem 0.85rem;
+    min-height: 190px;
   }
 
   .headerTitleWordmark {
@@ -1086,19 +1108,57 @@
   }
 
   .headerPlaqueFrame {
-    padding: 8px 20px 10px 20px;
+    padding: 8px 18px 10px 18px;
   }
 
   .guideMascotWrap {
-    width: 90px;
-    height: 80px;
+    width: 80px;
+    height: 70px;
   }
 
   .speechBubbleWrap {
-    padding: 0.5rem 1rem;
+    padding: 0.45rem 0.85rem;
   }
 
   .speechBubbleText {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .journeyContainer {
+    padding: 0 0.25rem;
+  }
+
+  .chapterRow {
+    gap: 0.45rem;
+  }
+
+  .verticalRail {
+    left: 20px;
+    width: 7px;
+  }
+
+  .nodeWrapper {
+    width: 40px;
+    padding-top: 0.5rem;
+  }
+
+  .connectorBeam {
+    left: 34px;
+    width: 10px !important;
+    top: calc(0.5rem + 20px);
+  }
+
+  .stageMainTitle {
+    font-size: 1.25rem;
+  }
+
+  .headerTitleWordmark {
+    font-size: 1.65rem;
+  }
+
+  .headerPlaqueFrame {
+    padding: 6px 14px 8px 14px;
   }
 }
